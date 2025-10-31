@@ -16,8 +16,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
     }
 
     header {
@@ -70,17 +69,24 @@
       transform: scale(1.05);
     }
 
-    /* --- Rodapé --- */
+    /* --- Rodapé Minimalista --- */
     footer {
       position: absolute;
       bottom: 15px;
       text-align: center;
       font-size: 0.9rem;
-      color: #666;
+      color: #888;
     }
 
-    footer span {
+    footer a {
       color: #00aaff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: #00eaff;
     }
 
     /* --- Animações --- */
@@ -121,9 +127,11 @@
   </div>
 
   <footer>
-    <p><span>Equipe D.A.C</span> | Samueldson Ferreira - Supervisor</p>
+    <p>
+      &copy; 2025 Grupo Sovel da Amazônia • 
+      <a href="../README.md" target="_blank">Leia o README</a>
+    </p>
   </footer>
 
 </body>
-
 </html>
