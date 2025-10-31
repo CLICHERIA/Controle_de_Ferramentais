@@ -126,6 +126,24 @@
   .neon-card p {
     margin: 0;
   }
+
+  /* Centralização geral das seções */
+  .centralizado {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Pre centralizado */
+  .pre-centralizado {
+    display: inline-block;
+    text-align: left;
+    background-color: #0d1b2a;
+    color: #00eaff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00eaff22;
+  }
 </style>
 
 <!-- ====================== -->
@@ -158,7 +176,7 @@
   </p>
 
   <!-- Botão Painel Interativo neon animado -->
-  <p align="center" style="margin-top:20px;">
+  <p style="margin-top:20px;">
     <a href="docs/index.html" target="_blank" class="neon-button">
       Acessar Painel Interativo
     </a>
@@ -169,88 +187,89 @@
 <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
 <!-- ====================== -->
-<!-- Sobre o Projeto -->
+<!-- Conteúdo Centralizado -->
 <!-- ====================== -->
-<h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">💡 Sobre o Projeto</h2>
+<div class="centralizado">
 
-<p align="justify" style="max-width:800px; color:#c0dfff;">
-  O <b>Sistema de Gestão de Ferramentais</b> tem como propósito <b>automatizar e digitalizar</b> o controle de ferramentais do <b>Departamento de Amostras e Clicheria</b>.  
-  Através de uma interface moderna e integração com <b>QR Codes</b>, o sistema gerencia <b>todo o ciclo de vida das ferramentas</b>, desde o recebimento até a substituição.
-</p>
+  <!-- Sobre o Projeto -->
+  <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">💡 Sobre o Projeto</h2>
 
-<p style="max-width:800px; color:#a9e5ff;">
-  🔹 Cada ferramenta possui um <b>QR Code exclusivo</b> contendo informações técnicas e rastreáveis.<br>
-  🔹 Foco em <b>eficiência, agilidade e segurança operacional</b>.<br>
-  🔹 Desenvolvido com base em <b>inovação tecnológica e melhoria contínua</b>.
-</p>
+  <p style="color:#c0dfff; font-size:16px; line-height:1.6;">
+    O <b>Sistema de Gestão de Ferramentais</b> tem como propósito <b>automatizar e digitalizar</b> o controle de ferramentais do <b>Departamento de Amostras e Clicheria</b>.<br>
+    Através de uma interface moderna e integração com <b>QR Codes</b>, o sistema gerencia <b>todo o ciclo de vida das ferramentas</b>, desde o recebimento até a substituição.
+  </p>
 
-<hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
+  <p style="color:#a9e5ff; font-size:16px; line-height:1.6;">
+    🔹 Cada ferramenta possui um <b>QR Code exclusivo</b> contendo informações técnicas e rastreáveis.<br>
+    🔹 Foco em <b>eficiência, agilidade e segurança operacional</b>.<br>
+    🔹 Desenvolvido com base em <b>inovação tecnológica e melhoria contínua</b>.
+  </p>
 
-<!-- ====================== -->
-<!-- Grupo Sovel -->
-<!-- ====================== -->
-<h2 style="color:#00bfff;">🏢 Grupo Sovel da Amazônia</h2>
-<p style="color:#c0dfff;"><b>Departamento de Amostras e Clicheria</b></p>
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-<hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
+  <!-- Grupo Sovel -->
+  <h2 style="color:#00bfff;">🏢 Grupo Sovel da Amazônia</h2>
+  <p style="color:#c0dfff;"><b>Departamento de Amostras e Clicheria</b></p>
 
-<!-- ====================== -->
-<!-- Equipe D.A.C -->
-<!-- ====================== -->
-<h2 style="color:#00bfff; text-shadow:0 0 20px #00eaff; text-align:center; margin-bottom:30px;">👥 Equipe D.A.C</h2>
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:30px;">
-  <div class="neon-card">
-    <h3>⚡ Samueldson Ferreira</h3>
-    <p>🛡️ Supervisor</p>
+  <!-- Equipe D.A.C -->
+  <h2 style="color:#00bfff; text-shadow:0 0 20px #00eaff; margin-bottom:30px;">👥 Equipe D.A.C</h2>
+
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:30px;">
+    <div class="neon-card">
+      <h3>⚡ Samueldson Ferreira</h3>
+      <p>🛡️ Supervisor</p>
+    </div>
+    <div class="neon-card">
+      <h3>📊 Rafaelly Azevedo</h3>
+      <p>💼 Analista Administrativo</p>
+    </div>
+    <div class="neon-card">
+      <h3>🔧 Elienson Duarte</h3>
+      <p>🛠️ Assistente</p>
+    </div>
+    <div class="neon-card">
+      <h3>🔧 Gustavo Albuquerque</h3>
+      <p>🛠️ Assistente</p>
+    </div>
+    <div class="neon-card">
+      <h3>🔧 Vanessa Nascimento</h3>
+      <p>🛠️ Assistente</p>
+    </div>
   </div>
-  <div class="neon-card">
-    <h3>📊 Rafaelly Azevedo</h3>
-    <p>💼 Analista Administrativo</p>
-  </div>
-  <div class="neon-card">
-    <h3>🔧 Elienson Duarte</h3>
-    <p>🛠️ Assistente</p>
-  </div>
-  <div class="neon-card">
-    <h3>🔧 Gustavo Albuquerque</h3>
-    <p>🛠️ Assistente</p>
-  </div>
-  <div class="neon-card">
-    <h3>🔧 Vanessa Nascimento</h3>
-    <p>🛠️ Assistente</p>
-  </div>
-</div>
 
-<hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-<!-- Tecnologias -->
-<h2 style="color:#00bfff;">🛠️ Tecnologias e Recursos</h2>
+  <!-- Tecnologias -->
+  <h2 style="color:#00bfff;">🛠️ Tecnologias e Recursos</h2>
 
-<pre style="background-color:#0d1b2a; color:#00eaff; padding:20px; border-radius:10px; box-shadow:0 0 20px #00eaff22; text-align:left;">
+  <pre class="pre-centralizado">
 - Interface responsiva (HTML5/CSS3)
 - Controle de ferramentais via QR Code
 - Painel interativo e intuitivo
 - Relatórios e histórico de movimentações
 - Base pronta para integração com banco de dados interno
-</pre>
+  </pre>
 
-<hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-<!-- Contato -->
-<h2 style="color:#00bfff;">💬 Contato e Sugestões</h2>
-<p style="color:#c0dfff;">
-  Envie suas ideias e melhorias diretamente para o <b>Departamento de Amostras e Clicheria</b>.<br><br>
-  📧 <a href="mailto:dac@sovel.com.br">dac@sovel.com.br</a><br>
-  📍 Manaus - AM, Brasil
-</p>
+  <!-- Contato -->
+  <h2 style="color:#00bfff;">💬 Contato e Sugestões</h2>
+  <p style="color:#c0dfff; font-size:16px; line-height:1.6;">
+    Envie suas ideias e melhorias diretamente para o <b>Departamento de Amostras e Clicheria</b>.<br><br>
+    📧 <a href="mailto:dac@sovel.com.br">dac@sovel.com.br</a><br>
+    📍 Manaus - AM, Brasil
+  </p>
 
-<hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-<p style="font-style:italic; color:#66d9ff;">
-  “Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”
-</p>
+  <p style="font-style:italic; color:#66d9ff;">
+    “Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”
+  </p>
 
-<p style="color:#00eaff;"><b>— Equipe D.A.C | Grupo Sovel da Amazônia</b></p>
+  <p style="color:#00eaff;"><b>— Equipe D.A.C | Grupo Sovel da Amazônia</b></p>
 
-<sub style="color:#777;">© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria</sub>
+  <sub style="color:#777;">© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria</sub>
+
+</div>
