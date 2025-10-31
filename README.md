@@ -52,7 +52,8 @@
 
   <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff; text-align:center;">👥 Equipe D.A.C</h2>
 
-<table style="width:70%; margin:20px auto; text-align:center; border-collapse:collapse; background:none; box-shadow:none;">
+<div style="text-align: center;">
+<table style="width:70%; margin:0 auto; text-align:center; border-collapse:collapse; background-color:transparent; box-shadow:none; display: inline-block;">
   <tr>
     <th style="padding:12px; color:#00ffff; font-size:16px; text-shadow:0 0 5px #00eaff;">Nome</th>
     <th style="padding:12px; color:#00ffff; font-size:16px; text-shadow:0 0 5px #00eaff;">Cargo</th>
@@ -78,6 +79,7 @@
     <td>Assistente</td>
   </tr>
 </table>
+</div>
 
 
 
