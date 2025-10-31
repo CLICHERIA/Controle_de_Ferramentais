@@ -52,33 +52,31 @@
 
   <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
     <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff; margin: 0 0 10px 0;">👥 Equipe D.A.C</h2>
-    <table style="width:70%; text-align:center; border-collapse:collapse; background: transparent !important; border: none; box-shadow: none;">
+    <table style="background-color:#0a0f1a; color:#ffffff; font-family:'Segoe UI',sans-serif; border-collapse: collapse; margin: 0 auto;">
+  <tr>
+    <th style="padding:15px; text-align:center;">Samueldson Ferreira</th>
+    <th style="padding:15px; text-align:center;">Supervisor</th>
+  </tr>
+  <tr>
+    <td style="padding:10px; text-align:center;">Rafaelly Azevedo</td>
+    <td style="padding:10px; text-align:center;">Analista Administrativo</td>
+  </tr>
+  <tr>
+    <td style="padding:10px; text-align:center;">Elienson Duarte</td>
+    <td style="padding:10px; text-align:center;">Assistente</td>
+  </tr>
+  <tr>
+    <td style="padding:10px; text-align:center;">Gustavo Albuquerque</td>
+    <td style="padding:10px; text-align:center;">Assistente</td>
+    </tr>
       <tr>
-        <th style="padding:12px; color:#00ffff; font-size:16px; text-shadow:0 0 5px #00eaff;">Nome</th>
-        <th style="padding:12px; color:#00ffff; font-size:16px; text-shadow:0 0 5px #00eaff;">Cargo</th>
-      </tr>
-      <tr style="color:#a9e5ff; font-size:15px;">
-        <td>Samueldson Ferreira</td>
-        <td>Supervisor</td>
-      </tr>
-      <tr style="color:#a9e5ff; font-size:15px;">
-        <td>Rafaelly Azevedo</td>
-        <td>Analista</td>
-      </tr>
-      <tr style="color:#a9e5ff; font-size:15px;">
-        <td>Elienson Duarte</td>
-        <td>Assistente</td>
-      </tr>
-      <tr style="color:#a9e5ff; font-size:15px;">
-        <td>Gustavo Albuquerque</td>
-        <td>Assistente</td>
-      </tr>
-      <tr style="color:#a9e5ff; font-size:15px;">
-        <td>Vanessa Nascimento</td>
-        <td>Assistente</td>
-      </tr>
-    </table>
-  </div>
+    <td style="padding:10px; text-align:center;">Vanessa Nascimento</td>
+    <td style="padding:10px; text-align:center;">Assistente</td>
+  </tr>
+</table>
+
+</div> <!-- fecha o div align="center" da equipe -->
+
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
