@@ -1,96 +1,98 @@
 <!-- ====================== -->
-<!-- READ-ME  GRUPO SOVEL -->
+<!-- README - GRUPO SOVEL -->
 <!-- ====================== -->
 
-<p align="center">
-  <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="180" />
-</p>
+<div align="center" style="background-color:#0a0f1a; color:#e0f7ff; font-family:'Segoe UI',sans-serif; padding:40px; border-radius:20px; box-shadow:0 0 30px #00eaff55;">
 
-<h1 align="center">🎉 Boas-Vindas ao Sistema de Gestão de Ferramentais 🎉</h1>
+  <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="200" style="filter: drop-shadow(0 0 8px #00eaff);" />
 
-<p align="center">
-  <b>Departamento de Amostras e Clicheria</b><br>
-  <b>Grupo Sovel da Amazônia</b>
-</p>
+  <h1 style="color:#00eaff; text-shadow:0 0 20px #00eaff;">
+    ⚙️ Sistema de Gestão de Ferramentais ⚙️
+  </h1>
 
-<p align="center">
-  <a href="#"><img src="https://img.shields.io/badge/status-em%20uso-brightgreen" alt="Status"></a>
-  <a href="#"><img src="https://img.shields.io/badge/versão-1.0.0-blue" alt="Versão"></a>
-  <a href="#"><img src="https://img.shields.io/badge/última%20atualização-outubro%2F2025-lightgrey" alt="Última atualização"></a>
-  <a href="#"><img src="https://img.shields.io/badge/tecnologia-QR--Code%20%7C%20Gestão--Interna-orange" alt="Tecnologia"></a>
-</p>
+  <p style="color:#9fd0ff; font-size:18px;">
+    <b>Departamento de Amostras e Clicheria</b><br>
+    <b>Grupo Sovel da Amazônia</b>
+  </p>
 
-<p align="center">
-  <a href="index.html" target="_blank" style="text-decoration:none;">
-    <img src="https://img.shields.io/badge/Acessar%20Menu%20de%20Registro-0056b3?style=for-the-badge&logo=appveyor&logoColor=white" alt="Botão de Registro">
-  </a>
-</p>
+  <p>
+    <img src="https://img.shields.io/badge/Status-Em%20Operação-00ffcc?style=for-the-badge&logo=serverless&logoColor=white" alt="Status">
+    <img src="https://img.shields.io/badge/Versão-1.0.0-007bff?style=for-the-badge&logo=semanticrelease&logoColor=white" alt="Versão">
+    <img src="https://img.shields.io/badge/Atualizado-Outubro%2F2025-333333?style=for-the-badge&logo=github&logoColor=white" alt="Última atualização">
+    <img src="https://img.shields.io/badge/Tecnologia-QR--Code%20%7C%20Gestão--Digital-0099ff?style=for-the-badge&logo=qrcode&logoColor=white" alt="Tecnologia">
+  </p>
 
----
+  <p>
+    <a href="index.html" target="_blank" style="text-decoration:none;">
+      <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0a192f?style=for-the-badge&logo=hyperledger&logoColor=00eaff" alt="Botão de Registro" style="filter: drop-shadow(0 0 10px #00eaff);">
+    </a>
+  </p>
 
-## 💡 Sobre o Projeto
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-Com o objetivo de **automatizar o controle de ferramentais** pelo **Departamento de Amostras e Clicheria**, é com grande prazer que os convidamos ao nosso **sistema de gestão de ferramentais**.
+  <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">💡 Sobre o Projeto</h2>
 
-Este sistema foi desenvolvido para **gerenciar todo o ciclo de vida das ferramentas**, desde a **recepção** até o momento em que se faz necessária a **substituição**.  
-Cada ferramenta é identificada por um **QR Code**, que armazena **informações vitais** para o controle e rastreabilidade.
+  <p align="justify" style="max-width:800px;">
+    O <b>Sistema de Gestão de Ferramentais</b> tem como propósito <b>automatizar e digitalizar</b> o controle de ferramentais do <b>Departamento de Amostras e Clicheria</b>.  
+    Através de uma interface moderna e integração com <b>QR Codes</b>, o sistema gerencia <b>todo o ciclo de vida das ferramentas</b>, desde o recebimento até a substituição.
+  </p>
 
-✨ **Nosso propósito** é tornar a operação mais **eficiente, dinâmica e tecnológica**, promovendo agilidade e precisão nos processos diários.
+  <p style="max-width:800px; color:#a9cfff;">
+    🔹 Cada ferramenta possui um <b>QR Code exclusivo</b> contendo informações técnicas e rastreáveis.<br>
+    🔹 Foco em <b>eficiência, agilidade e segurança operacional</b>.<br>
+    🔹 Desenvolvido com base em <b>inovação tecnológica e melhoria contínua</b>.
+  </p>
 
-Estamos **de braços abertos** para receber **recomendações e sugestões de melhorias** — sua participação é essencial para a evolução contínua deste projeto.
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
----
+  <h2 style="color:#00bfff;">🏢 Grupo Sovel da Amazônia</h2>
+  <p><b>Departamento de Amostras e Clicheria</b></p>
 
-## 🏢 Grupo Sovel da Amazônia  
-### Departamento de Amostras e Clicheria  
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
----
+  <h2 style="color:#00bfff;">👥 Equipe D.A.C</h2>
 
-## 👥 Equipe D.A.C
+  <table style="width:70%; border-collapse:collapse; text-align:center; margin:auto;">
+    <tr style="background-color:#112240;">
+      <th style="padding:10px; color:#00eaff;">Nome</th>
+      <th style="padding:10px; color:#00eaff;">Cargo</th>
+    </tr>
+    <tr><td>Samueldson Ferreira</td><td>Supervisor</td></tr>
+    <tr><td>Rafaelly Azevedo</td><td>Analista</td></tr>
+    <tr><td>Elienson Duarte</td><td>Assistente</td></tr>
+    <tr><td>Gustavo Albuquerque</td><td>Assistente</td></tr>
+    <tr><td>Vanessa Nascimento</td><td>Assistente</td></tr>
+  </table>
 
-| Nome | Cargo |
-|------|--------|
-| **SamueIdson Ferreira** | Supervisor |
-| **Rafaelly Azevedo** | Analista |
-| **Elienson Duarte** | Assistente |
-| **Gustavo Albuquerque** | Assistente |
-| **Vanessa Nascimento** | Assistente |
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
----
+  <h2 style="color:#00bfff;">🛠️ Tecnologias e Recursos</h2>
 
-## 🧭 Valores do Projeto
+  <pre style="background-color:#0d1b2a; color:#00eaff; padding:20px; border-radius:10px; box-shadow:0 0 20px #00eaff22; text-align:left;">
+- Interface responsiva (HTML5/CSS3)
+- Controle de ferramentais via QR Code
+- Painel interativo e intuitivo
+- Relatórios e histórico de movimentações
+- Base pronta para integração com banco de dados interno
+  </pre>
 
-> **Inovação**, **eficiência** e **colaboração** são os pilares que sustentam este sistema.  
-> Acreditamos que a tecnologia é uma aliada essencial para o aprimoramento dos nossos processos internos.
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
----
+  <h2 style="color:#00bfff;">💬 Contato e Sugestões</h2>
+  <p>
+    Envie suas ideias e melhorias diretamente para o <b>Departamento de Amostras e Clicheria</b>.<br><br>
+    📧 <a href="mailto:dac@sovel.com.br" style="color:#00eaff;">dac@sovel.com.br</a><br>
+    📍 Manaus - AM, Brasil
+  </p>
 
-## 🛠️ Tecnologias e Recursos
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-- Sistema de controle de ferramentais via **QR Code**
-- Gestão de ciclo de vida das ferramentas  
-- Banco de dados interno e rastreabilidade completa  
-- Interface amigável e otimizada para eficiência operacional  
-- Relatórios e histórico de movimentações  
+  <p style="font-style:italic; color:#66d9ff;">
+    “Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”
+  </p>
 
----
+  <p style="color:#00eaff;"><b>— Equipe D.A.C | Grupo Sovel da Amazônia</b></p>
 
-## 💬 Contato e Sugestões
+  <sub style="color:#777;">© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria</sub>
 
-Quer contribuir com ideias ou relatar melhorias?  
-Envie suas sugestões diretamente para o **Departamento de Amostras e Clicheria**
-
-📧 **dac@sovel.com.br**
-
----
-
-<p align="center">
-  <i>“Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”</i><br>
-  <b>— Equipe D.A.C | Grupo Sovel da Amazônia</b>
-</p>
-
----
-
-<p align="center">
-  <sub>© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria</sub>
-</p>
+</div>
