@@ -244,7 +244,7 @@
   <!-- Tecnologias -->
   <h2 style="color:#00bfff;">🛠️ Tecnologias e Recursos</h2>
 
-  <div style="background-color:#0d1b2a; color:#00eaff; padding:20px; border-radius:10px; text-align:left; max-width:600px; margin:0 auto; white-space:pre-wrap;">
+  <div style="background-color:#0a0f1a; color:#00eaff; padding:20px; border-radius:10px; text-align:left; max-width:600px; margin:0 auto; white-space:pre-wrap;">
 - Interface responsiva (HTML5/CSS3)
 - Controle de ferramentais via QR Code
 - Painel interativo e intuitivo
