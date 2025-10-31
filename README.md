@@ -24,6 +24,8 @@ Estamos **de braços abertos** para receber **sugestões e recomendações de me
 | **Elienson Duarte** | Assistente |
 | **Gustavo Albuquerque** | Assistente |
 | **Vanessa Nascimento** | Assistente |
+|------|---------|
+
 
 ---
 
