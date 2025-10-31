@@ -22,9 +22,12 @@
     <img src="https://img.shields.io/badge/Tecnologia-QR--Code%20%7C%20Gestão--Digital-0099ff?style=for-the-badge&logo=qrcode&logoColor=white" alt="Tecnologia">
   </p>
 
+  <!-- Botão Painel Interativo com fundo levemente mais claro -->
   <p align="center">
-    <a href="docs/index.html" target="_blank">
-      <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0d1b2a?style=for-the-badge&logo=hyperledger&logoColor=00eaff" alt="Botão de Registro">
+    <a href="docs/index.html" target="_blank" style="text-decoration:none;">
+      <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0d1b2a?style=for-the-badge&logo=hyperledger&logoColor=00eaff" 
+           alt="Botão de Registro" 
+           style="background-color:#0d1b2a; border-radius:10px; box-shadow:0 0 15px #00eaff;"/>
     </a>
   </p>
 
@@ -50,33 +53,45 @@
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff; margin: 0 0 10px 0;">👥 Equipe D.A.C</h2>
-    <table style="background-color:#0a0f1a; color:#ffffff; font-family:'Segoe UI',sans-serif; border-collapse: collapse; margin: 0 auto;">
-  <tr>
-    <th style="padding:15px; text-align:center;">Samueldson Ferreira</th>
-    <th style="padding:15px; text-align:center;">Supervisor</th>
-  </tr>
-  <tr>
-    <td style="padding:10px; text-align:center;">Rafaelly Azevedo</td>
-    <td style="padding:10px; text-align:center;">Analista Administrativo</td>
-  </tr>
-  <tr>
-    <td style="padding:10px; text-align:center;">Elienson Duarte</td>
-    <td style="padding:10px; text-align:center;">Assistente</td>
-  </tr>
-  <tr>
-    <td style="padding:10px; text-align:center;">Gustavo Albuquerque</td>
-    <td style="padding:10px; text-align:center;">Assistente</td>
-    </tr>
-      <tr>
-    <td style="padding:10px; text-align:center;">Vanessa Nascimento</td>
-    <td style="padding:10px; text-align:center;">Assistente</td>
-  </tr>
-</table>
+  <!-- Equipe D.A.C estilo Neon Tech -->
+  <h2 style="color:#00bfff; text-shadow:0 0 20px #00eaff; text-align:center; margin-bottom:30px;">👥 Equipe D.A.C</h2>
 
-</div> <!-- fecha o div align="center" da equipe -->
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:30px;">
 
+    <!-- Supervisor -->
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
+                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+      <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">⚡ Samueldson Ferreira</h3>
+      <p style="margin:0;">🛡️ Supervisor</p>
+    </div>
+
+    <!-- Analista Administrativo -->
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
+                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+      <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">📊 Rafaelly Azevedo</h3>
+      <p style="margin:0;">💼 Analista Administrativo</p>
+    </div>
+
+    <!-- Assistentes -->
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
+                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+      <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Elienson Duarte</h3>
+      <p style="margin:0;">🛠️ Assistente</p>
+    </div>
+
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
+                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+      <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Gustavo Albuquerque</h3>
+      <p style="margin:0;">🛠️ Assistente</p>
+    </div>
+
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
+                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+      <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Vanessa Nascimento</h3>
+      <p style="margin:0;">🛠️ Assistente</p>
+    </div>
+
+  </div>
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
