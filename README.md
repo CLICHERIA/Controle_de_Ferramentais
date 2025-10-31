@@ -50,30 +50,30 @@
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-  <h2 style="color:#00bfff;">👥 Equipe D.A.C</h2>
+  <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff; text-align:center;">👥 Equipe D.A.C</h2>
 
-  <table style="width:70%; border-collapse:collapse; text-align:center; margin:auto; background-color:#111d2b; box-shadow:0 0 15px #00eaff44; border-radius:8px;">
-    <tr style="background-color:#007acc;">
-      <th style="padding:12px; color:#ffffff; font-size:16px; text-shadow:0 0 5px #00eaff;">Nome</th>
-      <th style="padding:12px; color:#ffffff; font-size:16px; text-shadow:0 0 5px #00eaff;">Cargo</th>
+  <table style="width:70%; margin:20px auto; text-align:center; border-collapse:collapse;">
+    <tr>
+      <th style="padding:12px; color:#00ffff; font-size:16px;">Nome</th>
+      <th style="padding:12px; color:#00ffff; font-size:16px;">Cargo</th>
     </tr>
-    <tr style="color:#00ffff; font-size:15px; background-color:#0f1a2a;">
+    <tr style="color:#a9e5ff; font-size:15px;">
       <td>Samueldson Ferreira</td>
       <td>Supervisor</td>
     </tr>
-    <tr style="color:#00ffff; font-size:15px; background-color:#111d2b;">
+    <tr style="color:#a9e5ff; font-size:15px;">
       <td>Rafaelly Azevedo</td>
       <td>Analista</td>
     </tr>
-    <tr style="color:#00ffff; font-size:15px; background-color:#0f1a2a;">
+    <tr style="color:#a9e5ff; font-size:15px;">
       <td>Elienson Duarte</td>
       <td>Assistente</td>
     </tr>
-    <tr style="color:#00ffff; font-size:15px; background-color:#111d2b;">
+    <tr style="color:#a9e5ff; font-size:15px;">
       <td>Gustavo Albuquerque</td>
       <td>Assistente</td>
     </tr>
-    <tr style="color:#00ffff; font-size:15px; background-color:#0f1a2a;">
+    <tr style="color:#a9e5ff; font-size:15px;">
       <td>Vanessa Nascimento</td>
       <td>Assistente</td>
     </tr>
