@@ -2,6 +2,23 @@
 <!-- README - GRUPO SOVEL -->
 <!-- ====================== -->
 
+<style>
+  /* Fundo do site inteiro */
+  body {
+    background-color: #0a0f1a; /* mesmo tom do container principal */
+    margin: 0; /* remove margens padrão do navegador */
+    padding: 0; /* remove padding padrão */
+    color: #ffffff; /* texto padrão branco */
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  /* Remove a barra de rolagem extra ou bordas do container */
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
 <div align="center" style="background-color:#0a0f1a; color:#ffffff; font-family:'Segoe UI',sans-serif; padding:40px; border-radius:20px; box-shadow:0 0 30px #00eaff55;">
 
   <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="200" style="filter: drop-shadow(0 0 8px #00eaff);" />
