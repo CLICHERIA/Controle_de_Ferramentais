@@ -244,22 +244,14 @@
   <!-- Tecnologias -->
   <h2 style="color:#00bfff;">🛠️ Tecnologias e Recursos</h2>
 
-  <div class="pre-centralizado" style="
-    background-color:#0d1b2a;
-    color:#00eaff;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 20px #00eaff22;
-    display:inline-block;
-    text-align:left;
-    white-space: pre-wrap;
-">
+  <div style="background-color:#0d1b2a; color:#00eaff; padding:20px; border-radius:10px; text-align:left; max-width:600px; margin:0 auto; white-space:pre-wrap;">
 - Interface responsiva (HTML5/CSS3)
 - Controle de ferramentais via QR Code
 - Painel interativo e intuitivo
 - Relatórios e histórico de movimentações
 - Base pronta para integração com banco de dados interno
 </div>
+
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
