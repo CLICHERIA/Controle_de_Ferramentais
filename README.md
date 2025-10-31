@@ -7,7 +7,7 @@ Cada ferramenta é identificada por um **QR Code**, que armazena **informações
 
 ✨ **Nosso propósito** é tornar a operação mais **eficiente, dinâmica e tecnológica**, garantindo mais agilidade e confiabilidade nos processos.
 
-� Estamos **de braços abertos** para receber **sugestões e recomendações de melhorias** — sua colaboração é fundamental para evoluirmos juntos.
+Estamos **de braços abertos** para receber **sugestões e recomendações de melhorias** — sua colaboração é fundamental para evoluirmos juntos.
 
 ---
 
