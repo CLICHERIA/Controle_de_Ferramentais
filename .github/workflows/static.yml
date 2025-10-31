@@ -35,8 +35,8 @@ jobs:
       - name: 🔧 Preparar arquivos para publicação
         run: |
           mkdir -p docs
-          cp -r index.html README.md logosovel1337.png docs/
-          echo "📂 Arquivos copiados para o diretório docs"
+cp -r docs/* README.md docs/
+ "📂 Arquivos copiados para o diretório docs"
 
       - name: 🚀 Publicar no GitHub Pages
         uses: actions/upload-pages-artifact@v3
@@ -44,4 +44,6 @@ jobs:
           path: docs
 
       - name: 🌐 Deploy para o GitHub Pages
-        id: d
+        id: 
+
+        
