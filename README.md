@@ -23,10 +23,11 @@
   </p>
 
   <p>
-    <a href="index.html" target="_blank" style="text-decoration:none;">
-      <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0a192f?style=for-the-badge&logo=hyperledger&logoColor=00eaff" alt="Botão de Registro" style="filter: drop-shadow(0 0 10px #00eaff);">
-    </a>
-  </p>
+    <p align="center">
+  <a href="docs/index.html" target="_blank" style="text-decoration:none;">
+    <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0d1b2a?style=for-the-badge&logo=hyperledger&logoColor=00eaff" alt="Botão de Registro">
+  </a>
+</p>
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
