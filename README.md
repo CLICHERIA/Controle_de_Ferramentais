@@ -5,7 +5,7 @@
 <!-- Estilo global -->
 <style>
   body {
-    background-color: #0a0f1a; 
+    background-color: #0a0f1a; /* fundo preto site inteiro */
     margin: 0;
     padding: 0;
     color: #ffffff;
@@ -36,6 +36,95 @@
     margin: 0 auto;
     background-color: transparent;
     vertical-align: middle;
+  }
+
+  /* Neon Button */
+  .neon-button {
+    display: inline-block;
+    padding: 15px 35px;
+    color: #00eaff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 10px;
+    background-color: #0d1b2a;
+    box-shadow:
+      0 0 5px #00eaff,
+      0 0 10px #00eaff,
+      0 0 20px #00eaff,
+      0 0 40px #00eaff55;
+    transition: 0.3s ease-in-out;
+    animation: neonPulse 1.5s infinite alternate;
+  }
+
+  .neon-button:hover {
+    color: #00ffff;
+    box-shadow:
+      0 0 10px #00eaff,
+      0 0 20px #00eaff,
+      0 0 30px #00eaff,
+      0 0 50px #00eaff77;
+  }
+
+  @keyframes neonPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 5px #00eaff,
+        0 0 10px #00eaff,
+        0 0 20px #00eaff;
+    }
+    50% {
+      box-shadow:
+        0 0 15px #00eaff,
+        0 0 30px #00eaff,
+        0 0 45px #00eaff77;
+    }
+  }
+
+  /* Neon animado para os cards da equipe */
+  .neon-card {
+    background: #0a0f1a;
+    color: #ffffff;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 200px;
+    box-shadow:
+      0 0 10px #00eaff,
+      0 0 20px #00eaff55;
+    animation: neonCardPulse 2s infinite alternate;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .neon-card:hover {
+    transform: scale(1.05);
+    box-shadow:
+      0 0 20px #00eaff,
+      0 0 40px #00eaff77,
+      0 0 60px #00eaff99;
+  }
+
+  @keyframes neonCardPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 5px #00eaff,
+        0 0 15px #00eaff22;
+    }
+    50% {
+      box-shadow:
+        0 0 15px #00eaff,
+        0 0 30px #00eaff44;
+    }
+  }
+
+  .neon-card h3 {
+    margin: 0 0 10px 0;
+    color: #00eaff;
+    text-shadow: 0 0 8px #00eaff;
+  }
+
+  .neon-card p {
+    margin: 0;
   }
 </style>
 
@@ -68,12 +157,10 @@
     <img src="https://img.shields.io/badge/Tecnologia-QR--Code%20%7C%20Gestão--Digital-0099ff?style=for-the-badge&logo=qrcode&logoColor=white" alt="Tecnologia">
   </p>
 
-  <!-- Botão Painel Interativo -->
+  <!-- Botão Painel Interativo neon animado -->
   <p align="center" style="margin-top:20px;">
-    <a href="docs/index.html" target="_blank">
-      <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0d1b2a?style=for-the-badge&logo=hyperledger&logoColor=00eaff" 
-           alt="Botão de Registro" 
-           style="background-color:#0d1b2a; border-radius:10px; box-shadow:0 0 15px #00eaff;"/>
+    <a href="docs/index.html" target="_blank" class="neon-button">
+      Acessar Painel Interativo
     </a>
   </p>
 
@@ -113,32 +200,25 @@
 <h2 style="color:#00bfff; text-shadow:0 0 20px #00eaff; text-align:center; margin-bottom:30px;">👥 Equipe D.A.C</h2>
 
 <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:30px;">
-  <!-- Supervisor -->
-  <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
-    <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">⚡ Samueldson Ferreira</h3>
-    <p style="margin:0;">🛡️ Supervisor</p>
+  <div class="neon-card">
+    <h3>⚡ Samueldson Ferreira</h3>
+    <p>🛡️ Supervisor</p>
   </div>
-
-  <!-- Analista Administrativo -->
-  <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
-    <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">📊 Rafaelly Azevedo</h3>
-    <p style="margin:0;">💼 Analista Administrativo</p>
+  <div class="neon-card">
+    <h3>📊 Rafaelly Azevedo</h3>
+    <p>💼 Analista Administrativo</p>
   </div>
-
-  <!-- Assistentes -->
-  <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
-    <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Elienson Duarte</h3>
-    <p style="margin:0;">🛠️ Assistente</p>
+  <div class="neon-card">
+    <h3>🔧 Elienson Duarte</h3>
+    <p>🛠️ Assistente</p>
   </div>
-
-  <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
-    <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Gustavo Albuquerque</h3>
-    <p style="margin:0;">🛠️ Assistente</p>
+  <div class="neon-card">
+    <h3>🔧 Gustavo Albuquerque</h3>
+    <p>🛠️ Assistente</p>
   </div>
-
-  <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
-    <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Vanessa Nascimento</h3>
-    <p style="margin:0;">🛠️ Assistente</p>
+  <div class="neon-card">
+    <h3>🔧 Vanessa Nascimento</h3>
+    <p>🛠️ Assistente</p>
   </div>
 </div>
 
