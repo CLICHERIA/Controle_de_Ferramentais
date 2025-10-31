@@ -1,13 +1,37 @@
-# 👋 Boas-Vindas!
+<!-- ====================== -->
+<!-- READ-ME    GRUPO SOVEL -->
+<!-- ====================== -->
+
+<p align="center">
+  <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="180" />
+</p>
+
+<h1 align="center">🎉 Boas-Vindas ao Sistema de Gestão de Ferramentais 🎉</h1>
+
+<p align="center">
+  <b>Departamento de Amostras e Clicheria</b><br>
+  <b>Grupo Sovel da Amazônia</b>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/status-em%20uso-brightgreen" alt="Status"></a>
+  <a href="#"><img src="https://img.shields.io/badge/versão-1.0.0-blue" alt="Versão"></a>
+  <a href="#"><img src="https://img.shields.io/badge/última%20atualização-outubro%2F2025-lightgrey" alt="Última atualização"></a>
+  <a href="#"><img src="https://img.shields.io/badge/tecnologia-QR--Code%20%7C%20Gestão--Interna-orange" alt="Tecnologia"></a>
+</p>
+
+---
+
+## 💡 Sobre o Projeto
 
 Com o objetivo de **automatizar o controle de ferramentais** pelo **Departamento de Amostras e Clicheria**, é com grande prazer que os convidamos ao nosso **sistema de gestão de ferramentais**.
 
 Este sistema foi desenvolvido para **gerenciar todo o ciclo de vida das ferramentas**, desde a **recepção** até o momento em que se faz necessária a **substituição**.  
-Cada ferramenta é identificada por um **QR Code**, que armazena **informações essenciais** para o controle e rastreabilidade.
+Cada ferramenta é identificada por um **QR Code**, que armazena **informações vitais** para o controle e rastreabilidade.
 
-✨ **Nosso propósito** é tornar a operação mais **eficiente, dinâmica e tecnológica**, garantindo mais agilidade e confiabilidade nos processos.
+✨ **Nosso propósito** é tornar a operação mais **eficiente, dinâmica e tecnológica**, promovendo agilidade e precisão nos processos diários.
 
-Estamos **de braços abertos** para receber **sugestões e recomendações de melhorias** — sua colaboração é fundamental para evoluirmos juntos.
+Estamos **de braços abertos** para receber **recomendações e sugestões de melhorias** — sua participação é essencial para a evolução contínua deste projeto.
 
 ---
 
@@ -16,18 +40,51 @@ Estamos **de braços abertos** para receber **sugestões e recomendações de me
 
 ---
 
-### 👥 Equipe D.A.C
-| Nome | Função |
-|------|---------|
+## 👥 Equipe D.A.C
+
+| Nome | Cargo |
+|------|--------|
 | **SamueIdson Ferreira** | Supervisor |
 | **Rafaelly Azevedo** | Analista |
 | **Elienson Duarte** | Assistente |
 | **Gustavo Albuquerque** | Assistente |
 | **Vanessa Nascimento** | Assistente |
-|------|---------|
-
 
 ---
 
-> _“Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”_  
-> **– Equipe D.A.C, Grupo Sovel da Amazônia**
+## 🧭 Valores do Projeto
+
+> **Inovação**, **eficiência** e **colaboração** são os pilares que sustentam este sistema.  
+> Acreditamos que a tecnologia é uma aliada essencial para o aprimoramento dos nossos processos internos.
+
+---
+
+## 🛠️ Tecnologias e Recursos
+
+- Sistema de controle de ferramentais via **QR Code**
+- Gestão de ciclo de vida das ferramentas  
+- Banco de dados interno e rastreabilidade completa  
+- Interface amigável e otimizada para eficiência operacional  
+- Relatórios e histórico de movimentações  
+
+---
+
+## 💬 Contato e Sugestões
+
+Quer contribuir com ideias ou relatar melhorias?  
+Envie suas sugestões diretamente para o **Departamento de Amostras e Clicheria** ou abra uma *issue* neste repositório.
+
+📧 **dac@sovel.com.br** *(exemplo de e-mail institucional — substitua se necessário)*
+
+---
+
+<p align="center">
+  <i>“Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”</i><br>
+  <b>— Equipe D.A.C | Grupo Sovel da Amazônia</b>
+</p>
+
+---
+
+<p align="center">
+  <sub>© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria</sub>
+</p>
