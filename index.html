@@ -1,90 +1,182 @@
-<!-- ====================== -->
-<!-- READ-ME    GRUPO SOVEL -->
-<!-- ====================== -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Registro de Ferramentais</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #0056b3;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #003d82;
+        }
+        .etiqueta {
+            border: 2px solid #0056b3;
+            padding: 20px;
+            margin-top: 20px;
+            background: #f9f9f9;
+            display: none;
+            text-align: center;
+        }
+        .etiqueta img {
+            max-width: 150px;
+            margin: 10px 0;
+        }
+        .print-btn {
+            margin-top: 10px;
+        }
+        .lista-itens {
+            margin-top: 20px;
+        }
+        .item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Registro de Ferramentais</h1>
+        <form id="registroForm">
+            <label for="tipo">Tipo de Ferramental:</label>
+            <select id="tipo" required>
+                <option value="">Selecione</option>
+                <option value="Faca">Faca</option>
+                <option value="Clichê">Clichê</option>
+            </select>
+            
+            <label for="data">Data de Registro:</label>
+            <input type="date" id="data" required readonly>
+            
+            <label for="localizacao">Localização:</label>
+            <input type="text" id="localizacao" placeholder="Ex: Estoque A, Prateleira 3" required>
+            
+            <button type="submit">Registrar Item</button>
+        </form>
+        
+        <div class="etiqueta" id="etiqueta">
+            <h2>Etiqueta do Item</h2>
+            <p><strong>Tipo:</strong> <span id="etiquetaTipo"></span></p>
+            <p><strong>Data:</strong> <span id="etiquetaData"></span></p>
+            <p><strong>Localização:</strong> <span id="etiquetaLocal"></span></p>
+            <img id="qrCode" alt="QR Code">
+            <button class="print-btn" onclick="window.print()">Imprimir Etiqueta</button>
+        </div>
+        
+        <div class="lista-itens">
+            <h2>Itens Registrados</h2>
+            <div id="lista"></div>
+        </div>
+    </div>
 
-<p align="center">
-  <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="180" />
-</p>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script>
+        // Preencher data automaticamente
+        document.getElementById('data').value = new Date().toISOString().split('T')[0];
 
-<h1 align="center">🎉 Boas-Vindas ao Sistema de Gestão de Ferramentais 🎉</h1>
+        // Função para gerar QR Code
+        function gerarQR(dados) {
+            const qrContainer = document.getElementById('qrCode');
+            qrContainer.innerHTML = ''; // Limpar anterior
+            QRCode.toCanvas(qrContainer, JSON.stringify(dados), { width: 150 }, function (error) {
+                if (error) console.error(error);
+            });
+        }
 
-<p align="center">
-  <b>Departamento de Amostras e Clicheria</b><br>
-  <b>Grupo Sovel da Amazônia</b>
-</p>
+        // Formulário de submissão
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const tipo = document.getElementById('tipo').value;
+            const data = document.getElementById('data').value;
+            const localizacao = document.getElementById('localizacao').value;
+            
+            const item = { tipo, data, localizacao };
+            
+            // Salvar no localStorage
+            let itens = JSON.parse(localStorage.getItem('itens')) || [];
+            itens.push(item);
+            localStorage.setItem('itens', JSON.stringify(itens));
+            
+            // Atualizar etiqueta
+            document.getElementById('etiquetaTipo').textContent = tipo;
+            document.getElementById('etiquetaData').textContent = data;
+            document.getElementById('etiquetaLocal').textContent = localizacao;
+            gerarQR(item);
+            document.getElementById('etiqueta').style.display = 'block';
+            
+            // Limpar formulário
+            document.getElementById('registroForm').reset();
+            document.getElementById('data').value = new Date().toISOString().split('T')[0];
+            
+            // Atualizar lista
+            atualizarLista();
+        });
 
-<p align="center">
-  <a href="#"><img src="https://img.shields.io/badge/status-em%20uso-brightgreen" alt="Status"></a>
-  <a href="#"><img src="https://img.shields.io/badge/versão-1.0.0-blue" alt="Versão"></a>
-  <a href="#"><img src="https://img.shields.io/badge/última%20atualização-outubro%2F2025-lightgrey" alt="Última atualização"></a>
-  <a href="#"><img src="https://img.shields.io/badge/tecnologia-QR--Code%20%7C%20Gestão--Interna-orange" alt="Tecnologia"></a>
-</p>
+        // Função para atualizar lista de itens
+        function atualizarLista() {
+            const lista = document.getElementById('lista');
+            lista.innerHTML = '';
+            const itens = JSON.parse(localStorage.getItem('itens')) || [];
+            itens.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <p><strong>Tipo:</strong> ${item.tipo} | <strong>Data:</strong> ${item.data} | <strong>Localização:</strong> ${item.localizacao}</p>
+                    <button onclick="removerItem(${index})">Remover</button>
+                `;
+                lista.appendChild(div);
+            });
+        }
 
----
+        // Função para remover item
+        function removerItem(index) {
+            let itens = JSON.parse(localStorage.getItem('itens')) || [];
+            itens.splice(index, 1);
+            localStorage.setItem('itens', JSON.stringify(itens));
+            atualizarLista();
+        }
 
-## 💡 Sobre o Projeto
-
-Com o objetivo de **automatizar o controle de ferramentais** pelo **Departamento de Amostras e Clicheria**, é com grande prazer que os convidamos ao nosso **sistema de gestão de ferramentais**.
-
-Este sistema foi desenvolvido para **gerenciar todo o ciclo de vida das ferramentas**, desde a **recepção** até o momento em que se faz necessária a **substituição**.  
-Cada ferramenta é identificada por um **QR Code**, que armazena **informações vitais** para o controle e rastreabilidade.
-
-✨ **Nosso propósito** é tornar a operação mais **eficiente, dinâmica e tecnológica**, promovendo agilidade e precisão nos processos diários.
-
-Estamos **de braços abertos** para receber **recomendações e sugestões de melhorias** — sua participação é essencial para a evolução contínua deste projeto.
-
----
-
-## 🏢 Grupo Sovel da Amazônia  
-### Departamento de Amostras e Clicheria  
-
----
-
-## 👥 Equipe D.A.C
-
-| Nome | Cargo |
-|------|--------|
-| **SamueIdson Ferreira** | Supervisor |
-| **Rafaelly Azevedo** | Analista |
-| **Elienson Duarte** | Assistente |
-| **Gustavo Albuquerque** | Assistente |
-| **Vanessa Nascimento** | Assistente |
-
----
-
-## 🧭 Valores do Projeto
-
-> **Inovação**, **eficiência** e **colaboração** são os pilares que sustentam este sistema.  
-> Acreditamos que a tecnologia é uma aliada essencial para o aprimoramento dos nossos processos internos.
-
----
-
-## 🛠️ Tecnologias e Recursos
-
-- Sistema de controle de ferramentais via **QR Code**
-- Gestão de ciclo de vida das ferramentas  
-- Banco de dados interno e rastreabilidade completa  
-- Interface amigável e otimizada para eficiência operacional  
-- Relatórios e histórico de movimentações  
-
----
-
-## 💬 Contato e Sugestões
-
-Quer contribuir com ideias ou relatar melhorias?  
-Envie suas sugestões diretamente para o **Departamento de Amostras e Clicheria**
-
-📧 **dac@sovel.com.br**
-
----
-
-<p align="center">
-  <i>“Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”</i><br>
-  <b>— Equipe D.A.C | Grupo Sovel da Amazônia</b>
-</p>
-
----
-
-<p align="center">
-  <sub>© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria</sub>
-</p>
+        // Carregar lista ao iniciar
+        atualizarLista();
+    </script>
+</body>
+</html>
