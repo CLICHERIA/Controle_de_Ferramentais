@@ -1,128 +1,328 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Sistema de Gestão de Ferramentais - Grupo Sovel da Amazônia" />
-  <title>Gestão de Ferramentais | Grupo Sovel da Amazônia</title>
-  <style>
-    /* --- Estilos Gerais --- */
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at top, #0a0f1a 0%, #020409 100%);
-      color: #e0e0e0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gestão de Ferramentais - Grupo Sovel</title>
+<style>
+  /* Reset básico */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-      animation: fadeIn 1.5s ease;
-    }
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0d1b2a;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
 
-    header h1 {
-      font-size: 2.2rem;
-      color: #00aaff;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px #00aaff;
-    }
+  /* Cabeçalho */
+  header {
+    text-align: center;
+    padding: 30px 10px;
+  }
 
-    header p {
-      color: #aaa;
-      font-size: 1rem;
-      margin-top: 10px;
-    }
+  header img {
+    width: 180px;
+    margin-bottom: 20px;
+  }
 
-    /* --- Container de Botões --- */
-    .menu {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      animation: fadeIn 2s ease;
-    }
+  header h1 {
+    font-size: 2em;
+    color: #00eaff;
+    margin-bottom: 10px;
+  }
 
-    .menu button {
-      background: #0b2239;
-      color: #00c3ff;
-      border: 2px solid #00c3ff;
-      border-radius: 10px;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(0, 195, 255, 0.2);
-    }
+  header p {
+    font-size: 1.1em;
+    color: #a0c4ff;
+  }
 
-    .menu button:hover {
-      background: #00c3ff;
-      color: #0a0f1a;
-      box-shadow: 0 0 25px #00c3ff;
-      transform: scale(1.05);
-    }
+  /* Botões do menu */
+  .menu {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 30px 0;
+  }
 
-    /* --- Rodapé --- */
-    footer {
-      position: absolute;
-      bottom: 15px;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-    }
+  .menu button {
+    background-color: #0056b3;
+    color: #fff;
+    border: none;
+    padding: 15px 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
 
-    footer span {
-      color: #00aaff;
-    }
+  .menu button:hover {
+    background-color: #00eaff;
+    color: #0d1b2a;
+    transform: scale(1.05);
+  }
 
-    /* --- Animações --- */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+  /* Container formulário / painel */
+  .container {
+    max-width: 900px;
+    margin: 0 auto 40px auto;
+    padding: 20px;
+    background-color: #112240;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  }
 
-    /* --- Responsividade --- */
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.6rem;
-      }
-      .menu button {
-        width: 80%;
-      }
-    }
-  </style>
+  /* Formulário */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  form label {
+    font-weight: bold;
+    color: #00eaff;
+  }
+
+  form input, form select, form button {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1em;
+  }
+
+  form input, form select {
+    width: 100%;
+  }
+
+  form button {
+    background-color: #00eaff;
+    color: #0d1b2a;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  form button:hover {
+    background-color: #0056b3;
+    color: #fff;
+  }
+
+  /* Tabela equipe */
+  .team-table-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+  }
+
+  .team-table {
+    border-collapse: collapse;
+    width: 80%;
+    max-width: 600px;
+    font-family: 'Arial', sans-serif;
+    background-color: #0d1b2a;
+    color: #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,255,255,0.3);
+  }
+
+  .team-table th {
+    background-color: #0056b3;
+    color: #ffffff;
+    padding: 12px;
+    text-align: center;
+    font-size: 1.1em;
+  }
+
+  .team-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #003d82;
+    font-size: 1em;
+  }
+
+  .team-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .supervisor {
+    font-weight: bold;
+    color: #00eaff;
+  }
+
+  /* QR Code e etiqueta */
+  .etiqueta {
+    border: 2px solid #00eaff;
+    padding: 20px;
+    margin-top: 20px;
+    background: #112240;
+    text-align: center;
+    display: none;
+  }
+
+  .etiqueta img {
+    max-width: 150px;
+    margin: 10px 0;
+  }
+
+  .print-btn {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    background-color: #00eaff;
+    color: #0d1b2a;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .print-btn:hover {
+    background-color: #0056b3;
+    color: #fff;
+  }
+
+  /* Itens registrados */
+  .lista-itens {
+    margin-top: 20px;
+  }
+
+  .item {
+    border-bottom: 1px solid #003d82;
+    padding: 10px 0;
+  }
+
+  /* Responsividade */
+  @media(max-width:600px){
+    .menu { flex-direction: column; }
+  }
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>🔧 Sistema de Gestão de Ferramentais</h1>
-    <p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
-  </header>
+<header>
+  <img src="logosovel1337.png" alt="Logo Grupo Sovel">
+  <h1>Sistema de Gestão de Ferramentais</h1>
+  <p>Departamento de Amostras e Clicheria | Grupo Sovel da Amazônia</p>
+</header>
 
-  <div class="menu">
-    <button onclick="alert('Página de Registro em desenvolvimento')">📝 Registrar Ferramental</button>
-    <button onclick="alert('Consulta em desenvolvimento')">🔍 Consultar Ferramentais</button>
-    <button onclick="alert('Gerador de QR Code em breve')">📱 Gerar QR Code</button>
-    <button onclick="alert('Área administrativa em construção')">⚙️ Administração</button>
+<!-- Menu Inicial -->
+<div class="menu">
+  <button onclick="document.getElementById('registroForm').scrollIntoView({behavior:'smooth'});">Registrar Ferramental</button>
+  <button onclick="alert('Funcionalidade de consulta em desenvolvimento');">Consultar QR Code</button>
+  <button onclick="alert('Funcionalidade de relatórios em desenvolvimento');">Relatórios</button>
+</div>
+
+<div class="container">
+
+  <!-- Formulário de registro -->
+  <form id="registroForm">
+    <label for="tipo">Tipo de Ferramental:</label>
+    <select id="tipo" required>
+      <option value="">Selecione</option>
+      <option value="Faca">Faca</option>
+      <option value="Clichê">Clichê</option>
+    </select>
+
+    <label for="data">Data de Registro:</label>
+    <input type="date" id="data" required readonly>
+
+    <label for="localizacao">Localização:</label>
+    <input type="text" id="localizacao" placeholder="Ex: Estoque A, Prateleira 3" required>
+
+    <button type="submit">Registrar Item</button>
+  </form>
+
+  <!-- Etiqueta QR Code -->
+  <div class="etiqueta" id="etiqueta">
+    <h2>Etiqueta do Item</h2>
+    <p><strong>Tipo:</strong> <span id="etiquetaTipo"></span></p>
+    <p><strong>Data:</strong> <span id="etiquetaData"></span></p>
+    <p><strong>Localização:</strong> <span id="etiquetaLocal"></span></p>
+    <canvas id="qrCode"></canvas>
+    <button class="print-btn" onclick="window.print()">Imprimir Etiqueta</button>
   </div>
 
-  <footer>
-    <p><span>Equipe D.A.C</span> | Samueldson Ferreira - Supervisor</p>
-  </footer>
+  <!-- Lista de itens -->
+  <div class="lista-itens">
+    <h2>Itens Registrados</h2>
+    <div id="lista"></div>
+  </div>
 
+  <!-- Tabela Equipe D.A.C -->
+  <div class="team-table-container">
+    <table class="team-table">
+      <thead>
+        <tr><th>Nome</th><th>Cargo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="supervisor">Samueldson Ferreira</td><td class="supervisor">Supervisor</td></tr>
+        <tr><td>Rafaelly Azevedo</td><td>Analista</td></tr>
+        <tr><td>Elienson Duarte</td><td>Assistente</td></tr>
+        <tr><td>Gustavo Albuquerque</td><td>Assistente</td></tr>
+        <tr><td>Vanessa Nascimento</td><td>Assistente</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Scripts QR Code -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+<script>
+document.getElementById('data').value = new Date().toISOString().split('T')[0];
+
+function gerarQR(dados){
+  const qrContainer = document.getElementById('qrCode');
+  QRCode.toCanvas(qrContainer, JSON.stringify(dados), { width: 150 }, function(error){
+    if(error) console.error(error);
+  });
+}
+
+document.getElementById('registroForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const tipo = document.getElementById('tipo').value;
+  const data = document.getElementById('data').value;
+  const localizacao = document.getElementById('localizacao').value;
+
+  const item = { tipo, data, localizacao };
+  let itens = JSON.parse(localStorage.getItem('itens')) || [];
+  itens.push(item);
+  localStorage.setItem('itens', JSON.stringify(itens));
+
+  document.getElementById('etiquetaTipo').textContent = tipo;
+  document.getElementById('etiquetaData').textContent = data;
+  document.getElementById('etiquetaLocal').textContent = localizacao;
+  gerarQR(item);
+  document.getElementById('etiqueta').style.display = 'block';
+
+  document.getElementById('registroForm').reset();
+  document.getElementById('data').value = new Date().toISOString().split('T')[0];
+  atualizarLista();
+});
+
+function atualizarLista(){
+  const lista = document.getElementById('lista');
+  lista.innerHTML = '';
+  const itens = JSON.parse(localStorage.getItem('itens')) || [];
+  itens.forEach((item,index)=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<p><strong>Tipo:</strong> ${item.tipo} | <strong>Data:</strong> ${item.data} | <strong>Localização:</strong> ${item.localizacao}</p>
+                     <button onclick="removerItem(${index})">Remover</button>`;
+    lista.appendChild(div);
+  });
+}
+
+function removerItem(index){
+  let itens = JSON.parse(localStorage.getItem('itens')) || [];
+  itens.splice(index,1);
+  localStorage.setItem('itens', JSON.stringify(itens));
+  atualizarLista();
+}
+
+atualizarLista();
+</script>
 </body>
 </html>
