@@ -5,7 +5,7 @@
 <!-- Estilo global -->
 <style>
   body {
-    background-color: #0a0f1a; /* fundo preto site inteiro */
+    background-color: #0a0f1a; 
     margin: 0;
     padding: 0;
     color: #ffffff;
@@ -21,6 +21,22 @@
     color: #00eaff;
     text-decoration: none;
   }
+
+  /* Container da logo para glow seguro */
+  .logo-container {
+    display: inline-block;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    filter: drop-shadow(0 0 8px #00eaff); /* brilho neon */
+  }
+
+  img.logo {
+    display: block;
+    margin: 0 auto;
+    background-color: transparent;
+    vertical-align: middle;
+  }
 </style>
 
 <!-- ====================== -->
@@ -28,9 +44,10 @@
 <!-- ====================== -->
 <div style="background-color:#0a0f1a; padding:40px; border-radius:20px; box-shadow:0 0 30px #00eaff55; text-align:center;">
 
-  <!-- Logo centralizada sem fundo branco -->
-  <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="200" 
-       style="display:block; margin:0 auto; filter: drop-shadow(0 0 8px #00eaff); background-color:transparent;" />
+  <!-- Logo centralizada em container transparente com glow -->
+  <div class="logo-container">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="200" class="logo" />
+  </div>
 
   <!-- Título neon -->
   <h1 style="color:#00eaff; text-shadow:0 0 20px #00eaff; margin-top:20px;">
