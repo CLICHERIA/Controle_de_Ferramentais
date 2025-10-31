@@ -2,7 +2,7 @@
 <!-- README - GRUPO SOVEL -->
 <!-- ====================== -->
 
-<div align="center" style="background-color:#0a0f1a; color:#e0f7ff; font-family:'Segoe UI',sans-serif; padding:40px; border-radius:20px; box-shadow:0 0 30px #00eaff55;">
+<div align="center" style="background-color:#0a0f1a; color:#ffffff; font-family:'Segoe UI',sans-serif; padding:40px; border-radius:20px; box-shadow:0 0 30px #00eaff55;">
 
   <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="200" style="filter: drop-shadow(0 0 8px #00eaff);" />
 
@@ -22,24 +22,22 @@
     <img src="https://img.shields.io/badge/Tecnologia-QR--Code%20%7C%20Gestão--Digital-0099ff?style=for-the-badge&logo=qrcode&logoColor=white" alt="Tecnologia">
   </p>
 
-  <p>
-    <p align="center">
-  <a href="docs/index.html" target="_blank">
-  <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0d1b2a?style=for-the-badge&logo=hyperledger&logoColor=00eaff" alt="Botão de Registro">
-</a>
-
-</p>
+  <p align="center">
+    <a href="docs/index.html" target="_blank">
+      <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0d1b2a?style=for-the-badge&logo=hyperledger&logoColor=00eaff" alt="Botão de Registro">
+    </a>
+  </p>
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
   <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">💡 Sobre o Projeto</h2>
 
-  <p align="justify" style="max-width:800px;">
+  <p align="justify" style="max-width:800px; color:#c0dfff;">
     O <b>Sistema de Gestão de Ferramentais</b> tem como propósito <b>automatizar e digitalizar</b> o controle de ferramentais do <b>Departamento de Amostras e Clicheria</b>.  
     Através de uma interface moderna e integração com <b>QR Codes</b>, o sistema gerencia <b>todo o ciclo de vida das ferramentas</b>, desde o recebimento até a substituição.
   </p>
 
-  <p style="max-width:800px; color:#a9cfff;">
+  <p style="max-width:800px; color:#a9e5ff;">
     🔹 Cada ferramenta possui um <b>QR Code exclusivo</b> contendo informações técnicas e rastreáveis.<br>
     🔹 Foco em <b>eficiência, agilidade e segurança operacional</b>.<br>
     🔹 Desenvolvido com base em <b>inovação tecnológica e melhoria contínua</b>.
@@ -48,39 +46,38 @@
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
   <h2 style="color:#00bfff;">🏢 Grupo Sovel da Amazônia</h2>
-  <p><b>Departamento de Amostras e Clicheria</b></p>
+  <p style="color:#c0dfff;"><b>Departamento de Amostras e Clicheria</b></p>
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
   <h2 style="color:#00bfff;">👥 Equipe D.A.C</h2>
 
-<table style="width:70%; border-collapse:collapse; text-align:center; margin:auto; background-color:#112240; color:#e0f7ff;">
-  <tr style="background-color:#0056b3;">
-    <th style="padding:10px; color:#ffffff;">Nome</th>
-    <th style="padding:10px; color:#ffffff;">Cargo</th>
-  </tr>
-  <tr style="color:#a9e5ff;">
-    <td>Samueldson Ferreira</td>
-    <td>Supervisor</td>
-  </tr>
-  <tr style="color:#a9e5ff;">
-    <td>Rafaelly Azevedo</td>
-    <td>Analista</td>
-  </tr>
-  <tr style="color:#a9e5ff;">
-    <td>Elienson Duarte</td>
-    <td>Assistente</td>
-  </tr>
-  <tr style="color:#a9e5ff;">
-    <td>Gustavo Albuquerque</td>
-    <td>Assistente</td>
-  </tr>
-  <tr style="color:#a9e5ff;">
-    <td>Vanessa Nascimento</td>
-    <td>Assistente</td>
-  </tr>
-</table>
-
+  <table style="width:70%; border-collapse:collapse; text-align:center; margin:auto; background-color:#112240; box-shadow:0 0 15px #00eaff44;">
+    <tr style="background-color:#0056b3;">
+      <th style="padding:12px; color:#ffffff; font-size:16px;">Nome</th>
+      <th style="padding:12px; color:#ffffff; font-size:16px;">Cargo</th>
+    </tr>
+    <tr style="color:#c0f0ff; font-size:15px;">
+      <td>Samueldson Ferreira</td>
+      <td>Supervisor</td>
+    </tr>
+    <tr style="color:#c0f0ff; font-size:15px;">
+      <td>Rafaelly Azevedo</td>
+      <td>Analista</td>
+    </tr>
+    <tr style="color:#c0f0ff; font-size:15px;">
+      <td>Elienson Duarte</td>
+      <td>Assistente</td>
+    </tr>
+    <tr style="color:#c0f0ff; font-size:15px;">
+      <td>Gustavo Albuquerque</td>
+      <td>Assistente</td>
+    </tr>
+    <tr style="color:#c0f0ff; font-size:15px;">
+      <td>Vanessa Nascimento</td>
+      <td>Assistente</td>
+    </tr>
+  </table>
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
@@ -97,7 +94,7 @@
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
   <h2 style="color:#00bfff;">💬 Contato e Sugestões</h2>
-  <p>
+  <p style="color:#c0dfff;">
     Envie suas ideias e melhorias diretamente para o <b>Departamento de Amostras e Clicheria</b>.<br><br>
     📧 <a href="mailto:dac@sovel.com.br" style="color:#00eaff;">dac@sovel.com.br</a><br>
     📍 Manaus - AM, Brasil
