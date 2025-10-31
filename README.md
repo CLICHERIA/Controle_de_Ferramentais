@@ -54,17 +54,33 @@
 
   <h2 style="color:#00bfff;">👥 Equipe D.A.C</h2>
 
-  <table style="width:70%; border-collapse:collapse; text-align:center; margin:auto;">
-    <tr style="background-color:#112240;">
-      <th style="padding:10px; color:#00eaff;">Nome</th>
-      <th style="padding:10px; color:#00eaff;">Cargo</th>
-    </tr>
-    <tr><td>Samueldson Ferreira</td><td>Supervisor</td></tr>
-    <tr><td>Rafaelly Azevedo</td><td>Analista</td></tr>
-    <tr><td>Elienson Duarte</td><td>Assistente</td></tr>
-    <tr><td>Gustavo Albuquerque</td><td>Assistente</td></tr>
-    <tr><td>Vanessa Nascimento</td><td>Assistente</td></tr>
-  </table>
+<table style="width:70%; border-collapse:collapse; text-align:center; margin:auto; background-color:#112240; color:#e0f7ff;">
+  <tr style="background-color:#0056b3;">
+    <th style="padding:10px; color:#ffffff;">Nome</th>
+    <th style="padding:10px; color:#ffffff;">Cargo</th>
+  </tr>
+  <tr style="color:#a9e5ff;">
+    <td>Samueldson Ferreira</td>
+    <td>Supervisor</td>
+  </tr>
+  <tr style="color:#a9e5ff;">
+    <td>Rafaelly Azevedo</td>
+    <td>Analista</td>
+  </tr>
+  <tr style="color:#a9e5ff;">
+    <td>Elienson Duarte</td>
+    <td>Assistente</td>
+  </tr>
+  <tr style="color:#a9e5ff;">
+    <td>Gustavo Albuquerque</td>
+    <td>Assistente</td>
+  </tr>
+  <tr style="color:#a9e5ff;">
+    <td>Vanessa Nascimento</td>
+    <td>Assistente</td>
+  </tr>
+</table>
+
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
