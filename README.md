@@ -2,6 +2,7 @@
 <!-- README - GRUPO SOVEL -->
 <!-- ====================== -->
 
+<!-- Estilo global para fundo preto e remoção de margens/padding -->
 <style>
   /* Fundo do site inteiro */
   body {
@@ -12,10 +13,15 @@
     font-family: 'Segoe UI', sans-serif;
   }
 
-  /* Remove a barra de rolagem extra ou bordas do container */
   html, body {
     width: 100%;
     height: 100%;
+  }
+
+  /* Garante que links não invertam cores */
+  a {
+    color: #00eaff;
+    text-decoration: none;
   }
 </style>
 
@@ -41,7 +47,7 @@
 
   <!-- Botão Painel Interativo com fundo levemente mais claro -->
   <p align="center">
-    <a href="docs/index.html" target="_blank" style="text-decoration:none;">
+    <a href="docs/index.html" target="_blank">
       <img src="https://img.shields.io/badge/Acessar%20Painel%20Interativo-0d1b2a?style=for-the-badge&logo=hyperledger&logoColor=00eaff" 
            alt="Botão de Registro" 
            style="background-color:#0d1b2a; border-radius:10px; box-shadow:0 0 15px #00eaff;"/>
@@ -74,40 +80,33 @@
   <h2 style="color:#00bfff; text-shadow:0 0 20px #00eaff; text-align:center; margin-bottom:30px;">👥 Equipe D.A.C</h2>
 
   <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:30px;">
-
     <!-- Supervisor -->
-    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
-                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
       <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">⚡ Samueldson Ferreira</h3>
       <p style="margin:0;">🛡️ Supervisor</p>
     </div>
 
     <!-- Analista Administrativo -->
-    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
-                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
       <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">📊 Rafaelly Azevedo</h3>
       <p style="margin:0;">💼 Analista Administrativo</p>
     </div>
 
     <!-- Assistentes -->
-    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
-                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
       <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Elienson Duarte</h3>
       <p style="margin:0;">🛠️ Assistente</p>
     </div>
 
-    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
-                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
       <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Gustavo Albuquerque</h3>
       <p style="margin:0;">🛠️ Assistente</p>
     </div>
 
-    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; 
-                box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
+    <div style="background:#0a0f1a; color:#ffffff; padding:25px; border-radius:20px; box-shadow:0 0 20px #00eaff, 0 0 40px #00eaff55; text-align:center; min-width:200px;">
       <h3 style="margin:0 0 10px 0; color:#00eaff; text-shadow:0 0 8px #00eaff;">🔧 Vanessa Nascimento</h3>
       <p style="margin:0;">🛠️ Assistente</p>
     </div>
-
   </div>
 
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
@@ -127,7 +126,7 @@
   <h2 style="color:#00bfff;">💬 Contato e Sugestões</h2>
   <p style="color:#c0dfff;">
     Envie suas ideias e melhorias diretamente para o <b>Departamento de Amostras e Clicheria</b>.<br><br>
-    📧 <a href="mailto:dac@sovel.com.br" style="color:#00eaff;">dac@sovel.com.br</a><br>
+    📧 <a href="mailto:dac@sovel.com.br">dac@sovel.com.br</a><br>
     📍 Manaus - AM, Brasil
   </p>
 
