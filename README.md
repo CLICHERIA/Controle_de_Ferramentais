@@ -72,9 +72,9 @@ Estamos **de braços abertos** para receber **recomendações e sugestões de me
 ## 💬 Contato e Sugestões
 
 Quer contribuir com ideias ou relatar melhorias?  
-Envie suas sugestões diretamente para o **Departamento de Amostras e Clicheria** ou abra uma *issue* neste repositório.
+Envie suas sugestões diretamente para o **Departamento de Amostras e Clicheria**
 
-📧 **dac@sovel.com.br** *(exemplo de e-mail institucional — substitua se necessário)*
+📧 **dac@sovel.com.br**
 
 ---
 
