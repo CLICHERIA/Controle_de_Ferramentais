@@ -1,5 +1,5 @@
 <!-- ====================== -->
-<!-- READ-ME    GRUPO SOVEL -->
+<!-- READ-ME  GRUPO SOVEL -->
 <!-- ====================== -->
 
 <p align="center">
@@ -18,6 +18,12 @@
   <a href="#"><img src="https://img.shields.io/badge/versão-1.0.0-blue" alt="Versão"></a>
   <a href="#"><img src="https://img.shields.io/badge/última%20atualização-outubro%2F2025-lightgrey" alt="Última atualização"></a>
   <a href="#"><img src="https://img.shields.io/badge/tecnologia-QR--Code%20%7C%20Gestão--Interna-orange" alt="Tecnologia"></a>
+</p>
+
+<p align="center">
+  <a href="index.html" target="_blank" style="text-decoration:none;">
+    <img src="https://img.shields.io/badge/Acessar%20Menu%20de%20Registro-0056b3?style=for-the-badge&logo=appveyor&logoColor=white" alt="Botão de Registro">
+  </a>
 </p>
 
 ---
