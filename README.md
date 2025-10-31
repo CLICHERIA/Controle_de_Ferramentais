@@ -80,6 +80,7 @@
 </table>
 
 
+
   <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
   <h2 style="color:#00bfff;">🛠️ Tecnologias e Recursos</h2>
