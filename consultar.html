@@ -1,186 +1,115 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consultar Ferramental</title>
-<style>
-  body {
-    background-color: #0a0f1a;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
-  .logo-container {
-    margin-top: 30px;
-    filter: drop-shadow(0 0 10px #00eaff);
-  }
-  .logo-container img {
-    width: 150px;
-  }
-  input {
-    width: 300px;
-    padding: 8px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #00eaff44;
-    background-color: #0a0f1a;
-    color: #00eaff;
-  }
-  button {
-    padding: 8px 20px;
-    margin-left: 10px;
-    background-color: #0d1b2a;
-    color: #00eaff;
-    font-weight: bold;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-  }
-  button:hover {
-    color: #00ffff;
-    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-  }
-  table {
-    width: 90%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    background-color: #0d1b2a;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 0 20px #00eaff22;
-  }
-  th, td {
-    padding: 12px;
-    border-bottom: 1px solid #00eaff44;
-    text-align: center;
-  }
-  th {
-    color: #00eaff;
-  }
-  td button {
-    margin: 0 2px;
-    padding: 5px 10px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar - SGF</title>
+  <style>
+    body {
+      background-color: #0a0f1a;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .logo-container {
+      margin: 40px auto;
+      filter: drop-shadow(0 0 8px #00eaff);
+      display: inline-block;
+    }
+
+    img.logo {
+      width: 200px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      width: 300px;
+      border-radius: 8px;
+      border: none;
+      margin-right: 10px;
+    }
+
+    .neon-button {
+      padding: 12px;
+      font-weight: bold;
+      color: #00eaff;
+      background-color: #0d1b2a;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
+      transition: 0.3s ease-in-out;
+      margin: 5px;
+    }
+
+    .neon-button:hover {
+      color: #00ffff;
+      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+
+    th, td {
+      border: 1px solid #00eaff44;
+      padding: 10px;
+    }
+  </style>
 </head>
 <body>
 
   <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
   </div>
 
-  <h1 style="color:#00eaff; margin-top:20px;">Consultar Ferramental</h1>
+  <h2 style="color:#00eaff;">Consultar Ferramental</h2>
 
   <input type="text" id="buscarSV" placeholder="Digite o SV">
-  <button onclick="buscar()">Buscar</button>
-  <a href="menu.html"><button>Menu Principal</button></a>
+  <button class="neon-button" onclick="buscar()">Buscar</button>
+  <a href="menu.html" class="neon-button">Menu Principal</a>
 
-  <table id="tabelaFerramentais">
+  <table id="resultado" style="display:none;">
     <thead>
       <tr>
         <th>SV</th>
         <th>Cliente</th>
-        <th>Tipo</th>
         <th>Data Registro</th>
         <th>Ações</th>
       </tr>
     </thead>
     <tbody>
-      <!-- Ferramentais serão listados aqui -->
+      <!-- Resultados aparecerão aqui -->
     </tbody>
   </table>
 
   <script>
-    const ferramentalExemplo = [
-      {sv:"F123", cliente:"Cliente A", tipo:"Faca", data:"2025-11-03"},
-      {sv:"C456", cliente:"Cliente B", tipo:"Clichê", data:"2025-11-02"}
-    ];
-
     function buscar() {
-      const svBusca = document.getElementById('buscarSV').value.trim();
-      const tabela = document.getElementById('tabelaFerramentais').querySelector('tbody');
-      tabela.innerHTML = '';
+      const sv = document.getElementById("buscarSV").value;
+      if(!sv) return alert("Digite o SV!");
 
-      const resultados = ferramentalExemplo.filter(f => f.sv.includes(svBusca));
-      resultados.forEach(f => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${f.sv}</td>
-          <td>${f.cliente}</td>
-          <td>${f.tipo}</td>
-          <td>${f.data}</td>
+      // Exemplo: resultado simulado
+      const tabela = document.getElementById("resultado");
+      tabela.style.display = "table";
+      tabela.querySelector("tbody").innerHTML = `
+        <tr>
+          <td>${sv}</td>
+          <td>Cliente Exemplo</td>
+          <td>2025-11-03</td>
           <td>
-            <button onclick="editar('${f.sv}')">Editar</button>
-            <button onclick="excluir('${f.sv}')">Excluir</button>
-            <button onclick="gerarQRCode('${f.sv}')">Gerar QR Code</button>
+            <button class="neon-button">Editar</button>
+            <button class="neon-button">Excluir</button>
+            <button class="neon-button">Gerar QR</button>
           </td>
-        `;
-        tabela.appendChild(tr);
-      });
-    }
-
-    function editar(sv) {
-      const f = ferramentalExemplo.find(f => f.sv === sv);
-      if (!f) return;
-      const novoCliente = prompt("Editar Cliente:", f.cliente);
-      const novaData = prompt("Editar Data de Registro:", f.data);
-      if (novoCliente) f.cliente = novoCliente;
-      if (novaData) f.data = novaData;
-      buscar();
-    }
-
-    function excluir(sv) {
-      const index = ferramentalExemplo.findIndex(f => f.sv === sv);
-      if (index >= 0 && confirm("Deseja excluir este ferramental?")) {
-        ferramentalExemplo.splice(index, 1);
-        buscar();
-      }
-    }
-
-    function gerarQRCode(sv) {
-      const f = ferramentalExemplo.find(f => f.sv === sv);
-      if (!f) return;
-
-      const modal = document.createElement('div');
-      modal.style.position = 'fixed';
-      modal.style.top = '0';
-      modal.style.left = '0';
-      modal.style.width = '100%';
-      modal.style.height = '100%';
-      modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-      modal.style.display = 'flex';
-      modal.style.justifyContent = 'center';
-      modal.style.alignItems = 'center';
-
-      const qrDiv = document.createElement('div');
-      qrDiv.style.backgroundColor = '#0d1b2a';
-      qrDiv.style.padding = '20px';
-      qrDiv.style.borderRadius = '12px';
-      qrDiv.style.textAlign = 'center';
-
-      const qrCanvas = document.createElement('canvas');
-      qrDiv.appendChild(qrCanvas);
-
-      const btnClose = document.createElement('button');
-      btnClose.textContent = 'Fechar';
-      btnClose.onclick = () => modal.remove();
-      qrDiv.appendChild(document.createElement('br'));
-      qrDiv.appendChild(btnClose);
-
-      modal.appendChild(qrDiv);
-      document.body.appendChild(modal);
-
-      // Gerar QR code
-      import("https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js").then(QRCode => {
-        QRCode.toCanvas(qrCanvas, `SV:${f.sv} | Cliente:${f.cliente}`, { width: 200 }, function (error) {
-          if (error) console.error(error);
-        });
-      });
+        </tr>
+      `;
     }
   </script>
+
 </body>
 </html>
