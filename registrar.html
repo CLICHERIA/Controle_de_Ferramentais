@@ -8,11 +8,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 <style>
 body { font-family: Arial; background:#111; color:#fff; text-align:center;}
-.centralizado { width:400px; margin:50px auto; background:#222; padding:30px; border-radius:10px;}
-input, select { width:90%; margin:10px 0; padding:8px; border-radius:5px; border:none;}
-button { width:95%; padding:10px; border:none; border-radius:5px; background:#00bfff; color:#111; font-weight:bold; cursor:pointer;}
+.centralizado { width:90%; max-width:600px; margin:30px auto; background:#222; padding:20px; border-radius:10px;}
+input, select { width:80%; margin:10px 0; padding:8px; border-radius:5px; border:none;}
+button { padding:8px 15px; border:none; border-radius:5px; background:#00bfff; color:#111; font-weight:bold; cursor:pointer; margin:5px;}
 button:hover { background:#00e0ff; }
-img.logo { width:150px; margin-bottom:20px; display:block; margin-left:auto; margin-right:auto; }
+img.logo { width:120px; margin-bottom:20px; display:block; margin-left:auto; margin-right:auto; }
 </style>
 </head>
 <body>
@@ -21,16 +21,18 @@ img.logo { width:150px; margin-bottom:20px; display:block; margin-left:auto; mar
     <img src="logosovel1337.png" alt="Logo" class="logo">
     <h2>Registrar Ferramental</h2>
 
+    <label>Tipo de Ferramental:</label>
     <select id="tipo">
-        <option value="">Selecione Tipo</option>
-        <option value="faca">Faca</option>
-        <option value="cliche">Clichê</option>
-    </select>
-    <input type="text" id="sv" placeholder="SV (letra e número)">
-    <input type="text" id="cliente" placeholder="Cliente">
-    <input type="date" id="dataFabricacao" placeholder="Data de Fabricação (opcional)">
-    <input type="date" id="dataRegistro" placeholder="Data de Registro">
-    <input type="text" id="responsavel" placeholder="Responsável pelo registro">
+        <option value="">Selecione</option>
+        <option value="Faca">Faca</option>
+        <option value="Clichê">Clichê</option>
+    </select><br>
+
+    <input type="text" id="sv" placeholder="SV (letra e número)"><br>
+    <input type="text" id="cliente" placeholder="Cliente"><br>
+    <input type="date" id="dataFabricacao" placeholder="Data de Fabricação"><br>
+    <input type="date" id="dataRegistro" placeholder="Data de Registro"><br>
+    <input type="text" id="responsavel" placeholder="Responsável pelo registro"><br>
 
     <button id="btnRegistrar">Registrar</button>
     <button onclick="window.location.href='menu.html'">Menu Principal</button>
@@ -47,7 +49,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-// Verifica se usuário está logado
+// Checa se usuário está logado
 firebase.auth().onAuthStateChanged(user => {
     if (!user) {
         alert("Faça login primeiro!");
@@ -55,7 +57,9 @@ firebase.auth().onAuthStateChanged(user => {
     }
 
 
-document.getElementById('btnRegistrar').addEventListener('click', () => {
+const dbRef = firebase.database().ref('ferramentais');
+
+document.getElementById('btnRegistrar').onclick = () => {
     const tipo = document.getElementById('tipo').value;
     const sv = document.getElementById('sv').value.trim();
     const cliente = document.getElementById('cliente').value.trim();
@@ -63,8 +67,8 @@ document.getElementById('btnRegistrar').addEventListener('click', () => {
     const dataRegistro = document.getElementById('dataRegistro').value;
     const responsavel = document.getElementById('responsavel').value.trim();
 
-    if (!tipo || !sv || !cliente || !dataRegistro || !responsavel) {
-        alert("Preencha todos os campos obrigatórios!");
+    if (!tipo || !sv || !cliente || !responsavel) {
+        alert("Preencha todos os campos obrigatórios (Tipo, SV, Cliente, Responsável)");
         return;
     }
 
@@ -73,14 +77,12 @@ document.getElementById('btnRegistrar').addEventListener('click', () => {
         sv,
         cliente,
         dataFabricacao: dataFabricacao || "",
-        dataRegistro,
+        dataRegistro: dataRegistro || "",
         responsavel
     };
 
-    // Cria um novo registro no Firebase
-    const dbRef = firebase.database().ref('ferramentais');
-    const newKey = dbRef.push().key;
-    dbRef.child(newKey).set(novoFerramental)
+    // Salva no Firebase
+    dbRef.push(novoFerramental)
     .then(() => {
         alert("Ferramental registrado com sucesso!");
         // Limpa campos
@@ -91,10 +93,8 @@ document.getElementById('btnRegistrar').addEventListener('click', () => {
         document.getElementById('dataRegistro').value = "";
         document.getElementById('responsavel').value = "";
     })
-    .catch(err => {
-        alert("Erro ao registrar: " + err.message);
-    });
-});
+    .catch(err => alert("Erro ao registrar: " + err.message));
+};
 </script>
 
 </body>
