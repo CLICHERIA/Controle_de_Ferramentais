@@ -4,180 +4,183 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Consultar Ferramental</title>
-
-<!-- Firebase -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_AUTH_DOMAIN",
-    projectId: "SEU_PROJECT_ID",
-    storageBucket: "SEU_STORAGE_BUCKET",
-    messagingSenderId: "SEU_MSG_ID",
-    appId: "SEU_APP_ID"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  setPersistence(auth, browserLocalPersistence);
-
-  onAuthStateChanged(auth, user => {
-    if(!user){
-      window.location.href = "index.html";
-    } else {
-      document.getElementById('nomeUsuario').textContent = user.displayName || user.email;
-      document.getElementById('funcaoUsuario').textContent = "Operador D.A.C";
-    }
-  });
-</script>
-
 <style>
-  body { background:#0a0f1a; color:#fff; font-family:'Segoe UI',sans-serif; margin:0; padding:0;}
-  .logo-container{ text-align:center; margin-top:30px; filter: drop-shadow(0 0 8px #00eaff);}
-  img.logo{ width:200px;}
-  .centralizado{ max-width:900px; margin:30px auto; text-align:center;}
-  input{ width:60%; padding:10px; border-radius:8px; border:none; background:#0d1b2a; color:#fff; box-shadow:0 0 10px #00eaff22;}
-  .neon-button{ padding:10px 20px; margin:5px; background:#0d1b2a; color:#00eaff; font-weight:bold; border-radius:10px; text-decoration:none; display:inline-block; box-shadow:0 0 5px #00eaff,0 0 10px #00eaff; transition:0.3s;}
-  .neon-button:hover{ color:#00ffff; box-shadow:0 0 20px #00eaff;}
-  .top-right{ position:absolute; top:15px; right:20px; text-align:right; color:#00eaff; font-weight:bold;}
-  table{ width:100%; border-collapse:collapse; margin-top:20px;}
-  th, td{ padding:10px; border:1px solid #00eaff;}
+  body {
+    background-color: #0a0f1a;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  .logo-container {
+    margin-top: 30px;
+    filter: drop-shadow(0 0 10px #00eaff);
+  }
+  .logo-container img {
+    width: 150px;
+  }
+  input {
+    width: 300px;
+    padding: 8px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #00eaff44;
+    background-color: #0a0f1a;
+    color: #00eaff;
+  }
+  button {
+    padding: 8px 20px;
+    margin-left: 10px;
+    background-color: #0d1b2a;
+    color: #00eaff;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
+  }
+  button:hover {
+    color: #00ffff;
+    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
+  }
+  table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #0d1b2a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 20px #00eaff22;
+  }
+  th, td {
+    padding: 12px;
+    border-bottom: 1px solid #00eaff44;
+    text-align: center;
+  }
+  th {
+    color: #00eaff;
+  }
+  td button {
+    margin: 0 2px;
+    padding: 5px 10px;
+  }
 </style>
 </head>
 <body>
 
-<div class="top-right">
-  Nome: <span id="nomeUsuario"></span><br>
-  Função: <span id="funcaoUsuario"></span>
-</div>
+  <div class="logo-container">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel">
+  </div>
 
-<div class="logo-container">
-  <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
-</div>
+  <h1 style="color:#00eaff; margin-top:20px;">Consultar Ferramental</h1>
 
-<div class="centralizado">
-  <h2>Consultar Ferramental</h2>
-  <input type="text" id="busca" placeholder="Digite SV ou Cliente">
-  <button class="neon-button" id="btnBuscar">Buscar</button>
+  <input type="text" id="buscarSV" placeholder="Digite o SV">
+  <button onclick="buscar()">Buscar</button>
+  <a href="menu.html"><button>Menu Principal</button></a>
 
-  <table id="tabelaResultados">
+  <table id="tabelaFerramentais">
     <thead>
       <tr>
-        <th>Tipo</th>
         <th>SV</th>
         <th>Cliente</th>
+        <th>Tipo</th>
         <th>Data Registro</th>
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+      <!-- Ferramentais serão listados aqui -->
+    </tbody>
   </table>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-<script>
-const dadosFerramentais = [
-  {tipo:"Faca", sv:"F123", cliente:"Cliente1", dataRegistro:"2025-10-01"},
-  {tipo:"Clichê", sv:"C456", cliente:"Cliente2", dataRegistro:"2025-10-02"}
-];
+  <script>
+    const ferramentalExemplo = [
+      {sv:"F123", cliente:"Cliente A", tipo:"Faca", data:"2025-11-03"},
+      {sv:"C456", cliente:"Cliente B", tipo:"Clichê", data:"2025-11-02"}
+    ];
 
-function renderTabela(filtros){
-  const tbody = document.querySelector("#tabelaResultados tbody");
-  tbody.innerHTML = "";
-  filtros.forEach((f,index)=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${f.tipo}</td>
-      <td>${f.sv}</td>
-      <td contenteditable="false">${f.cliente}</td>
-      <td contenteditable="false">${f.dataRegistro}</td>
-      <td>
-        <button class="neon-button" onclick="editar(${index},this)">Editar</button>
-        <button class="neon-button" onclick="excluir(${index})">Excluir</button>
-        <button class="neon-button" onclick="gerarQRCode('${f.sv}')">QR Code</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+    function buscar() {
+      const svBusca = document.getElementById('buscarSV').value.trim();
+      const tabela = document.getElementById('tabelaFerramentais').querySelector('tbody');
+      tabela.innerHTML = '';
 
-function editar(i,btn){
-  const tr = btn.closest("tr");
-  const clienteTd = tr.children[2];
-  const dataTd = tr.children[3];
-  if(btn.textContent === "Editar"){
-    clienteTd.contentEditable = "true";
-    dataTd.contentEditable = "true";
-    btn.textContent = "Salvar";
-  } else {
-    clienteTd.contentEditable = "false";
-    dataTd.contentEditable = "false";
-    dadosFerramentais[i].cliente = clienteTd.textContent;
-    dadosFerramentais[i].dataRegistro = dataTd.textContent;
-    btn.textContent = "Editar";
-    alert("Alterações salvas!");
-  }
-}
+      const resultados = ferramentalExemplo.filter(f => f.sv.includes(svBusca));
+      resultados.forEach(f => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${f.sv}</td>
+          <td>${f.cliente}</td>
+          <td>${f.tipo}</td>
+          <td>${f.data}</td>
+          <td>
+            <button onclick="editar('${f.sv}')">Editar</button>
+            <button onclick="excluir('${f.sv}')">Excluir</button>
+            <button onclick="gerarQRCode('${f.sv}')">Gerar QR Code</button>
+          </td>
+        `;
+        tabela.appendChild(tr);
+      });
+    }
 
-function excluir(i){
-  if(confirm("Deseja excluir este ferramental?")){
-    dadosFerramentais.splice(i,1);
-    renderTabela(dadosFerramentais);
-  }
-}
+    function editar(sv) {
+      const f = ferramentalExemplo.find(f => f.sv === sv);
+      if (!f) return;
+      const novoCliente = prompt("Editar Cliente:", f.cliente);
+      const novaData = prompt("Editar Data de Registro:", f.data);
+      if (novoCliente) f.cliente = novoCliente;
+      if (novaData) f.data = novaData;
+      buscar();
+    }
 
-function gerarQRCode(texto){
-  const modal = document.createElement("div");
-  modal.style.position = "fixed";
-  modal.style.top="0"; modal.style.left="0";
-  modal.style.width="100%"; modal.style.height="100%";
-  modal.style.background="rgba(0,0,0,0.8)";
-  modal.style.display="flex"; modal.style.alignItems="center"; modal.style.justifyContent="center";
-  modal.style.zIndex="9999";
-  modal.innerHTML = `
-    <div style="background:#0a0f1a; padding:20px; border-radius:20px; text-align:center;">
-      <canvas id="qrCanvas"></canvas>
-      <br><button class="neon-button" id="fechar">Fechar</button>
-      <button class="neon-button" id="baixar">Baixar PNG</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
+    function excluir(sv) {
+      const index = ferramentalExemplo.findIndex(f => f.sv === sv);
+      if (index >= 0 && confirm("Deseja excluir este ferramental?")) {
+        ferramentalExemplo.splice(index, 1);
+        buscar();
+      }
+    }
 
-  const canvas = modal.querySelector("#qrCanvas");
-  QRCode.toCanvas(canvas, texto, {
-    width:250,
-    margin:2,
-    color: {dark:"#00eaff", light:"#0a0f1a"}
-  }).then(()=>{
-    // Inserir logo no centro
-    const ctx = canvas.getContext("2d");
-    const img = new Image();
-    img.src="logosovel1337.png";
-    img.onload = ()=>{
-      const size = canvas.width*0.25;
-      ctx.drawImage(img, canvas.width/2 - size/2, canvas.height/2 - size/2, size, size);
-    };
-  });
+    function gerarQRCode(sv) {
+      const f = ferramentalExemplo.find(f => f.sv === sv);
+      if (!f) return;
 
-  modal.querySelector("#fechar").onclick = ()=> modal.remove();
-  modal.querySelector("#baixar").onclick = ()=>{
-    const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/png");
-    link.download = `${texto}.png`;
-    link.click();
-  };
-}
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.width = '100%';
+      modal.style.height = '100%';
+      modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+      modal.style.display = 'flex';
+      modal.style.justifyContent = 'center';
+      modal.style.alignItems = 'center';
 
-document.getElementById("btnBuscar").addEventListener("click", ()=>{
-  const termo = document.getElementById("busca").value.toLowerCase();
-  const filtrados = dadosFerramentais.filter(f=>f.sv.toLowerCase().includes(termo) || f.cliente.toLowerCase().includes(termo));
-  renderTabela(filtrados);
-});
+      const qrDiv = document.createElement('div');
+      qrDiv.style.backgroundColor = '#0d1b2a';
+      qrDiv.style.padding = '20px';
+      qrDiv.style.borderRadius = '12px';
+      qrDiv.style.textAlign = 'center';
 
-renderTabela(dadosFerramentais);
-</script>
+      const qrCanvas = document.createElement('canvas');
+      qrDiv.appendChild(qrCanvas);
 
+      const btnClose = document.createElement('button');
+      btnClose.textContent = 'Fechar';
+      btnClose.onclick = () => modal.remove();
+      qrDiv.appendChild(document.createElement('br'));
+      qrDiv.appendChild(btnClose);
+
+      modal.appendChild(qrDiv);
+      document.body.appendChild(modal);
+
+      // Gerar QR code
+      import("https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js").then(QRCode => {
+        QRCode.toCanvas(qrCanvas, `SV:${f.sv} | Cliente:${f.cliente}`, { width: 200 }, function (error) {
+          if (error) console.error(error);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
