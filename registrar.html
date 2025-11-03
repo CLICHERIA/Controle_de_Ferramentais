@@ -1,83 +1,55 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Registrar Ferramental - SGF</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar Ferramental</title>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_AUTH_DOMAIN",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_STORAGE_BUCKET",
+    messagingSenderId: "SEU_MSG_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  setPersistence(auth, browserLocalPersistence);
+
+  onAuthStateChanged(auth, user => {
+    if(!user){
+      window.location.href = "index.html";
+    } else {
+      document.getElementById('nomeUsuario').textContent = user.displayName || user.email;
+      document.getElementById('funcaoUsuario').textContent = "Operador D.A.C";
+    }
+  });
+</script>
 
 <style>
-  body {
-    background-color: #0a0f1a;
-    margin: 0;
-    padding: 0;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-  }
-
-  html, body { width:100%; height:100%; }
-
-  a { color: #00eaff; text-decoration: none; }
-
-  .logo-container {
-    display: block;
-    text-align: center;
-    margin: 40px 0 20px 0;
-  }
-
-  img.logo { width: 200px; filter: drop-shadow(0 0 8px #00eaff); }
-
-  .neon-button {
-    display: inline-block;
-    padding: 12px 30px;
-    color: #00eaff;
-    font-weight: bold;
-    font-size: 14px;
-    border-radius: 10px;
-    background-color: #0d1b2a;
-    box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
-    transition: 0.3s ease-in-out;
-    margin: 5px;
-    animation: neonPulse 1.5s infinite alternate;
-    cursor:pointer;
-  }
-
-  .neon-button:hover {
-    color: #00ffff;
-    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
-  }
-
-  @keyframes neonPulse {
-    0%,100{box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff;}
-    50%{box-shadow:0 0 15px #00eaff,0 0 30px #00eaff,0 0 45px #00eaff77;}
-  }
-
-  #painelUsuario {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #0d1b2a;
-    padding: 10px 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px #00eaff55;
-    color: #00eaff;
-    text-align: right;
-    z-index: 1000;
-  }
-
-  .centralizado {
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  label { display:block; margin:10px 0 5px 0; color:#00eaff; }
-  input, select { width:100%; padding:8px; border-radius:5px; border:none; margin-bottom:10px; }
+  body { background:#0a0f1a; color:#fff; font-family:'Segoe UI',sans-serif; margin:0; padding:0;}
+  .logo-container{ text-align:center; margin-top:30px; filter: drop-shadow(0 0 8px #00eaff);}
+  img.logo{ width:200px;}
+  .centralizado{ max-width:800px; margin:30px auto; text-align:center;}
+  label{ display:block; margin:15px 0 5px; color:#00eaff;}
+  input, select{ width:100%; padding:10px; border-radius:8px; border:none; background:#0d1b2a; color:#fff; box-shadow:0 0 10px #00eaff22;}
+  .neon-button{ padding:12px 30px; margin:10px; background:#0d1b2a; color:#00eaff; font-weight:bold; border-radius:10px; text-decoration:none; display:inline-block; box-shadow:0 0 5px #00eaff,0 0 10px #00eaff; transition:0.3s;}
+  .neon-button:hover{ color:#00ffff; box-shadow:0 0 20px #00eaff;}
+  .top-right{ position:absolute; top:15px; right:20px; text-align:right; color:#00eaff; font-weight:bold;}
 </style>
 </head>
 <body>
 
-<div id="painelUsuario">
-  <div><b>Nome:</b> <span id="nomeUsuario">---</span></div>
-  <div><b>Função:</b> <span id="funcaoUsuario">---</span></div>
+<div class="top-right">
+  Nome: <span id="nomeUsuario"></span><br>
+  Função: <span id="funcaoUsuario"></span>
 </div>
 
 <div class="logo-container">
@@ -85,73 +57,42 @@
 </div>
 
 <div class="centralizado">
-  <h2 style="color:#00bfff;">Registrar Ferramental</h2>
+  <h2>Registrar Ferramental</h2>
   <form id="formRegistrar">
-    <label>Tipo de Ferramental:</label>
-    <select name="tipo" required>
+    <label>Tipo de Ferramental</label>
+    <select id="tipoFerramental" required>
+      <option value="">Selecione</option>
       <option value="Faca">Faca</option>
       <option value="Clichê">Clichê</option>
     </select>
 
-    <label>SV (código):</label>
-    <input type="text" name="sv" required>
+    <label>SV</label>
+    <input type="text" id="sv" placeholder="Ex: F123" required>
 
-    <label>Cliente:</label>
-    <input type="text" name="cliente" required>
+    <label>Cliente</label>
+    <input type="text" id="cliente" placeholder="Nome do Cliente" required>
 
-    <label>Data de Fabricação:</label>
-    <input type="date" name="dataFabricacao">
+    <label>Data de Fabricação</label>
+    <input type="date" id="dataFabricacao">
 
-    <label>Data de Registro no Sistema:</label>
-    <input type="date" name="dataRegistro" required>
+    <label>Data de Registro</label>
+    <input type="date" id="dataRegistro" required>
 
-    <label>Responsável pelo Registro:</label>
-    <input type="text" name="responsavel" required>
+    <label>Responsável pelo Registro</label>
+    <input type="text" id="responsavel" placeholder="Seu nome" required>
 
     <button type="submit" class="neon-button">Registrar</button>
-    <a href="menu.html" class="neon-button">Menu Principal</a>
+    <a href="menu.html" class="neon-button">Voltar ao Menu</a>
   </form>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_AUTH_DOMAIN",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_STORAGE_BUCKET",
-  messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-  appId: "SEU_APP_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const equipeDAC = {
-  "samueldson@example.com":"Supervisor",
-  "rafaelly@example.com":"Analista Administrativo",
-  "elienson@example.com":"Assistente",
-  "gustavo@example.com":"Assistente",
-  "vanessa@example.com":"Assistente"
-};
-
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    const nome = user.displayName || user.email;
-    const funcao = equipeDAC[user.email] || "Operador";
-    document.getElementById('nomeUsuario').textContent = nome;
-    document.getElementById('funcaoUsuario').textContent = funcao;
-  } else {
-    window.location.href = "index.html";
-  }
-});
-
-document.getElementById('formRegistrar').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  alert("Ferramental registrado com sucesso!"); // Aqui você pode integrar com seu DB/Firebase
-});
+<script>
+  document.getElementById('formRegistrar').addEventListener('submit', e=>{
+    e.preventDefault();
+    alert("Ferramental registrado com sucesso!");
+    document.getElementById('formRegistrar').reset();
+  });
 </script>
+
 </body>
 </html>
