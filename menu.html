@@ -3,55 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu - Gestão de Ferramentais</title>
+  <title>Menu Ferramental</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    h1 { margin-bottom: 0.5rem; }
-    p { margin-top: 0; color: #666; margin-bottom: 2rem; }
-    .menu-container { display: flex; flex-direction: column; gap: 1rem; }
-    button { padding: 1rem 2rem; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; background: #007BFF; color: #fff; font-weight: bold; transition: background 0.3s; }
-    button:hover { background: #0056b3; }
-    .logout { margin-top: 2rem; background: #dc3545; }
-    .logout:hover { background: #a71d2a; }
+    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f5f5f5; }
+    h1 { margin-bottom: 2rem; }
+    button { width: 250px; padding: 1rem; margin: 0.5rem 0; font-size: 1rem; font-weight: bold; border-radius: 5px; border: none; cursor: pointer; transition: background 0.3s; }
+    .registrar { background: #28a745; color: #fff; }
+    .consultar { background: #17a2b8; color: #fff; }
+    .sair { background: #dc3545; color: #fff; }
+    button:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
 
-  <h1>Gestão de Ferramentais</h1>
-  <p>Grupo Sovel — Menu Interativo</p>
+<h1>Menu Ferramental</h1>
+<button class="registrar" onclick="location.href='registrar.html'">Registrar Ferramental</button>
+<button class="consultar" onclick="location.href='consultar.html'">Consultar Ferramental</button>
+<button class="sair" id="btnSair">Sair</button>
 
-  <div class="menu-container">
-    <button onclick="location.href='registrar.html'">Registrar Ferramental</button>
-    <button onclick="location.href='consultar.html'">Consultar Ferramental</button>
-    <button class="logout" id="logoutBtn">Sair</button>
-  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-    };
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    // Redireciona para login se não estiver autenticado
-    onAuthStateChanged(auth, user => {
-      if (!user) window.location.href = "index.html";
-    });
+  onAuthStateChanged(auth, user => {
+    if (!user) window.location.href = "index.html";
+  });
 
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "index.html";
-    });
-  </script>
+  document.getElementById("btnSair").addEventListener("click", () => {
+    signOut(auth).then(() => window.location.href = "index.html");
+  });
+</script>
 
 </body>
 </html>
