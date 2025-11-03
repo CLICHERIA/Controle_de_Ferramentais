@@ -1,50 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu Ferramental</title>
-  <style>
-    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f5f5f5; }
-    h1 { margin-bottom: 2rem; }
-    button { width: 250px; padding: 1rem; margin: 0.5rem 0; font-size: 1rem; font-weight: bold; border-radius: 5px; border: none; cursor: pointer; transition: background 0.3s; }
-    .registrar { background: #28a745; color: #fff; }
-    .consultar { background: #17a2b8; color: #fff; }
-    .sair { background: #dc3545; color: #fff; }
-    button:hover { opacity: 0.9; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu Interativo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    font-family: 'Orbitron', sans-serif;
+    color: #fff;
+  }
+
+  .menu-box {
+    background: rgba(0,0,0,0.85);
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #00f0ff, 0 0 40px #ff00ff inset;
+    text-align: center;
+  }
+
+  h1 {
+    margin-bottom: 2rem;
+    color: #00f0ff;
+    text-shadow: 0 0 10px #00f0ff;
+  }
+
+  a {
+    display: block;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: linear-gradient(90deg, #00f0ff, #ff00ff);
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: 0.3s;
+  }
+
+  a:hover {
+    box-shadow: 0 0 20px #ff00ff, 0 0 40px #00f0ff;
+    transform: scale(1.05);
+  }
+</style>
 </head>
 <body>
 
-<h1>Menu Ferramental</h1>
-<button class="registrar" onclick="location.href='registrar.html'">Registrar Ferramental</button>
-<button class="consultar" onclick="location.href='consultar.html'">Consultar Ferramental</button>
-<button class="sair" id="btnSair">Sair</button>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "index.html";
-  });
-
-  document.getElementById("btnSair").addEventListener("click", () => {
-    signOut(auth).then(() => window.location.href = "index.html");
-  });
-</script>
+<div class="menu-box">
+  <h1>Menu Interativo</h1>
+  <a href="registrar.html">Registrar Ferramental</a>
+  <a href="consultar.html">Consultar Ferramental</a>
+  <a href="workflows/index.html">Sair / Logout</a>
+</div>
 
 </body>
 </html>
