@@ -1,113 +1,50 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registrar Ferramental</title>
-
-<!-- ====================== -->
-<!-- Estilo Neon do README -->
-<!-- ====================== -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <style>
 body {
-    background-color: #0a0f1a;
-    margin: 0;
-    padding: 0;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    text-align: center;
 }
-html, body { width: 100%; height: 100%; }
-a { color: #00eaff; text-decoration: none; }
-
-/* Logo centralizada */
-.logo-container { text-align: center; margin-top: 40px; filter: drop-shadow(0 0 8px #00eaff); }
-img.logo { width: 200px; }
-
-/* Neon Button */
-.neon-button {
-    display: inline-block;
-    padding: 12px 30px;
-    color: #00eaff;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
+.centralizado {
+    width: 400px;
+    margin: 50px auto;
+    background: #222;
+    padding: 20px;
     border-radius: 10px;
-    background-color: #0d1b2a;
-    box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
-    transition: 0.3s ease-in-out;
 }
-.neon-button:hover { 
-    color:#00ffff;
-    box-shadow: 0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77; 
+input, select, button {
+    width: 90%;
+    margin: 10px 0;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
 }
-
-/* Formulário centralizado */
-.centralizado { max-width: 600px; margin: 40px auto; text-align: center; }
-.centralizado input, .centralizado select { 
-    width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; 
-    background-color: #0d1b2a; color: #00eaff;
+.neon-button {
+    background: #00bfff;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
 }
-.centralizado label { display: block; margin-top: 15px; text-align: left; color: #00bfff; }
+.neon-button:hover {
+    background: #00e0ff;
+}
 </style>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-database-compat.js"></script>
-
-<script>
-// TODO: Substitua com sua configuração do Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// Função registrar
-function registrarFerramental() {
-    const tipo = document.getElementById('tipo').value;
-    const sv = document.getElementById('sv').value;
-    const cliente = document.getElementById('cliente').value;
-    const dataFabricacao = document.getElementById('dataFabricacao').value;
-    const dataRegistro = document.getElementById('dataRegistro').value;
-    const responsavel = document.getElementById('responsavel').value;
-
-    if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
-        alert("Preencha todos os campos obrigatórios!");
-        return;
-    }
-
-    const ferramentalRef = db.ref('ferramentais').push();
-    ferramentalRef.set({
-        tipo, sv, cliente, dataFabricacao, dataRegistro, responsavel
-    }, err => {
-        if(err){
-            alert("Erro ao registrar: " + err);
-        } else {
-            alert("Ferramental registrado com sucesso!");
-            document.getElementById('formRegistro').reset();
-        }
-    });
-}
-</script>
 </head>
 <body>
 
-<!-- Logo -->
-<div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
-</div>
-
-<!-- Formulário -->
 <div class="centralizado">
-    <h2 style="color:#00bfff;">Registrar Ferramental</h2>
-    <form id="formRegistro" onsubmit="event.preventDefault(); registrarFerramental();">
+    <h2>Registrar Ferramental</h2>
+    <form id="formRegistro">
         <label for="tipo">Tipo de Ferramental</label>
-        <select id="tipo">
+        <select id="tipo" required>
             <option value="">Selecione</option>
             <option value="Faca">Faca</option>
             <option value="Clichê">Clichê</option>
@@ -128,9 +65,49 @@ function registrarFerramental() {
         <label for="responsavel">Responsável pelo Registro</label>
         <input type="text" id="responsavel" placeholder="Seu nome" required>
 
-        <button type="submit" class="neon-button">Registrar</button>
+        <button type="button" onclick="registrarFerramental()" class="neon-button">Registrar</button>
         <a href="menu.html" class="neon-button" style="margin-left: 10px;">Voltar ao Menu</a>
     </form>
 </div>
+
+<script>
+// Firebase config
+const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function registrarFerramental() {
+    const tipo = document.getElementById('tipo').value;
+    const sv = document.getElementById('sv').value;
+    const cliente = document.getElementById('cliente').value;
+    const dataFabricacao = document.getElementById('dataFabricacao').value;
+    const dataRegistro = document.getElementById('dataRegistro').value;
+    const responsavel = document.getElementById('responsavel').value;
+
+    if (!tipo || !sv || !cliente || !dataRegistro || !responsavel) {
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+    }
+
+    const ferramentalRef = db.ref('ferramentais').push();
+    ferramentalRef.set({tipo, sv, cliente, dataFabricacao, dataRegistro, responsavel}, (err)=>{
+        if(err){
+            alert("Erro ao registrar: " + err);
+        } else {
+            alert("Ferramental registrado com sucesso!");
+            document.getElementById('formRegistro').reset();
+        }
+    });
+}
+</script>
+
 </body>
 </html>
