@@ -32,7 +32,7 @@ img.logo { width:150px; margin-bottom:20px; display:block; margin-left:auto; mar
     <input type="date" id="dataRegistro" placeholder="Data de Registro">
     <input type="text" id="responsavel" placeholder="Responsável pelo registro">
 
-    <button onclick="registrarFerramental()">Registrar</button>
+    <button id="btnRegistrar">Registrar</button>
     <button onclick="window.location.href='menu.html'">Menu Principal</button>
 </div>
 
@@ -47,31 +47,54 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-// Checa login
-firebase.auth().onAuthStateChanged(user=>{
-    if(!user) window.location.href="index.html";
-});
+// Verifica se usuário está logado
+firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+        alert("Faça login primeiro!");
+        window.location.href = "index.html";
+    }
 
-function registrarFerramental(){
+
+document.getElementById('btnRegistrar').addEventListener('click', () => {
     const tipo = document.getElementById('tipo').value;
-    const sv = document.getElementById('sv').value;
-    const cliente = document.getElementById('cliente').value;
+    const sv = document.getElementById('sv').value.trim();
+    const cliente = document.getElementById('cliente').value.trim();
     const dataFabricacao = document.getElementById('dataFabricacao').value;
     const dataRegistro = document.getElementById('dataRegistro').value;
-    const responsavel = document.getElementById('responsavel').value;
+    const responsavel = document.getElementById('responsavel').value.trim();
 
-    if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
+    if (!tipo || !sv || !cliente || !dataRegistro || !responsavel) {
         alert("Preencha todos os campos obrigatórios!");
         return;
     }
 
-    const novoFerramental = {tipo, sv, cliente, dataFabricacao, dataRegistro, responsavel};
+    const novoFerramental = {
+        tipo,
+        sv,
+        cliente,
+        dataFabricacao: dataFabricacao || "",
+        dataRegistro,
+        responsavel
+    };
 
-    const key = firebase.database().ref('ferramentais').push().key;
-    firebase.database().ref('ferramentais/' + key).set(novoFerramental)
-    .then(()=> alert("Ferramental registrado com sucesso!"))
-    .catch(err=> alert("Erro: "+err.message));
-}
+    // Cria um novo registro no Firebase
+    const dbRef = firebase.database().ref('ferramentais');
+    const newKey = dbRef.push().key;
+    dbRef.child(newKey).set(novoFerramental)
+    .then(() => {
+        alert("Ferramental registrado com sucesso!");
+        // Limpa campos
+        document.getElementById('tipo').value = "";
+        document.getElementById('sv').value = "";
+        document.getElementById('cliente').value = "";
+        document.getElementById('dataFabricacao').value = "";
+        document.getElementById('dataRegistro').value = "";
+        document.getElementById('responsavel').value = "";
+    })
+    .catch(err => {
+        alert("Erro ao registrar: " + err.message);
+    });
+});
 </script>
 
 </body>
