@@ -137,5 +137,70 @@
   </div>
 
   <footer>
+
+    <!-- Firebase SDK -->
+<script type="module">
+  // Importa os pacotes diretamente do CDN
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // Configuração do seu app Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
+  };
+
+  // Inicializa o Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  console.log("🔥 Firebase conectado com sucesso!");
+</script>
+
+<button id="teste">💾 Testar Banco de Dados</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Botão de teste
+  document.getElementById("teste").addEventListener("click", async () => {
+    try {
+      await addDoc(collection(db, "ferramentais"), {
+        nome: "Molde de Injeção A32",
+        status: "Em uso",
+        dataRegistro: new Date()
+      });
+      alert("✅ Documento adicionado ao Firestore!");
+    } catch (e) {
+      console.error("Erro ao adicionar:", e);
+    }
+
+    // Lê documentos existentes
+    const querySnapshot = await getDocs(collection(db, "ferramentais"));
+    querySnapshot.forEach((doc) => {
+      console.log(`${doc.id} =>`, doc.data());
+    });
+  });
+</script>
+
+    
     <p>&copy; © 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria
+
 
