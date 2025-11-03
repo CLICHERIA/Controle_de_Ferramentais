@@ -6,13 +6,12 @@
 <title>Consultar Ferramental</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
   body {
     margin: 0;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
     font-family: 'Orbitron', sans-serif;
     background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     color: #00f0ff;
@@ -23,7 +22,7 @@
     padding: 3rem;
     border-radius: 12px;
     box-shadow: 0 0 20px #00f0ff, 0 0 40px #ff00ff inset;
-    width: 400px;
+    width: 350px;
     text-align: center;
   }
 
@@ -32,33 +31,26 @@
     text-shadow: 0 0 10px #00f0ff, 0 0 20px #ff00ff;
   }
 
-  input {
+  input, button {
     width: 100%;
     padding: 0.8rem;
-    margin-bottom: 1rem;
-    border: 1px solid #00f0ff;
+    margin: 0.8rem 0;
     border-radius: 6px;
-    background: rgba(0,0,0,0.6);
-    color: #fff;
+    border: none;
     font-size: 1rem;
+    font-weight: bold;
   }
 
-  input::placeholder {
+  input {
+    background: rgba(0,0,0,0.3);
     color: #00f0ff;
-    opacity: 0.7;
+    border: 1px solid #00f0ff;
   }
 
   button {
-    width: 100%;
-    padding: 1rem;
-    border: none;
-    border-radius: 6px;
     background: linear-gradient(90deg, #00f0ff, #ff00ff);
     color: #fff;
-    font-weight: bold;
     cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     transition: 0.3s;
   }
 
@@ -66,27 +58,16 @@
     box-shadow: 0 0 20px #ff00ff, 0 0 40px #00f0ff;
   }
 
-  .resultado {
-    margin-top: 1.5rem;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
     text-align: left;
-    max-height: 200px;
-    overflow-y: auto;
-    background: rgba(0,0,0,0.5);
-    padding: 1rem;
-    border-radius: 6px;
-    border: 1px solid #00f0ff;
   }
 
-  a {
-    display: block;
-    margin-top: 1.5rem;
-    color: #ff00ff;
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-    text-shadow: 0 0 5px #ff00ff;
+  li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #00f0ff;
   }
 </style>
 </head>
@@ -94,46 +75,34 @@
 
 <div class="consult-box">
   <h1>Consultar Ferramental</h1>
-  <input type="text" id="search" placeholder="Digite nome ou código">
-  <button id="btnConsultar">Consultar</button>
-  <div class="resultado" id="resultado"></div>
-  <a href="menu.html">Voltar ao Menu</a>
+  <input type="text" id="filtro" placeholder="Pesquisar...">
+  <button id="btnPesquisar">Pesquisar</button>
+  <button id="btnVoltar">Voltar</button>
+  <ul id="lista"></ul>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+<script>
+  const ferramental = [
+    { nome: "Martelo", codigo: "001" },
+    { nome: "Chave de Fenda", codigo: "002" },
+    { nome: "Alicate", codigo: "003" }
+  ];
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-  };
+  document.getElementById("btnVoltar").addEventListener("click", () => {
+    window.location.href = "menu.html";
+  });
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  document.getElementById("btnConsultar").addEventListener("click", async () => {
-    const queryText = document.getElementById("search").value.toLowerCase();
-    const resultadoDiv = document.getElementById("resultado");
-    resultadoDiv.innerHTML = '';
-
-    const snapshot = await getDocs(collection(db, "ferramentais"));
-    const docs = snapshot.docs.map(doc => doc.data());
-    const filtrados = docs.filter(f => 
-      f.nome.toLowerCase().includes(queryText) || f.codigo.toLowerCase().includes(queryText)
-    );
-
-    if(filtrados.length > 0){
-      filtrados.forEach(f => {
-        resultadoDiv.innerHTML += `<p>${f.nome} - ${f.codigo}</p>`;
+  document.getElementById("btnPesquisar").addEventListener("click", () => {
+    const filtro = document.getElementById("filtro").value.toLowerCase();
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+    ferramental
+      .filter(f => f.nome.toLowerCase().includes(filtro) || f.codigo.includes(filtro))
+      .forEach(f => {
+        const li = document.createElement("li");
+        li.textContent = `${f.nome} (Código: ${f.codigo})`;
+        lista.appendChild(li);
       });
-    } else {
-      resultadoDiv.innerHTML = '<p>Nenhum ferramental encontrado.</p>';
-    }
   });
 </script>
 
