@@ -1,126 +1,86 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Sistema de Gestão de Ferramentais</title>
+  <title>Login - SGF</title>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-  <!-- ====================== -->
-  <!-- Estilo Futurista Neon -->
-  <!-- ====================== -->
   <style>
     body {
       background-color: #0a0f1a;
-      margin: 0;
-      padding: 0;
       color: #ffffff;
       font-family: 'Segoe UI', sans-serif;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-    }
-
-    a {
-      color: #00eaff;
-      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
     }
 
     .logo-container {
-      display: block;
-      text-align: center;
-      margin-top: 50px;
+      margin-bottom: 40px;
       filter: drop-shadow(0 0 8px #00eaff);
     }
 
     img.logo {
       width: 200px;
-      height: auto;
+      display: block;
+      margin: 0 auto;
     }
 
-    .login-box {
+    form {
       background-color: #0d1b2a;
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px #00eaff33;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00eaff22;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 300px;
     }
 
-    .login-box h2 {
-      color: #00eaff;
-      text-align: center;
-      margin-bottom: 30px;
-      text-shadow: 0 0 10px #00eaff;
-    }
-
-    .login-box input[type="email"],
-    .login-box input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+    input[type="email"], input[type="password"] {
+      padding: 10px;
       border-radius: 8px;
       border: none;
-      outline: none;
-      background-color: #0a0f1a;
-      color: #00eaff;
-      box-shadow: 0 0 5px #00eaff33;
+      font-size: 16px;
     }
 
-    .login-box button {
-      width: 100%;
-      padding: 15px;
-      margin-top: 15px;
-      font-size: 16px;
+    .neon-button {
+      padding: 12px;
       font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      background-color: #0d1b2a;
       color: #00eaff;
+      background-color: #0d1b2a;
+      border-radius: 10px;
+      border: none;
       cursor: pointer;
+      text-align: center;
       box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
       transition: 0.3s ease-in-out;
-      animation: neonPulse 1.5s infinite alternate;
     }
 
-    .login-box button:hover {
+    .neon-button:hover {
       color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff, 0 0 50px #00eaff77;
-    }
-
-    @keyframes neonPulse {
-      0%, 100% {
-        box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-      }
-      50% {
-        box-shadow: 0 0 15px #00eaff, 0 0 30px #00eaff, 0 0 45px #00eaff77;
-      }
+      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
     }
   </style>
 </head>
 <body>
 
-  <!-- Logo centralizada -->
   <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
+    <img src="../logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
   </div>
 
-  <!-- Caixa de Login -->
-  <div class="login-box">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="E-mail" required>
-    <input type="password" id="senha" placeholder="Senha" required>
-    <button onclick="login()">Entrar</button>
-  </div>
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Senha" required>
+    <button type="submit" class="neon-button">Login</button>
+  </form>
 
-  <!-- Firebase e JS -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script>
-    // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
@@ -129,23 +89,24 @@
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
 };
-
-    // Inicializa Firebase
     firebase.initializeApp(firebaseConfig);
 
-    function login() {
-      const email = document.getElementById('email').value;
-      const senha = document.getElementById('senha').value;
+    const auth = firebase.auth();
 
-      firebase.auth().signInWithEmailAndPassword(email, senha)
-        .then((userCredential) => {
-          // Login bem-sucedido
-          window.location.href = "menu.html"; // <-- caminho correto para raiz
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          // Redireciona para menu na raiz
+          window.location.href = "/SGF/menu.html";
         })
         .catch((error) => {
           alert("Erro no login: " + error.message);
         });
-    }
+    });
   </script>
 
 </body>
