@@ -312,7 +312,17 @@ form.addEventListener("submit", async (e) => {
       editId = null;
       document.getElementById("submitBtn").textContent = "Registrar Ferramental";
     } else {
-      await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString(), ultimaManutencao: null });
+      await addDoc(collection(db, "ferramentais"), {
+  tipo,
+  codigo,
+  nome,
+  registro,
+  status,
+  responsavel,
+  ultimaManutencao: null,
+  criadoEm: new Date().toISOString()
+});
+
       formMessage.textContent = "✅ Ferramental registrado com sucesso!";
     }
     formMessage.className = "message success";
@@ -405,3 +415,4 @@ function renderLista(ferramentais) {
 
 </body>
 </html>
+
