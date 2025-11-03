@@ -4,106 +4,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Consultar Ferramental</title>
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-  body {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: 'Orbitron', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    color: #00f0ff;
-  }
-
-  .consult-box {
-    background: rgba(0,0,0,0.85);
-    padding: 3rem;
-    border-radius: 12px;
-    box-shadow: 0 0 20px #00f0ff, 0 0 40px #ff00ff inset;
-    width: 350px;
-    text-align: center;
-  }
-
-  h1 {
-    margin-bottom: 2rem;
-    text-shadow: 0 0 10px #00f0ff, 0 0 20px #ff00ff;
-  }
-
-  input, button {
-    width: 100%;
-    padding: 0.8rem;
-    margin: 0.8rem 0;
-    border-radius: 6px;
-    border: none;
-    font-size: 1rem;
-    font-weight: bold;
-  }
-
-  input {
-    background: rgba(0,0,0,0.3);
-    color: #00f0ff;
-    border: 1px solid #00f0ff;
-  }
-
-  button {
-    background: linear-gradient(90deg, #00f0ff, #ff00ff);
-    color: #fff;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  button:hover {
-    box-shadow: 0 0 20px #ff00ff, 0 0 40px #00f0ff;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 1rem;
-    text-align: left;
-  }
-
-  li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #00f0ff;
-  }
+body {
+    background-color: #0a0f1a;
+    margin: 0; padding: 0;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+}
+h1 { color: #00eaff; text-shadow: 0 0 20px #00eaff; margin-top: 40px; }
+input { padding: 0.8rem; margin-bottom: 1rem; border-radius: 5px; border: 1px solid #00eaff; background: #0d1b2a; color: #00eaff; width: 300px; }
+input::placeholder { color: #66d9ff; }
+button { padding: 1rem; background-color: #0d1b2a; color: #00eaff; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff; transition: 0.3s; }
+button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff,0 0 20px #00eaff; }
+.neon-button { margin-top: 20px; display: inline-block; text-align: center; }
+#resultado { margin-top: 20px; width: 80%; max-width: 600px; text-align: left; background: #0d1b2a; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px #00eaff44; }
 </style>
+
 </head>
 <body>
 
-<div class="consult-box">
-  <h1>Consultar Ferramental</h1>
-  <input type="text" id="filtro" placeholder="Pesquisar...">
-  <button id="btnPesquisar">Pesquisar</button>
-  <button id="btnVoltar">Voltar</button>
-  <ul id="lista"></ul>
-</div>
+<h1>🔍 Consultar Ferramental</h1>
+
+<input type="text" id="busca" placeholder="Digite o código ou descrição">
+<button id="btnBuscar">Buscar</button>
+
+<div id="resultado">Nenhum resultado.</div>
+
+<a href="menu.html" class="neon-button">Voltar ao Menu</a>
 
 <script>
-  const ferramental = [
-    { nome: "Martelo", codigo: "001" },
-    { nome: "Chave de Fenda", codigo: "002" },
-    { nome: "Alicate", codigo: "003" }
-  ];
-
-  document.getElementById("btnVoltar").addEventListener("click", () => {
-    window.location.href = "menu.html";
-  });
-
-  document.getElementById("btnPesquisar").addEventListener("click", () => {
-    const filtro = document.getElementById("filtro").value.toLowerCase();
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
-    ferramental
-      .filter(f => f.nome.toLowerCase().includes(filtro) || f.codigo.includes(filtro))
-      .forEach(f => {
-        const li = document.createElement("li");
-        li.textContent = `${f.nome} (Código: ${f.codigo})`;
-        lista.appendChild(li);
-      });
-  });
+const btnBuscar = document.getElementById("btnBuscar");
+btnBuscar.addEventListener("click", () => {
+    const valor = document.getElementById("busca").value.trim();
+    if(!valor) { alert("Digite um valor para buscar."); return; }
+    // Exemplo: mock de resultado
+    document.getElementById("resultado").innerHTML = `Resultado encontrado para: <b>${valor}</b>`;
+});
 </script>
 
 </body>
