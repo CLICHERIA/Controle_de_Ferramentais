@@ -4,44 +4,39 @@
 <meta charset="UTF-8">
 <title>Consultar Ferramentais</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <style>
-body { font-family: Arial; background: #111; color: #fff; text-align:center;}
-.centralizado { width: 800px; margin:50px auto; background:#222; padding:20px; border-radius:10px;}
-input, button { padding: 6px; margin: 5px;}
-table { width: 100%; border-collapse: collapse; margin-top: 10px;}
-th, td { border: 1px solid #555; padding: 5px;}
-th { background: #333;}
-.neon-button { background:#00bfff;color:#111;font-weight:bold;cursor:pointer;}
-.neon-button:hover { background:#00e0ff;}
+body { font-family: Arial; background:#111; color:#fff; text-align:center;}
+.centralizado { width:800px; margin:30px auto; background:#222; padding:20px; border-radius:10px;}
+input { width:90%; margin:10px 0; padding:8px; border-radius:5px; border:none;}
+button { padding:5px 10px; margin:2px; border:none; border-radius:5px; background:#00bfff; color:#111; font-weight:bold; cursor:pointer;}
+button:hover { background:#00e0ff; }
+img.logo { width:150px; margin-bottom:20px; display:block; margin-left:auto; margin-right:auto; }
+table { width:100%; margin-top:20px; border-collapse: collapse;}
+th, td { border:1px solid #fff; padding:5px;}
 </style>
 </head>
 <body>
 
 <div class="centralizado">
+    <img src="logosovel1337.png" alt="Logo" class="logo">
     <h2>Consultar Ferramentais</h2>
-    <input type="text" id="inputPesquisa" placeholder="Pesquisar por SV ou Cliente">
-    <button onclick="buscarFerramentais()">Buscar</button>
 
-    <table id="tabelaFerramentais">
-        <tr>
-            <th>Tipo</th><th>SV</th><th>Cliente</th><th>Data Fabricação</th>
-            <th>Data Registro</th><th>Responsável</th><th>Ações</th>
-        </tr>
+    <input type="text" id="buscar" placeholder="Buscar por SV ou Cliente">
+    <button onclick="buscarFerramental()">Buscar</button>
+    <button onclick="window.location.href='menu.html'">Menu Principal</button>
+
+    <table id="tabela">
+        <thead>
+            <tr><th>Tipo</th><th>SV</th><th>Cliente</th><th>Data Fabricação</th><th>Data Registro</th><th>Responsável</th><th>Ações</th></tr>
+        </thead>
+        <tbody></tbody>
     </table>
-    <a href="menu.html" class="neon-button">Voltar ao Menu</a>
-</div>
-
-<!-- Modal QR Code -->
-<div id="modalQR" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);text-align:center;padding-top:50px;">
-    <canvas id="canvasQR"></canvas><br>
-    <button onclick="exportarPNG()">Exportar PNG</button>
-    <button onclick="fecharModal()">Fechar</button>
 </div>
 
 <script>
-// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
@@ -49,91 +44,83 @@ const firebaseConfig = {
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
 
-function buscarFerramentais() {
-    const tabela = document.getElementById('tabelaFerramentais');
-    tabela.innerHTML = "<tr><th>Tipo</th><th>SV</th><th>Cliente</th><th>Data Fabricação</th><th>Data Registro</th><th>Responsável</th><th>Ações</th></tr>";
+firebase.auth().onAuthStateChanged(user=>{
+    if(!user) window.location.href="index.html";
+});
 
-    const pesquisa = document.getElementById('inputPesquisa').value.toLowerCase();
+function buscarFerramental(){
+    const filtro = document.getElementById('buscar').value.toLowerCase();
+    const tbody = document.querySelector('#tabela tbody');
+    tbody.innerHTML = '';
 
-    db.ref('ferramentais').once('value', snapshot => {
-        if(!snapshot.exists()){
-            alert("Nenhum ferramental encontrado.");
-            return;
-        }
-
-        let encontrou = false;
-        snapshot.forEach(child => {
-            const f = child.val();
-            if(f.sv.toLowerCase().includes(pesquisa) || f.cliente.toLowerCase().includes(pesquisa)){
-                encontrou = true;
+    firebase.database().ref('ferramentais').once('value', snap=>{
+        const data = snap.val();
+        let encontrado = false;
+        for(const key in data){
+            const f = data[key];
+            if(f.sv.toLowerCase().includes(filtro) || f.cliente.toLowerCase().includes(filtro) || filtro==''){
+                encontrado = true;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                <td>${f.tipo}</td>
-                <td>${f.sv}</td>
-                <td>${f.cliente}</td>
-                <td>${f.dataFabricacao||''}</td>
-                <td>${f.dataRegistro}</td>
-                <td>${f.responsavel}</td>
-                <td>
-                    <button onclick="editarFerramental('${child.key}')">Editar</button>
-                    <button onclick="excluirFerramental('${child.key}')">Excluir</button>
-                    <button onclick="gerarQRCode('${child.key}')">QR Code</button>
-                </td>`;
-                tabela.appendChild(tr);
+                    <td>${f.tipo}</td>
+                    <td>${f.sv}</td>
+                    <td>${f.cliente}</td>
+                    <td>${f.dataFabricacao || ''}</td>
+                    <td>${f.dataRegistro}</td>
+                    <td>${f.responsavel}</td>
+                    <td>
+                        <button onclick='editarFerramental("${key}")'>Editar</button>
+                        <button onclick='excluirFerramental("${key}")'>Excluir</button>
+                        <button onclick='gerarQR("${key}")'>QR Code</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             }
-        });
-
-        if(!encontrou) alert("Nenhum ferramental encontrado com a pesquisa informada.");
+        }
+        if(!encontrado) tbody.innerHTML='<tr><td colspan="7">Nenhum ferramental encontrado</td></tr>';
     });
 }
 
 function editarFerramental(key){
-    const novoCliente = prompt("Digite novo Cliente:");
-    const novaData = prompt("Digite nova Data de Registro (YYYY-MM-DD):");
-    if(novoCliente && novaData){
-        db.ref('ferramentais/'+key).update({cliente:novoCliente,dataRegistro:novaData}, err=>{
-            if(err) alert("Erro ao editar: "+err);
-            else buscarFerramentais();
-        });
+    const f = prompt("Novo cliente:");
+    const dr = prompt("Nova data de registro (YYYY-MM-DD):");
+    if(f && dr){
+        firebase.database().ref('ferramentais/'+key).update({cliente:f, dataRegistro:dr});
+        alert("Alterações salvas!");
+        buscarFerramental();
     }
 }
 
 function excluirFerramental(key){
     if(confirm("Deseja excluir este ferramental?")){
-        db.ref('ferramentais/'+key).remove(err=>{
-            if(err) alert("Erro ao excluir: "+err);
-            else buscarFerramentais();
-        });
+        firebase.database().ref('ferramentais/'+key).remove();
+        buscarFerramental();
     }
 }
 
-function gerarQRCode(key){
-    db.ref('ferramentais/'+key).once('value', snap=>{
+function gerarQR(key){
+    firebase.database().ref('ferramentais/'+key).once('value', snap=>{
         const f = snap.val();
-        const data = `Tipo: ${f.tipo}\nSV: ${f.sv}\nCliente: ${f.cliente}\nData Fab: ${f.dataFabricacao||''}\nData Registro: ${f.dataRegistro}\nResponsável: ${f.responsavel}`;
-        const canvas = document.getElementById('canvasQR');
-        QRCode.toCanvas(canvas, data, {width:300}, err=>{
-            if(err) alert(err);
-            else document.getElementById('modalQR').style.display='block';
+        const dados = `Tipo: ${f.tipo}\nSV: ${f.sv}\nCliente: ${f.cliente}\nData Fab: ${f.dataFabricacao||''}\nData Reg: ${f.dataRegistro}\nResponsável: ${f.responsavel}`;
+        const qrWindow = window.open("", "QR Code", "width=300,height=300");
+        qrWindow.document.write(`<h3>QR Code</h3><canvas id="qrcode"></canvas><br><button onclick="download()">Download PNG</button>
+        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+        <script>
+        QRCode.toCanvas(document.getElementById("qrcode"), \`${dados}\`, function (error) {
+            if (error) console.error(error);
         });
+        function download(){
+            const canvas = document.getElementById("qrcode");
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "qrcode.png";
+            link.click();
+        }
+        </script>`);
     });
-}
-
-function exportarPNG(){
-    const canvas = document.getElementById('canvasQR');
-    const link = document.createElement('a');
-    link.download = 'qrcode.png';
-    link.href = canvas.toDataURL();
-    link.click();
-}
-
-function fecharModal(){
-    document.getElementById('modalQR').style.display='none';
 }
 </script>
 
