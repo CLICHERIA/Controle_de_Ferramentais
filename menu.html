@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Menu - SGF</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Sistema de Gestão de Ferramentais</title>
 
 <!-- ====================== -->
 <!-- Estilo Futurista -->
@@ -21,87 +22,98 @@
     height: 100%;
   }
 
-  a { color: #00eaff; text-decoration: none; }
+  a {
+    color: #00eaff;
+    text-decoration: none;
+  }
 
   .logo-container {
     display: block;
+    margin: 40px auto 20px auto;
     text-align: center;
-    margin: 40px 0 20px 0;
+    filter: drop-shadow(0 0 8px #00eaff);
   }
 
   img.logo {
-    width: 200px;
-    filter: drop-shadow(0 0 8px #00eaff);
+    max-width: 200px;
+  }
+
+  .login-box {
+    background-color: #0d1b2a;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px #00eaff55;
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .login-box input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    background-color: #0a0f1a;
+    color: #00eaff;
+    box-shadow: 0 0 5px #00eaff55 inset;
   }
 
   .neon-button {
     display: inline-block;
-    padding: 15px 35px;
+    padding: 12px 25px;
+    margin-top: 15px;
     color: #00eaff;
+    text-decoration: none;
     font-weight: bold;
     font-size: 16px;
     border-radius: 10px;
     background-color: #0d1b2a;
-    box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
+    box-shadow:
+      0 0 5px #00eaff,
+      0 0 10px #00eaff,
+      0 0 20px #00eaff,
+      0 0 40px #00eaff55;
     transition: 0.3s ease-in-out;
-    margin: 15px;
     animation: neonPulse 1.5s infinite alternate;
+    border: none;
+    cursor: pointer;
   }
 
   .neon-button:hover {
     color: #00ffff;
-    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
+    box-shadow:
+      0 0 10px #00eaff,
+      0 0 20px #00eaff,
+      0 0 30px #00eaff,
+      0 0 50px #00eaff77;
   }
 
   @keyframes neonPulse {
-    0%,100%{box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff;}
-    50%{box-shadow:0 0 15px #00eaff,0 0 30px #00eaff,0 0 45px #00eaff77;}
-  }
-
-  #painelUsuario {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #0d1b2a;
-    padding: 10px 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px #00eaff55;
-    color: #00eaff;
-    text-align: right;
-    z-index: 1000;
-  }
-
-  .centralizado {
-    text-align: center;
+    0%, 100% {
+      box-shadow:
+        0 0 5px #00eaff,
+        0 0 10px #00eaff,
+        0 0 20px #00eaff;
+    }
+    50% {
+      box-shadow:
+        0 0 15px #00eaff,
+        0 0 30px #00eaff,
+        0 0 45px #00eaff77;
+    }
   }
 </style>
-</head>
-<body>
 
-<!-- Painel Usuário -->
-<div id="painelUsuario">
-  <div><b>Nome:</b> <span id="nomeUsuario">---</span></div>
-  <div><b>Função:</b> <span id="funcaoUsuario">---</span></div>
-</div>
-
-<!-- Logo -->
-<div class="logo-container">
-  <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
-</div>
-
-<!-- Botões Menu -->
-<div class="centralizado">
-  <a href="registrar.html" class="neon-button">Registrar Ferramental</a>
-  <a href="consultar.html" class="neon-button">Consultar Ferramental</a>
-</div>
-
-<!-- Firebase + Painel -->
+<!-- Firebase SDKs -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  // Config do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
@@ -109,27 +121,47 @@ const firebaseConfig = {
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-const equipeDAC = {
-  "samueldson@example.com":"Supervisor",
-  "rafaelly@example.com":"Analista Administrativo",
-  "elienson@example.com":"Assistente",
-  "gustavo@example.com":"Assistente",
-  "vanessa@example.com":"Assistente"
-};
+  window.login = function() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
 
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    const nome = user.displayName || user.email;
-    const funcao = equipeDAC[user.email] || "Operador";
-    document.getElementById('nomeUsuario').textContent = nome;
-    document.getElementById('funcaoUsuario').textContent = funcao;
-  } else {
-    window.location.href = "index.html";
+    if (!email || !senha) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    signInWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        // Salva usuário no sessionStorage
+        sessionStorage.setItem("usuario", email);
+
+        // Redireciona para menu na raiz do projeto
+        window.location.href = "/SGF/menu.html";
+      })
+      .catch(err => {
+        alert("Erro no login: " + err.message);
+      });
   }
-});
 </script>
+
+</head>
+<body>
+
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="../logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" class="logo">
+  </div>
+
+  <!-- Caixa de Login -->
+  <div class="login-box">
+    <h2 style="color:#00eaff; margin-bottom:20px;">Login</h2>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="senha" placeholder="Senha"><br>
+    <button class="neon-button" onclick="login()">Entrar</button>
+  </div>
+
 </body>
 </html>
