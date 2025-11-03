@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registrar Ferramental</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 2rem; background: #f5f5f5; }
     h1 { margin-bottom: 1rem; }
     form { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 400px; }
     input, select { padding: 0.8rem; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc; }
-    button { padding: 1rem; background: #28a745; color: #fff; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
-    button:hover { background: #1e7e34; }
-    .back { margin-top: 1rem; background: #007BFF; }
-    .back:hover { background: #0056b3; }
+    button { padding: 1rem; font-weight: bold; border-radius: 5px; border: none; cursor: pointer; }
+    .registrar { background: #28a745; color: #fff; }
+    .voltar { background: #007BFF; color: #fff; margin-top: 1rem; }
+    button:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
@@ -28,10 +28,10 @@
     <option value="Em Uso">Em Uso</option>
     <option value="Manutenção">Manutenção</option>
   </select>
-  <button type="submit">Registrar</button>
+  <button class="registrar" type="submit">Registrar</button>
 </form>
 
-<button class="back" onclick="location.href='menu.html'">Voltar ao Menu</button>
+<button class="voltar" onclick="location.href='menu.html'">Voltar ao Menu</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
@@ -51,13 +51,10 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Redireciona para login se não estiver autenticado
-  onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "index.html";
-  });
+  onAuthStateChanged(auth, user => { if (!user) window.location.href = "index.html"; });
 
   const form = document.getElementById("formFerramental");
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async e => {
     e.preventDefault();
     const nome = document.getElementById("nome").value;
     const codigo = document.getElementById("codigo").value;
@@ -68,7 +65,7 @@
       alert("Ferramental registrado com sucesso!");
       form.reset();
     } catch (err) {
-      alert("Erro ao registrar: " + err.message);
+      alert("Erro: " + err.message);
     }
   });
 </script>
