@@ -1,109 +1,154 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registrar Ferramenta</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Ferramental</title>
 
-<style>
-body {
-    background-color: #0a0f1a;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-    margin:0; padding:0;
-}
+  <!-- ====================== -->
+  <!-- Estilo futurista do README -->
+  <!-- ====================== -->
+  <style>
+    body {
+      background-color: #0a0f1a;
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 40px;
+    }
 
-h1 { text-align:center; color:#00eaff; text-shadow:0 0 20px #00eaff; margin-top:20px; }
+    .form-box {
+      background: #0d1b2a;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00eaff55;
+      width: 400px;
+      text-align: center;
+    }
 
-form {
-    display:flex; flex-direction:column; align-items:center;
-    background:#0d1b2a;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 0 20px #00eaff33;
-    margin:30px auto;
-    width:90%;
-    max-width:400px;
-}
+    .logo-container {
+      display: inline-block;
+      background: transparent;
+      padding: 0;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 8px #00eaff);
+    }
 
-input, textarea {
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:10px;
-    border:1px solid #00eaff;
-    background-color:#0a0f1a;
-    color:#00eaff;
-}
+    .logo-container img {
+      width: 180px;
+      display: block;
+      margin: 0 auto;
+    }
 
-input::placeholder, textarea::placeholder { color:#66d9ff; }
+    input, select {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: 1px solid #00eaff44;
+      background-color: #0a0f1a;
+      color: #00eaff;
+      font-size: 1rem;
+    }
 
-button {
-    padding:12px 20px;
-    margin-top:10px;
-    border:none;
-    border-radius:10px;
-    background-color:#0d1b2a;
-    color:#00eaff;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff;
-    transition:0.3s ease-in-out;
-}
+    input::placeholder {
+      color: #00eaff88;
+    }
 
-button:hover {
-    color:#00ffff;
-    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff;
-}
+    label {
+      display: block;
+      text-align: left;
+      color: #00eaff;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
 
-.error { color:#ff5555; margin-top:10px; }
-</style>
+    .neon-button {
+      display: inline-block;
+      padding: 12px 25px;
+      color: #00eaff;
+      font-weight: bold;
+      border-radius: 10px;
+      background-color: #0d1b2a;
+      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 40px #00eaff55;
+      cursor: pointer;
+      transition: 0.3s ease-in-out;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .neon-button:hover {
+      color: #00ffff;
+      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff, 0 0 50px #00eaff77;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Registrar Ferramenta</h1>
+<div class="form-box">
+  <div class="logo-container">
+    <img src="../logosovel1337.png" alt="Logo Grupo Sovel">
+  </div>
 
-<form id="formRegistrar">
-    <input type="text" id="nome" placeholder="Nome da Ferramenta" required>
-    <input type="text" id="codigo" placeholder="Código/QR Code" required>
-    <textarea id="descricao" placeholder="Descrição" rows="3"></textarea>
-    <button type="submit">Registrar</button>
-    <div id="erro" class="error"></div>
-</form>
+  <h2>Registrar Ferramental</h2>
 
-<script type="module">
-  // Firebase SDK
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+  <form id="formRegistrar">
+    <label for="tipo">Tipo de Ferramental *</label>
+    <select id="tipo" required>
+      <option value="">Selecione</option>
+      <option value="faca">Faca</option>
+      <option value="cliche">Clichê</option>
+    </select>
 
-  const firebaseConfig = {
-  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
+    <label for="sv">SV *</label>
+    <input type="text" id="sv" placeholder="Ex: A123" required>
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    <label for="cliente">Cliente *</label>
+    <input type="text" id="cliente" placeholder="Nome do cliente" required>
 
-  const form = document.getElementById("formRegistrar");
-  const erro = document.getElementById("erro");
+    <label for="dataFabricacao">Data de Fabricação</label>
+    <input type="date" id="dataFabricacao">
 
-  form.addEventListener("submit", async (e) => {
+    <label for="dataRegistro">Data de Registro no Sistema *</label>
+    <input type="date" id="dataRegistro" required>
+
+    <label for="responsavel">Responsável pelo Registro *</label>
+    <input type="text" id="responsavel" placeholder="Nome do responsável" required>
+
+    <button type="submit" class="neon-button">Registrar</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('formRegistrar').addEventListener('submit', function(e){
     e.preventDefault();
-    const nome = document.getElementById("nome").value;
-    const codigo = document.getElementById("codigo").value;
-    const descricao = document.getElementById("descricao").value;
 
-    try {
-        await addDoc(collection(db, "ferramentas"), { nome, codigo, descricao });
-        alert("Ferramenta registrada com sucesso!");
-        form.reset();
-    } catch(err) {
-        erro.textContent = "Erro ao registrar: " + err.message;
-    }
+    const tipo = document.getElementById('tipo').value;
+    const sv = document.getElementById('sv').value;
+    const cliente = document.getElementById('cliente').value;
+    const dataFabricacao = document.getElementById('dataFabricacao').value;
+    const dataRegistro = document.getElementById('dataRegistro').value;
+    const responsavel = document.getElementById('responsavel').value;
+
+    // Aqui você pode adicionar a lógica para enviar os dados ao Firebase ou outro backend
+    console.log({
+      tipo,
+      sv,
+      cliente,
+      dataFabricacao,
+      dataRegistro,
+      responsavel
+    });
+
+    alert('Ferramental registrado com sucesso!');
+    // Resetando formulário
+    this.reset();
   });
 </script>
 
