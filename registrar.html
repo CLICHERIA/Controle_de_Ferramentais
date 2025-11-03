@@ -1,137 +1,160 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registrar Ferramental - SGF</title>
-<style>
-  body {
-    background-color: #0a0f1a;
-    color: #fff;
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Ferramental</title>
 
-  .logo-container {
-    margin: 40px auto;
-    display: inline-block;
-    filter: drop-shadow(0 0 8px #00eaff);
-  }
+  <!-- ====================== -->
+  <!-- Estilo Global Neon -->
+  <!-- ====================== -->
+  <style>
+    body {
+      background-color: #0a0f1a;
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-  img.logo {
-    width: 200px;
-  }
+    .logo-container {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      filter: drop-shadow(0 0 8px #00eaff);
+    }
 
-  form {
-    margin-top: 20px;
-    display: inline-block;
-    text-align: left;
-  }
+    img.logo { max-width: 200px; height: auto; }
 
-  label {
-    display: block;
-    margin-top: 15px;
-  }
+    .centralizado {
+      text-align: center;
+      max-width: 600px;
+      margin: 20px auto;
+    }
 
-  input, select {
-    padding: 8px;
-    width: 250px;
-    border-radius: 8px;
-    border: none;
-    margin-top: 5px;
-  }
+    input, select {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #00eaff44;
+      background-color: #0d1b2a;
+      color: #ffffff;
+    }
 
-  .neon-button {
-    padding: 10px;
-    font-weight: bold;
-    color: #00eaff;
-    background-color: #0d1b2a;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-    transition: 0.3s ease-in-out;
-    margin-top: 20px;
-    margin-right: 10px;
-  }
+    label { display: block; margin-top: 10px; color: #00eaff; }
 
-  .neon-button:hover {
-    color: #00ffff;
-    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-  }
+    .neon-button {
+      display: inline-block;
+      padding: 10px 25px;
+      color: #00eaff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      border-radius: 10px;
+      background-color: #0d1b2a;
+      box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
+      transition: 0.3s;
+      margin: 5px;
+    }
 
-</style>
+    .neon-button:hover {
+      color: #00ffff;
+      box-shadow: 0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
+    }
+
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
 </head>
 <body>
 
-<div class="logo-container">
-  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
-</div>
-
-<h2 style="color:#00eaff;">Registrar Ferramental</h2>
-
-<form id="formRegistro">
-  <label for="tipo">Tipo de Ferramental:</label>
-  <select id="tipo" required>
-    <option value="">Selecione</option>
-    <option value="Faca">Faca</option>
-    <option value="Clichê">Clichê</option>
-  </select>
-
-  <label for="sv">SV:</label>
-  <input type="text" id="sv" placeholder="Ex: SV001" required>
-
-  <label for="cliente">Cliente:</label>
-  <input type="text" id="cliente" placeholder="Nome do cliente" required>
-
-  <label for="dataFabricacao">Data de Fabricação (opcional):</label>
-  <input type="date" id="dataFabricacao">
-
-  <label for="dataRegistro">Data de Registro:</label>
-  <input type="date" id="dataRegistro" required>
-
-  <label for="responsavel">Responsável pelo registro:</label>
-  <input type="text" id="responsavel" placeholder="Seu nome" required>
-
-  <div>
-    <button type="button" class="neon-button" onclick="registrar()">Registrar</button>
-    <a href="menu.html" class="neon-button">Menu Principal</a>
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
   </div>
-</form>
 
-<script>
-  // Array global simulando banco de dados
-  let dados = [];
+  <div class="centralizado">
+    <h1 style="color:#00eaff; text-shadow:0 0 15px #00eaff;">Registrar Ferramental</h1>
 
-  function registrar() {
-    const tipo = document.getElementById("tipo").value;
-    const sv = document.getElementById("sv").value.trim();
-    const cliente = document.getElementById("cliente").value.trim();
-    const dataFabricacao = document.getElementById("dataFabricacao").value;
-    const dataRegistro = document.getElementById("dataRegistro").value;
-    const responsavel = document.getElementById("responsavel").value.trim();
+    <form id="formRegistrar">
+      <label for="tipo">Tipo de Ferramental:</label>
+      <select id="tipo" required>
+        <option value="">Selecione</option>
+        <option value="Faca">Faca</option>
+        <option value="Clichê">Clichê</option>
+      </select>
 
-    // Validação campos obrigatórios
-    if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
-      return alert("Preencha todos os campos obrigatórios!");
-    }
+      <label for="sv">SV (letra + número):</label>
+      <input type="text" id="sv" required placeholder="Ex: A123">
 
-    // Adicionar registro ao array
-    dados.push({
-      tipo,
-      sv,
-      cliente,
-      dataFabricacao: dataFabricacao || "Não informado",
-      dataRegistro,
-      responsavel
+      <label for="cliente">Cliente:</label>
+      <input type="text" id="cliente" required>
+
+      <label for="dataFabricacao">Data de Fabricação (opcional):</label>
+      <input type="date" id="dataFabricacao">
+
+      <label for="dataRegistro">Data de Registro:</label>
+      <input type="date" id="dataRegistro" required>
+
+      <label for="responsavel">Responsável pelo Registro:</label>
+      <input type="text" id="responsavel" required>
+
+      <br>
+      <button type="submit" class="neon-button">Registrar</button>
+      <button type="button" class="neon-button" onclick="window.location.href='menu.html'">Menu Principal</button>
+    </form>
+  </div>
+
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const form = document.getElementById('formRegistrar');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const tipo = document.getElementById('tipo').value;
+      const sv = document.getElementById('sv').value.trim();
+      const cliente = document.getElementById('cliente').value.trim();
+      const dataFabricacao = document.getElementById('dataFabricacao').value;
+      const dataRegistro = document.getElementById('dataRegistro').value;
+      const responsavel = document.getElementById('responsavel').value.trim();
+
+      if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+      }
+
+      db.collection("ferramentais").add({
+        tipo: tipo,
+        SV: sv,
+        cliente: cliente,
+        dataFabricacao: dataFabricacao,
+        dataRegistro: dataRegistro,
+        responsavel: responsavel
+      }).then(() => {
+        alert("Ferramental registrado com sucesso!");
+        form.reset();
+      }).catch((error) => {
+        console.error("Erro ao registrar:", error);
+        alert("Ocorreu um erro ao registrar.");
+      });
     });
-
-    alert("Ferramental registrado com sucesso!");
-    document.getElementById("formRegistro").reset();
-  }
-</script>
+  </script>
 
 </body>
 </html>
