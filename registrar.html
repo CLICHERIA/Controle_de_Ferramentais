@@ -1,111 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrar - SGF</title>
-  <style>
-    body {
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar Ferramental - SGF</title>
+<style>
+  body {
+    background-color: #0a0f1a;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
 
-    .logo-container {
-      margin: 40px auto;
-      filter: drop-shadow(0 0 8px #00eaff);
-      display: inline-block;
-    }
+  .logo-container {
+    margin: 40px auto;
+    display: inline-block;
+    filter: drop-shadow(0 0 8px #00eaff);
+  }
 
-    img.logo {
-      width: 200px;
-    }
+  img.logo {
+    width: 200px;
+  }
 
-    form {
-      background-color: #0d1b2a;
-      display: inline-block;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00eaff22;
-      text-align: left;
-    }
+  form {
+    margin-top: 20px;
+    display: inline-block;
+    text-align: left;
+  }
 
-    label {
-      display: block;
-      margin-top: 10px;
-    }
+  label {
+    display: block;
+    margin-top: 15px;
+  }
 
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: none;
-    }
+  input, select {
+    padding: 8px;
+    width: 250px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 5px;
+  }
 
-    .neon-button {
-      margin-top: 15px;
-      padding: 12px;
-      font-weight: bold;
-      color: #00eaff;
-      background-color: #0d1b2a;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-      transition: 0.3s ease-in-out;
-    }
+  .neon-button {
+    padding: 10px;
+    font-weight: bold;
+    color: #00eaff;
+    background-color: #0d1b2a;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
+    transition: 0.3s ease-in-out;
+    margin-top: 20px;
+    margin-right: 10px;
+  }
 
-    .neon-button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-    }
+  .neon-button:hover {
+    color: #00ffff;
+    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
+  }
 
-    .button-group {
-      text-align: center;
-    }
-  </style>
+</style>
 </head>
 <body>
 
-  <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
+<div class="logo-container">
+  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
+</div>
+
+<h2 style="color:#00eaff;">Registrar Ferramental</h2>
+
+<form id="formRegistro">
+  <label for="tipo">Tipo de Ferramental:</label>
+  <select id="tipo" required>
+    <option value="">Selecione</option>
+    <option value="Faca">Faca</option>
+    <option value="Clichê">Clichê</option>
+  </select>
+
+  <label for="sv">SV:</label>
+  <input type="text" id="sv" placeholder="Ex: SV001" required>
+
+  <label for="cliente">Cliente:</label>
+  <input type="text" id="cliente" placeholder="Nome do cliente" required>
+
+  <label for="dataFabricacao">Data de Fabricação (opcional):</label>
+  <input type="date" id="dataFabricacao">
+
+  <label for="dataRegistro">Data de Registro:</label>
+  <input type="date" id="dataRegistro" required>
+
+  <label for="responsavel">Responsável pelo registro:</label>
+  <input type="text" id="responsavel" placeholder="Seu nome" required>
+
+  <div>
+    <button type="button" class="neon-button" onclick="registrar()">Registrar</button>
+    <a href="menu.html" class="neon-button">Menu Principal</a>
   </div>
+</form>
 
-  <h2 style="color:#00eaff;">Registrar Ferramental</h2>
+<script>
+  // Array global simulando banco de dados
+  let dados = [];
 
-  <form id="registrarForm">
-    <label for="tipo">Tipo de Ferramental</label>
-    <select id="tipo" required>
-      <option value="">Selecione</option>
-      <option value="faca">Faca</option>
-      <option value="cliche">Clichê</option>
-    </select>
+  function registrar() {
+    const tipo = document.getElementById("tipo").value;
+    const sv = document.getElementById("sv").value.trim();
+    const cliente = document.getElementById("cliente").value.trim();
+    const dataFabricacao = document.getElementById("dataFabricacao").value;
+    const dataRegistro = document.getElementById("dataRegistro").value;
+    const responsavel = document.getElementById("responsavel").value.trim();
 
-    <label for="sv">SV</label>
-    <input type="text" id="sv" placeholder="SV" required>
+    // Validação campos obrigatórios
+    if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
+      return alert("Preencha todos os campos obrigatórios!");
+    }
 
-    <label for="cliente">Cliente</label>
-    <input type="text" id="cliente" placeholder="Cliente" required>
+    // Adicionar registro ao array
+    dados.push({
+      tipo,
+      sv,
+      cliente,
+      dataFabricacao: dataFabricacao || "Não informado",
+      dataRegistro,
+      responsavel
+    });
 
-    <label for="dataFabricacao">Data de Fabricação</label>
-    <input type="date" id="dataFabricacao">
-
-    <label for="dataRegistro">Data de Registro no Sistema</label>
-    <input type="date" id="dataRegistro" required>
-
-    <label for="responsavel">Responsável pelo Registro</label>
-    <input type="text" id="responsavel" placeholder="Nome do responsável" required>
-
-    <div class="button-group">
-      <button type="submit" class="neon-button">Registrar</button>
-      <a href="menu.html" class="neon-button">Menu Principal</a>
-    </div>
-  </form>
+    alert("Ferramental registrado com sucesso!");
+    document.getElementById("formRegistro").reset();
+  }
+</script>
 
 </body>
 </html>
