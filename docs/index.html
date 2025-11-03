@@ -1,402 +1,407 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Sistema de Gestão de Ferramentais - Grupo Sovel da Amazônia" />
-  <title>Gestão de Ferramentais | Grupo Sovel da Amazônia</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sistema de Gestão de Ferramentais - Grupo Sovel da Amazônia">
+<title>Gestão de Ferramentais | Grupo Sovel da Amazônia</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at top, #0a0f1a 0%, #020409 100%);
-      color: #e0e0e0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: radial-gradient(circle at top, #0a0f1a 0%, #020409 100%);
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
 
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-      animation: fadeIn 1.5s ease;
-    }
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
-    header h1 {
-      font-size: 2.2rem;
-      color: #00aaff;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px #00aaff;
-    }
+  header h1 {
+    font-size: 2.2rem;
+    color: #00aaff;
+    text-shadow: 0 0 10px #00aaff;
+  }
 
-    header p {
-      color: #aaa;
-      font-size: 1rem;
-      margin-top: 5px;
-    }
+  header p {
+    color: #aaa;
+    font-size: 1rem;
+    margin-top: 5px;
+  }
 
-    /* Botões do menu */
-    .menu {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
 
-    .menu button {
-      background: #0b2239;
-      color: #00c3ff;
-      border: 2px solid #00c3ff;
-      border-radius: 10px;
-      padding: 12px 25px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+  .menu button {
+    background: #0b2239;
+    color: #00c3ff;
+    border: 2px solid #00c3ff;
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 
-    .menu button:hover {
-      background: #00c3ff;
-      color: #0a0f1a;
-      transform: scale(1.05);
-    }
+  .menu button:hover {
+    background: #00c3ff;
+    color: #0a0f1a;
+    transform: scale(1.05);
+  }
 
-    form {
-      display: none; /* Formulário inicialmente escondido */
-      flex-direction: column;
-      gap: 12px;
-      background: rgba(0, 195, 255, 0.05);
-      padding: 20px 30px;
-      border-radius: 10px;
-      border: 1px solid rgba(0, 195, 255, 0.2);
-      width: 100%;
-      max-width: 450px;
-      box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
-      margin-bottom: 30px;
-    }
+  form {
+    display: none; /* inicialmente escondido */
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(0, 195, 255, 0.05);
+    padding: 20px 30px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 195, 255, 0.2);
+    width: 100%;
+    max-width: 450px;
+    margin-bottom: 20px;
+    position: relative;
+  }
 
-    form input, form select {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #00c3ff55;
-      background: #0b2239;
-      color: #e0e0e0;
-      font-size: 1rem;
-    }
+  .message {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    color: #fff;
+    padding: 5px 0;
+    border-radius: 5px;
+    display: none;
+  }
 
-    form button {
-      background: #0b2239;
-      color: #00c3ff;
-      border: 2px solid #00c3ff;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+  .message.success { background: #28a745; }
+  .message.error { background: #dc3545; }
 
-    form button:hover {
-      background: #00c3ff;
-      color: #0a0f1a;
-      transform: scale(1.05);
-    }
+  form input, form select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #00c3ff55;
+    background: #0b2239;
+    color: #e0e0e0;
+    font-size: 1rem;
+  }
 
-    /* Lista e cores por status */
-    #listaFerramentais {
-      margin-top: 20px;
-      background: rgba(0, 195, 255, 0.05);
-      border: 1px solid rgba(0, 195, 255, 0.2);
-      border-radius: 10px;
-      padding: 20px 30px;
-      width: 100%;
-      max-width: 500px;
-      box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
-      display: none;
-    }
+  form input.invalid, form select.invalid {
+    border-color: #ff4444;
+  }
 
-    #listaFerramentais h2 {
-      color: #00c3ff;
-      text-align: center;
-      margin-bottom: 15px;
-      text-shadow: 0 0 10px #00c3ff;
-    }
+  form button {
+    background: #0b2239;
+    color: #00c3ff;
+    border: 2px solid #00c3ff;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 
-    #listaFerramentais ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+  form button:hover {
+    background: #00c3ff;
+    color: #0a0f1a;
+    transform: scale(1.05);
+  }
 
-    #listaFerramentais li {
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(0, 195, 255, 0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 6px;
-      margin-bottom: 5px;
-    }
+  #listaFerramentais {
+    margin-top: 20px;
+    background: rgba(0, 195, 255, 0.05);
+    border: 1px solid rgba(0, 195, 255, 0.2);
+    border-radius: 10px;
+    padding: 20px 30px;
+    width: 100%;
+    max-width: 500px;
+    display: none;
+  }
 
-    #listaFerramentais li .dados {
-      flex: 1;
-    }
+  #listaFerramentais h2 {
+    color: #00c3ff;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #00c3ff;
+  }
 
-    #listaFerramentais li .status {
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #0a0f1a;
-    }
+  #searchInput {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #00c3ff55;
+    background: #0b2239;
+    color: #e0e0e0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
 
-    .status.EmUso { background: #00c3ff; }       /* Azul */
-    .status.Manutencao { background: #ffcc00; } /* Amarelo */
-    .status.Danificado { background: #ff4444; } /* Vermelho */
-    .status.Trocar { background: #ff8800; }     /* Laranja */
+  #listaFerramentais ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-    #listaFerramentais button {
-      margin-left: 10px;
-      padding: 4px 8px;
-      font-size: 0.85rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
+  #listaFerramentais li {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(0, 195, 255, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 6px;
+    margin-bottom: 5px;
+  }
 
-    #listaFerramentais .edit-btn { background: #ffaa00; color: #0a0f1a; }
-    #listaFerramentais .delete-btn { background: #ff4444; color: #fff; }
+  .status {
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #0a0f1a;
+  }
 
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #888;
-      margin-top: 30px;
-    }
+  .EmUso { background: #00c3ff; }
+  .Manutencao { background: #ffcc00; }
+  .Danificado { background: #ff4444; }
+  .Trocar { background: #ff8800; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 600px) { header h1 { font-size: 1.6rem; } }
-  </style>
+  #listaFerramentais button {
+    margin-left: 10px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .edit-btn { background: #ffaa00; color: #0a0f1a; }
+  .delete-btn { background: #ff4444; color: #fff; }
+
+  footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 30px;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.6rem; }
+  }
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>🔧 Sistema de Gestão de Ferramentais</h1>
-    <p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
-  </header>
+<header>
+  <h1>🔧 Sistema de Gestão de Ferramentais</h1>
+  <p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
+</header>
 
-  <div class="menu">
-    <button id="btnRegistrar">📝 Registrar Ferramental</button>
-    <button id="btnListar">🔍 Consultar Ferramentais</button>
-    <button onclick="alert('Gerador de QR Code em breve')">📱 Gerar QR Code</button>
-    <button onclick="alert('Área administrativa em construção')">⚙️ Administração</button>
-  </div>
+<div class="menu">
+  <button id="btnRegistrar">📝 Registrar Ferramental</button>
+  <button id="btnListar">🔍 Consultar Ferramentais</button>
+  <button onclick="alert('Gerador de QR Code em breve')">📱 Gerar QR Code</button>
+  <button onclick="alert('Área administrativa em construção')">⚙️ Administração</button>
+</div>
 
-  <form id="formFerramental">
-    <input type="text" id="tipo" placeholder="Faca ou Clichê" required />
-    <input type="text" id="codigo" placeholder="Código SV" required />
-    <input type="text" id="nome" placeholder="Nome do Cliente" required />
-    <input type="date" id="registro" required />
-    <select id="status" required>
-      <option value="">Status</option>
-      <option value="Em uso">Em uso</option>
-      <option value="Danificado">Danificado</option>
-      <option value="Manutenção">Manutenção</option>
-      <option value="Trocar">Trocar</option>
-    </select>
-    <input type="text" id="responsavel" placeholder="Responsável pelo registro" />
-    <button type="submit" id="submitBtn">Registrar Ferramental</button>
-  </form>
+<form id="formFerramental">
+  <div class="message" id="formMessage"></div>
+  <input type="text" id="tipo" placeholder="Faca ou Clichê">
+  <input type="text" id="codigo" placeholder="Código SV" required>
+  <input type="text" id="nome" placeholder="Nome do Cliente" required>
+  <input type="date" id="registro">
+  <select id="status">
+    <option value="">Status</option>
+    <option value="Em uso">Em uso</option>
+    <option value="Danificado">Danificado</option>
+    <option value="Manutenção">Manutenção</option>
+    <option value="Trocar">Trocar</option>
+  </select>
+  <input type="text" id="responsavel" placeholder="Responsável pelo registro">
+  <button type="submit" id="submitBtn">Registrar Ferramental</button>
+</form>
 
-  <!-- Filtro e Pesquisa -->
-  <div id="filtroFerramentais" style="margin-bottom:15px; width:100%; max-width:500px; display:none; gap:8px; flex-direction:column;">
-    <input type="text" id="busca" placeholder="🔍 Buscar por código, cliente ou status" style="
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #00c3ff55;
-      background: #0b2239;
-      color: #e0e0e0;
-      font-size: 1rem;
-    " />
-    <select id="filtroStatus" style="
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #00c3ff55;
-      background: #0b2239;
-      color: #e0e0e0;
-      font-size: 1rem;
-    ">
-      <option value="">Todos os Status</option>
-      <option value="Em uso">Em uso</option>
-      <option value="Danificado">Danificado</option>
-      <option value="Manutenção">Manutenção</option>
-      <option value="Trocar">Trocar</option>
-    </select>
-  </div>
+<div id="listaFerramentais">
+  <h2>📋 Lista de Ferramentais</h2>
+  <input type="text" id="searchInput" placeholder="Pesquisar por Código, Nome ou Tipo">
+  <ul id="lista"></ul>
+</div>
 
-  <div id="listaFerramentais">
-    <h2>📋 Lista de Ferramentais</h2>
-    <ul id="lista"></ul>
-  </div>
+<footer>
+  <p>&copy; 2025 Grupo Sovel da Amazônia</p>
+</footer>
 
-  <footer>
-    <p>&copy; 2025 Grupo Sovel da Amazônia</p>
-  </footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-      authDomain: "dacsovel-53481.firebaseapp.com",
-      projectId: "dacsovel-53481",
-      storageBucket: "dacsovel-53481.firebasestorage.app",
-      messagingSenderId: "37867522513",
-      appId: "1:37867522513:web:336d687e3fc8408bd138f0"
-    };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+const form = document.getElementById("formFerramental");
+const listaDiv = document.getElementById("listaFerramentais");
+const listaUl = document.getElementById("lista");
+const btnRegistrar = document.getElementById("btnRegistrar");
+const btnListar = document.getElementById("btnListar");
+const formMessage = document.getElementById("formMessage");
+const searchInput = document.getElementById("searchInput");
+let editId = null;
+let allFerramentais = [];
 
-    const form = document.getElementById("formFerramental");
-    const submitBtn = document.getElementById("submitBtn");
-    const buscaInput = document.getElementById("busca");
-    const filtroStatus = document.getElementById("filtroStatus");
-    const filtroDiv = document.getElementById("filtroFerramentais");
-    const listaDiv = document.getElementById("listaFerramentais");
-    let editId = null;
+btnRegistrar.addEventListener("click", () => {
+  form.style.display = "flex";
+  listaDiv.style.display = "none";
+  formMessage.style.display = "none";
+});
 
-    const btnRegistrar = document.getElementById("btnRegistrar");
-    const btnListar = document.getElementById("btnListar");
+btnListar.addEventListener("click", () => {
+  form.style.display = "none";
+  listarFerramentais();
+});
 
-    btnRegistrar.addEventListener("click", () => {
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  formMessage.style.display = "none";
+  form.querySelectorAll("input, select").forEach(el => el.classList.remove("invalid"));
+
+  const tipo = document.getElementById("tipo").value || "";
+  const codigo = document.getElementById("codigo").value.trim();
+  const nome = document.getElementById("nome").value.trim();
+  const registroInput = document.getElementById("registro").value;
+  const registro = registroInput ? registroInput : new Date().toISOString();
+  const status = document.getElementById("status").value || "Disponível";
+  const responsavel = document.getElementById("responsavel").value || "Não atribuído";
+
+  if (!codigo || !nome) {
+    if (!codigo) document.getElementById("codigo").classList.add("invalid");
+    if (!nome) document.getElementById("nome").classList.add("invalid");
+    formMessage.textContent = "Preencha os campos obrigatórios!";
+    formMessage.className = "message error";
+    formMessage.style.display = "block";
+    return;
+  }
+
+  try {
+    if (editId) {
+      await updateDoc(doc(db, "ferramentais", editId), { tipo, codigo, nome, registro, status, responsavel });
+      formMessage.textContent = "✅ Ferramental atualizado com sucesso!";
+      editId = null;
+      document.getElementById("submitBtn").textContent = "Registrar Ferramental";
+    } else {
+      await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString(), ultimaManutencao: null });
+      formMessage.textContent = "✅ Ferramental registrado com sucesso!";
+    }
+    formMessage.className = "message success";
+    formMessage.style.display = "block";
+    form.reset();
+    listarFerramentais();
+  } catch (err) {
+    console.error(err);
+    formMessage.textContent = "❌ Ocorreu um erro ao registrar.";
+    formMessage.className = "message error";
+    formMessage.style.display = "block";
+  }
+});
+
+searchInput.addEventListener("input", () => {
+  const filtro = searchInput.value.toLowerCase();
+  renderLista(allFerramentais.filter(f => f.codigo.toLowerCase().includes(filtro) || f.nome.toLowerCase().includes(filtro) || f.tipo.toLowerCase().includes(filtro)));
+});
+
+async function listarFerramentais() {
+  listaUl.innerHTML = "";
+  allFerramentais = [];
+  try {
+    const snapshot = await getDocs(collection(db, "ferramentais"));
+    if (snapshot.empty) {
+      listaUl.innerHTML = "<li>Nenhum ferramental cadastrado.</li>";
+      listaDiv.style.display = "block";
+    } else {
+      snapshot.forEach(docItem => {
+        const dados = docItem.data();
+        dados.id = docItem.id;
+        allFerramentais.push(dados);
+      });
+      renderLista(allFerramentais);
+      listaDiv.style.display = "block";
+    }
+  } catch(err) { console.error(err); }
+}
+
+function renderLista(ferramentais) {
+  listaUl.innerHTML = "";
+  if(ferramentais.length === 0){
+    listaUl.innerHTML = "<li>Nenhum resultado encontrado.</li>";
+    return;
+  }
+
+  ferramentais.forEach(dados => {
+    const item = document.createElement("li");
+    let classeStatus = "";
+    switch(dados.status){
+      case "Em uso": classeStatus = "EmUso"; break;
+      case "Manutenção": classeStatus = "Manutencao"; break;
+      case "Danificado": classeStatus = "Danificado"; break;
+      case "Trocar": classeStatus = "Trocar"; break;
+    }
+    item.innerHTML = `
+      <div>
+        <strong>${dados.codigo}</strong> — ${dados.nome}<br>
+        <span class="status ${classeStatus}">${dados.status}</span><br>
+        <small>Tipo: ${dados.tipo} | Responsável: ${dados.responsavel} | Registro: ${dados.registro}</small>
+      </div>
+      <div>
+        <button class="edit-btn">Editar</button>
+        <button class="delete-btn">Excluir</button>
+      </div>
+    `;
+    item.querySelector(".delete-btn").addEventListener("click", async () => {
+      if(confirm("Deseja excluir este ferramental?")){
+        await deleteDoc(doc(db, "ferramentais", dados.id));
+        listarFerramentais();
+      }
+    });
+    item.querySelector(".edit-btn").addEventListener("click", () => {
+      document.getElementById("tipo").value = dados.tipo;
+      document.getElementById("codigo").value = dados.codigo;
+      document.getElementById("nome").value = dados.nome;
+      document.getElementById("registro").value = dados.registro;
+      document.getElementById("status").value = dados.status;
+      document.getElementById("responsavel").value = dados.responsavel;
       form.style.display = "flex";
       listaDiv.style.display = "none";
-      filtroDiv.style.display = "none";
+      editId = dados.id;
+      document.getElementById("submitBtn").textContent = "Salvar Alterações";
+      formMessage.style.display = "none";
     });
-
-    btnListar.addEventListener("click", () => {
-      form.style.display = "none";
-      listarFerramentais();
-    });
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const tipo = document.getElementById("tipo").value || "";
-      const codigo = document.getElementById("codigo").value;
-      const nome = document.getElementById("nome").value;
-      const registroInput = document.getElementById("registro").value;
-      const registro = registroInput ? registroInput : new Date().toISOString();
-      const status = document.getElementById("status").value || "Disponível";
-      const responsavel = document.getElementById("responsavel").value || "Não atribuído";
-
-      if (!codigo || !nome) return alert("Código e nome são obrigatórios!");
-
-      try {
-        if (editId) {
-          await updateDoc(doc(db, "ferramentais", editId), { tipo, codigo, nome, registro, status, responsavel });
-          alert("✅ Ferramental atualizado com sucesso!");
-          editId = null;
-          submitBtn.textContent = "Registrar Ferramental";
-        } else {
-          await addDoc(collection(db, "ferramentais"), {
-            tipo, codigo, nome, registro, status, responsavel,
-            ultimaManutencao: null,
-            criadoEm: new Date().toISOString()
-          });
-          alert("✅ Ferramental registrado com sucesso!");
-        }
-        form.reset();
-      } catch (err) {
-        console.error("Erro:", err);
-        alert("❌ Ocorreu um erro.");
-      }
-    });
-
-    async function listarFerramentais() {
-      const listaUl = document.getElementById("lista");
-      listaUl.innerHTML = "";
-      try {
-        const snapshot = await getDocs(collection(db, "ferramentais"));
-        if (snapshot.empty) {
-          listaUl.innerHTML = "<li>Nenhum ferramental cadastrado.</li>";
-        } else {
-          filtroDiv.style.display = "flex";
-          listaDiv.style.display = "block";
-
-          const searchTerm = buscaInput.value.toLowerCase();
-          const statusTerm = filtroStatus.value;
-
-          snapshot.forEach((docItem) => {
-            const dados = docItem.data();
-            if (statusTerm && dados.status !== statusTerm) return;
-            const concatenado = `${dados.codigo} ${dados.nome} ${dados.status}`.toLowerCase();
-            if (!concatenado.includes(searchTerm)) return;
-
-            const item = document.createElement("li");
-            let classeStatus = "";
-            switch (dados.status) {
-              case "Em uso": classeStatus = "EmUso"; break;
-              case "Manutenção": classeStatus = "Manutencao"; break;
-              case "Danificado": classeStatus = "Danificado"; break;
-              case "Trocar": classeStatus = "Trocar"; break;
-              default: classeStatus = ""; break;
-            }
-
-            item.innerHTML = `
-              <div class="dados">
-                <strong>${dados.codigo}</strong> — ${dados.nome}
-                <br>
-                <span class="status ${classeStatus}">${dados.status || "N/A"}</span>
-                <br><small>Tipo: ${dados.tipo || "N/A"} | Responsável: ${dados.responsavel || "N/A"} | Registro: ${dados.registro || "N/A"}</small>
-              </div>
-              <div>
-                <button class="edit-btn">Editar</button>
-                <button class="delete-btn">Excluir</button>
-              </div>
-            `;
-
-            item.querySelector(".delete-btn").addEventListener("click", async () => {
-              if (confirm(`Deseja realmente excluir ${dados.nome}?`)) {
-                await deleteDoc(doc(db, "ferramentais", docItem.id));
-                listarFerramentais();
-              }
-            });
-
-            item.querySelector(".edit-btn").addEventListener("click", () => {
-              document.getElementById("tipo").value = dados.tipo || "";
-              document.getElementById("codigo").value = dados.codigo;
-              document.getElementById("nome").value = dados.nome;
-              document.getElementById("registro").value = dados.registro || "";
-              document.getElementById("status").value = dados.status || "";
-              document.getElementById("responsavel").value = dados.responsavel || "";
-              form.style.display = "flex";
-              listaDiv.style.display = "none";
-              filtroDiv.style.display = "none";
-              editId = docItem.id;
-              submitBtn.textContent = "Salvar Alterações";
-            });
-
-            listaUl.appendChild(item);
-          });
-        }
-      } catch (err) {
-        console.error("Erro ao listar:", err);
-      }
-    }
-
-    buscaInput.addEventListener("input", listarFerramentais);
-    filtroStatus.addEventListener("change", listarFerramentais);
-  </script>
+    listaUl.appendChild(item);
+  });
+}
+</script>
 
 </body>
 </html>
