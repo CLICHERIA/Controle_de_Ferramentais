@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Autenticação</title>
+
+  <!-- Estilo Futurista -->
   <style>
     body {
       background-color: #0a0f1a;
@@ -12,48 +14,50 @@
       margin: 0;
       padding: 0;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 8px #00eaff);
+    }
+
+    .logo {
+      width: 200px;
     }
 
     .login-box {
       background: #0d1b2a;
       padding: 2rem;
-      border-radius: 15px;
+      border-radius: 12px;
       box-shadow:
         0 0 10px #00eaff,
-        0 0 20px #00eaff55;
-      width: 350px;
+        0 0 20px #00eaff44;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    h1 {
       text-align: center;
-    }
-
-    .logo-container {
-      display: inline-block;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 0 10px #00eaff);
-    }
-
-    .logo {
-      display: block;
-      margin: 0 auto;
-      width: 150px;
-      height: auto;
+      color: #00eaff;
+      text-shadow: 0 0 10px #00eaff;
+      margin: 0 0 1rem 0;
     }
 
     input {
       width: 100%;
       padding: 0.8rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      border: 1px solid #00eaff;
-      background: #0a0f1a;
-      color: #00eaff;
-      font-size: 1rem;
-    }
-
-    input::placeholder {
-      color: #00eaffaa;
+      border-radius: 5px;
+      border: 1px solid #00eaff55;
+      background-color: #0a0f1a;
+      color: #ffffff;
     }
 
     button {
@@ -61,17 +65,16 @@
       padding: 1rem;
       background-color: #0d1b2a;
       color: #00eaff;
-      border: 2px solid #00eaff;
-      border-radius: 10px;
       font-weight: bold;
-      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      transition: 0.3s ease-in-out;
       box-shadow:
         0 0 5px #00eaff,
         0 0 10px #00eaff,
-        0 0 20px #00eaff;
-      animation: neonPulse 1.5s infinite alternate;
+        0 0 20px #00eaff,
+        0 0 40px #00eaff55;
+      transition: 0.3s ease-in-out;
     }
 
     button:hover {
@@ -79,43 +82,33 @@
       box-shadow:
         0 0 10px #00eaff,
         0 0 20px #00eaff,
-        0 0 40px #00eaff;
-    }
-
-    @keyframes neonPulse {
-      0%, 100% {
-        box-shadow:
-          0 0 5px #00eaff,
-          0 0 10px #00eaff,
-          0 0 20px #00eaff;
-      }
-      50% {
-        box-shadow:
-          0 0 15px #00eaff,
-          0 0 30px #00eaff,
-          0 0 45px #00eaff77;
-      }
+        0 0 30px #00eaff,
+        0 0 50px #00eaff77;
     }
   </style>
 </head>
 <body>
 
-<div class="login-box">
+  <!-- Logo -->
   <div class="logo-container">
     <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
   </div>
-  <h1>Autenticação</h1>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="senha" placeholder="Senha">
-  <button id="btnLogin">Entrar</button>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+  <!-- Login Box -->
+  <div class="login-box">
+    <h1>Login</h1>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="btnLogin">Entrar</button>
+  </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  <!-- Firebase Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
@@ -123,21 +116,22 @@
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
 };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  document.getElementById("btnLogin").addEventListener("click", () => {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
+    document.getElementById("btnLogin").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
 
-    signInWithEmailAndPassword(auth, email, senha)
-      .then(() => {
-        // Redireciona para menu.html dentro da pasta docs
-        window.location.href = "docs/menu.html";
-      })
-      .catch(err => alert("Erro no login: " + err.message));
-  });
-</script>
+      signInWithEmailAndPassword(auth, email, senha)
+        .then(() => {
+          // Redireciona para menu.html na raiz
+          window.location.href = "menu.html";
+        })
+        .catch(err => alert("Erro no login: " + err.message));
+    });
+  </script>
 
 </body>
 </html>
+  
