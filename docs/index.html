@@ -4,558 +4,686 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Gestão de Ferramentais — Grupo Sovel</title>
-<meta name="description" content="Sistema moderno de gestão de ferramentais com QR Code, Auth e export" />
+<meta name="description" content="Painel corporativo de gestão de ferramentais com login modal (Firebase), QR e export" />
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+<!-- Tipografia -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<!-- ===========================
-     STYLES (Dashboard + polished)
-     =========================== -->
+<!-- ====== ESTILO CORPORATIVO ====== -->
 <style>
   :root{
-    --accent:#00d0ff; --muted:#9aa6b2; --card-bg:rgba(11,34,57,0.7);
+    --bg-dark:#0b1116;
+    --panel:#0e1620;
+    --muted:#99a3ad;
+    --accent:#1e88e5;
+    --accent-2:#0ea5a4;
     --glass: rgba(255,255,255,0.02);
   }
   *{box-sizing:border-box}
+  html,body{height:100%}
   body{
-    margin:0; font-family:Inter, Arial, sans-serif; background:
-    radial-gradient(1200px 600px at 10% 10%, #081428 0%, #02040a 35%),
-    linear-gradient(180deg,#071225,#020409);
-    color:#e6eef6; -webkit-font-smoothing:antialiased;
-    display:flex; flex-direction:column; align-items:center; padding:28px; gap:18px;
+    margin:0;
+    font-family:Inter,system-ui,Arial,sans-serif;
+    background: linear-gradient(180deg,var(--bg-dark),#071018 60%);
+    color:#e6eef6;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:28px;
   }
 
-  header{
-    width:100%; max-width:1200px; display:flex; justify-content:space-between; gap:12px;
-    padding:14px 18px; border-radius:12px; background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    box-shadow:0 6px 30px rgba(0,0,0,0.45); align-items:center;
+  /* Container central */
+  .page{
+    width:100%;
+    max-width:1200px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
   }
-  .brand{display:flex; align-items:center; gap:12px;}
-  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#00d0ff,#2dd4bf);display:flex;align-items:center;justify-content:center;font-weight:700;color:#021018}
-  header h1{margin:0;font-family:Poppins,Inter;font-size:1.25rem;color:var(--accent);text-shadow:0 3px 18px rgba(0,208,255,0.08)}
-  header p{margin:0;color:var(--muted);font-size:0.9rem}
 
-  .controls{display:flex;gap:8px;align-items:center}
+  /* Top bar */
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 18px;
+    border-radius:10px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.008));
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:48px;height:48px;border-radius:8px;
+    background:linear-gradient(135deg,var(--accent),#0fb6c6); display:flex; align-items:center; justify-content:center;
+    font-weight:700;color:#021018;
+  }
+  .brand h1{margin:0;font-size:1.15rem;color:var(--accent);font-weight:600}
+  .brand p{margin:0;color:var(--muted);font-size:0.88rem}
 
+  /* Main hero when not logged */
+  .hero{
+    display:flex;
+    gap:20px;
+    align-items:center;
+    justify-content:space-between;
+    padding:28px;
+    border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+    border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .hero-left{max-width:62%}
+  .hero h2{margin:0 0 8px 0;color:#d5eefc}
+  .hero p{margin:0;color:var(--muted)}
+  .cta{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
   .btn{
-    border:0; cursor:pointer; padding:10px 14px;border-radius:10px;font-weight:600;
-    color:var(--accent); background:rgba(0,0,0,0.25); border:1px solid rgba(0,208,255,0.12);
+    border:0;padding:12px 16px;border-radius:10px;font-weight:700;cursor:pointer;background:transparent;color:var(--accent);
+    border:1px solid rgba(30,136,229,0.12)
   }
-  .btn.positive{background:linear-gradient(90deg,#05262a,#043640); color:#00ffd1}
-  .btn.ghost{background:transparent;border:1px dashed rgba(0,208,255,0.06)}
-  .btn:hover{transform:translateY(-3px)}
+  .btn.primary{
+    background:linear-gradient(90deg,var(--accent),#0fb6c6);
+    color:#021018; box-shadow:0 10px 30px rgba(14,110,180,0.08);
+  }
 
-  .container{width:100%;max-width:1200px; display:grid; grid-template-columns: 1fr 440px; gap:20px;}
+  /* layout after login: hidden by default */
+  .dashboard{
+    display:none;
+    gap:20px;
+    width:100%;
+  }
+  .container{
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:20px;
+  }
   .panel{
-    background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
-    border-radius:14px; padding:18px; box-shadow:0 10px 30px rgba(1,10,20,0.45);
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+    padding:18px; border-radius:12px; border:1px solid rgba(255,255,255,0.02);
   }
 
-  .search{display:flex; gap:10px; margin-bottom:12px; align-items:center}
-  .search input{flex:1;padding:12px;border-radius:10px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.02);color:inherit}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+  /* Search & cards */
+  .search{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+  .search input{flex:1;padding:10px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.02);color:inherit}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 
-  .card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.02);transition:all .18s;display:flex;flex-direction:column;gap:8px;
+  .card{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.02)}
+  .code{font-weight:700;color:#dff6ff}
+  .meta{color:var(--muted);font-size:0.88rem}
+  .badge{padding:6px 10px;border-radius:999px;font-weight:700;font-size:0.82rem;color:#021018}
+  .s-emuso{background:linear-gradient(90deg,#bdefff,#7fd4ff)}
+  .s-manut{background:linear-gradient(90deg,#ffd998,#ffb84d)}
+  .s-dan{background:linear-gradient(90deg,#ff9b9b,#ff7070)}
+  .s-trocar{background:linear-gradient(90deg,#ffc79a,#ff9e5b)}
+
+  .card-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+  .icon-btn{padding:8px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+  .edit{background:#ffd89b;color:#021018}
+  .del{background:#ff8b90;color:#fff}
+  .qr{background:#8fe7ff;color:#021018}
+
+  /* side form */
+  .side .card-panel{padding:16px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.02)}
+  label{display:block;color:var(--muted);margin-bottom:6px;font-size:0.9rem}
+  input[type=text],select,input[type=date]{width:100%;padding:10px;border-radius:8px;background:#061018;border:1px solid rgba(255,255,255,0.02);color:inherit}
+
+  .actions{display:flex;gap:10px;margin-top:10px}
+  .small{color:var(--muted);font-size:0.9rem}
+
+  footer{text-align:center;color:var(--muted);margin-top:18px}
+
+  /* modals */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .modal{width:420px;background:linear-gradient(180deg,#071827,#0a2630);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .modal h3{margin:0 0 8px 0;color:var(--accent)}
+  .modal input{width:100%;padding:10px;border-radius:8px;background:#08161b;border:1px solid rgba(255,255,255,0.02);color:inherit;margin-top:8px}
+
+  /* small screens */
+  @media(max-width:1000px){
+    .container{grid-template-columns:1fr}
+    .hero-left{max-width:100%}
   }
-  .card:hover{transform:translateY(-6px); box-shadow:0 24px 44px rgba(0,0,0,0.5),0 0 30px rgba(0,208,255,0.06)}
-  .card-head{display:flex;justify-content:space-between;align-items:start;gap:12px}
-  .code{font-weight:800;color:#cfeffd}
-  .name{color:var(--muted)}
-  .badge{padding:6px 10px;border-radius:999px;font-weight:700;font-size:0.8rem;color:#071018}
-  .s-emuso{background:linear-gradient(90deg,#00d0ff,#00b4ff);box-shadow:0 6px 18px rgba(0,208,255,0.06)}
-  .s-manut{background:linear-gradient(90deg,#ffd866,#ffb84d);box-shadow:0 6px 18px rgba(255,200,70,0.06)}
-  .s-dan{background:linear-gradient(90deg,#ff6b6b,#ff4d4f);box-shadow:0 6px 18px rgba(255,80,80,0.06)}
-  .s-trocar{background:linear-gradient(90deg,#ffb86b,#ff8b3d);box-shadow:0 6px 18px rgba(255,140,60,0.06)}
-
-  .card-row{display:flex;justify-content:space-between;align-items:center}
-  .card-actions{display:flex;gap:8px}
-  .icon-btn{border-radius:8px;padding:8px 10px;border:0;cursor:pointer;font-weight:700}
-  .icon-edit{background:linear-gradient(90deg,#ffd866,#ffb84d);color:#072018}
-  .icon-del{background:linear-gradient(90deg,#ff8b90,#ff6b6b);color:#fff}
-  .icon-qr{background:linear-gradient(90deg,#00d0ff,#00b4ff);color:#021018}
-
-  .side{display:flex;flex-direction:column;gap:12px;position:sticky;top:28px}
-  .card-panel{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.02)}
-
-  label{display:block;color:var(--muted);font-size:0.9rem;margin-bottom:6px}
-  input[type="text"],input[type="date"],select{width:100%;padding:10px;border-radius:10px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.02);color:inherit}
-  .submit-row{display:flex;gap:10px;margin-top:12px}
-
-  /* QR Modal */
-  #qrModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;z-index:9999}
-  .modal-panel{width:360px;padding:22px;border-radius:14px;background:linear-gradient(180deg,#051827,#0b2330);position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.7)}
-  .modal-close{position:absolute;top:12px;right:14px;border:0;background:transparent;color:#ff7b7b;font-size:22px;cursor:pointer}
-
-  /* Auth modal */
-  #authModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:10000}
-  .auth-panel{width:420px;padding:22px;border-radius:12px;background:linear-gradient(180deg,#021827,#032a39);}
-
-  /* small */
-  .small-muted{color:var(--muted);font-size:0.9rem}
-  footer{width:100%;max-width:1200px;text-align:center;color:var(--muted);margin-top:12px}
-
-  @media(max-width:1000px){ .container{grid-template-columns:1fr} .side{position:relative;top:0} }
 </style>
 </head>
 <body>
+  <div class="page">
 
-<header>
-  <div class="brand">
-    <div class="logo">SV</div>
-    <div>
-      <h1>Gestão de Ferramentais</h1>
-      <p>Grupo Sovel — Departamento de Amostras e Clicheria</p>
-    </div>
-  </div>
-
-  <div class="controls">
-    <button id="btnOpenForm" class="btn positive">📝 Registrar</button>
-    <button id="btnShowList" class="btn">🔍 Consultar</button>
-    <button id="btnExportExcel" class="btn ghost" title="Exportar Excel" style="display:none">📊 Exportar Excel</button>
-    <button id="btnExportPDF" class="btn ghost" title="Exportar PDF" style="display:none">📄 Exportar PDF</button>
-    <div id="userBox" style="display:flex;align-items:center;gap:8px;margin-left:8px">
-      <span id="userEmail" class="small-muted" style="display:none"></span>
-      <button id="btnLogin" class="btn">Entrar / Registrar</button>
-      <button id="btnLogout" class="btn" style="display:none">Sair</button>
-    </div>
-  </div>
-</header>
-
-<div class="container">
-  <div class="panel">
-    <div class="search">
-      <input id="searchInput" placeholder="Pesquisar por código, nome ou tipo..." />
-      <button id="btnRefresh" class="btn ghost" title="Recarregar">⟳</button>
-    </div>
-
-    <div id="lista" class="grid">
-      <!-- cards -->
-    </div>
-  </div>
-
-  <aside class="side">
-    <div class="card-panel">
-      <h3 style="margin:0;color:var(--accent)">Registrar / Editar</h3>
-      <p class="small-muted" style="margin:8px 0 12px 0">Preencha os campos e clique em Salvar.</p>
-
-      <form id="formFerramental" autocomplete="off">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">SV</div>
         <div>
-          <label for="tipo">Tipo</label>
-          <input id="tipo" type="text" placeholder="Faca ou Clichê" />
+          <h1>Gestão de Ferramentais</h1>
+          <p>Grupo Sovel — Departamento de Amostras e Clicheria</p>
         </div>
-        <div style="margin-top:8px">
-          <label for="codigo">Código SV *</label>
-          <input id="codigo" type="text" placeholder="Ex: SV-1234" required />
-        </div>
-        <div style="margin-top:8px">
-          <label for="nome">Nome do Cliente *</label>
-          <input id="nome" type="text" placeholder="Nome do cliente / pedido" required />
-        </div>
-        <div class="form-row" style="display:flex;gap:8px;margin-top:8px">
-          <div style="flex:1">
-            <label for="registro">Data de registro</label>
-            <input id="registro" type="date" />
-          </div>
-          <div style="flex:1">
-            <label for="status">Status</label>
-            <select id="status">
-              <option value="">Selecionar</option>
-              <option value="Em uso">Em uso</option>
-              <option value="Manutenção">Manutenção</option>
-              <option value="Danificado">Danificado</option>
-              <option value="Trocar">Trocar</option>
-            </select>
-          </div>
-        </div>
-        <div style="margin-top:8px">
-          <label for="responsavel">Responsável</label>
-          <input id="responsavel" type="text" placeholder="Nome do responsável" />
-        </div>
+      </div>
 
-        <div class="submit-row">
-          <button id="submitBtn" type="submit" class="btn positive">Salvar</button>
-          <button id="resetBtn" type="button" class="btn">Limpar</button>
+      <div id="topControls" style="display:flex;gap:10px;align-items:center">
+        <!-- Will be updated by JS after auth -->
+        <button id="btnAccess" class="btn primary">Acessar Menu Interativo</button>
+        <div id="userControls" style="display:none;align-items:center;gap:8px">
+          <span id="userEmail" class="small"></span>
+          <button id="btnLogout" class="btn">Sair</button>
         </div>
-        <div id="formMessage" style="margin-top:10px;display:none;padding:8px;border-radius:8px;font-weight:700"></div>
-      </form>
+      </div>
     </div>
 
-    <div class="card-panel" style="margin-top:12px">
-      <h4 style="margin:0 0 6px 0;color:#cfeefd">Ajuda rápida</h4>
-      <ul style="color:var(--muted);line-height:1.5">
-        <li>Cadastre com Código SV (obrigatório).</li>
-        <li>Use "Consultar" para carregar a lista.</li>
-        <li>Faça login para poder usar CRUD e exportações.</li>
-      </ul>
+    <!-- HERO (public) -->
+    <div id="hero" class="hero">
+      <div class="hero-left">
+        <h2>Sistema de Gestão de Ferramentais</h2>
+        <p>Faça login para acessar o painel de registro e consulta de ferramentais. O acesso é protegido — apenas usuários autenticados podem manipular registros ou exportar relatórios.</p>
+      </div>
+      <div class="cta">
+        <button id="heroAccess" class="btn primary">Acessar Menu Interativo</button>
+      </div>
     </div>
-  </aside>
-</div>
 
-<footer>
-  <p>&copy; 2025 Grupo Sovel da Amazônia</p>
-</footer>
+    <!-- DASHBOARD (private) -->
+    <div id="dashboard" class="dashboard">
+      <div class="container">
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+              <strong style="color:var(--accent)">Ferramentais</strong>
+              <div class="small">Pesquisar, editar, excluir e gerar QR</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="btnExportExcel" class="btn" title="Exportar Excel">📊 Excel</button>
+              <button id="btnExportPDF" class="btn" title="Exportar PDF">📄 PDF</button>
+            </div>
+          </div>
 
-<!-- QR Modal -->
-<div id="qrModal" aria-hidden="true" style="display:none;align-items:center;justify-content:center">
-  <div class="modal-panel">
-    <button class="modal-close" id="modalCloseBtn" title="Fechar">&times;</button>
-    <h3 style="margin-top:6px;color:var(--accent)">QR Code do Ferramental</h3>
-    <canvas id="qrcodeCanvas" width="250" height="250" style="margin-top:8px;border-radius:8px;background:#fff"></canvas>
-    <div style="margin-top:12px">
-      <button id="downloadQR" class="btn positive">⬇️ Baixar QR Code</button>
+          <div class="search">
+            <input id="searchInput" placeholder="Pesquisar por código, nome ou tipo..." />
+            <button id="btnRefresh" class="btn">⟳</button>
+          </div>
+
+          <div id="lista" class="grid">
+            <!-- cards injected here -->
+          </div>
+        </div>
+
+        <aside class="side">
+          <div class="card-panel">
+            <h3 style="margin:0;color:var(--accent)">Registrar / Editar</h3>
+            <p class="small" style="margin-top:8px">Preencha os campos e clique em Salvar. Registro e Consulta só disponíveis após login.</p>
+
+            <form id="formFerramental" style="margin-top:12px">
+              <div>
+                <label for="tipo">Tipo</label>
+                <input id="tipo" type="text" placeholder="Faca ou Clichê" />
+              </div>
+              <div style="margin-top:8px">
+                <label for="codigo">Código SV *</label>
+                <input id="codigo" type="text" placeholder="Ex: SV-1234" required />
+              </div>
+              <div style="margin-top:8px">
+                <label for="nome">Nome do Cliente *</label>
+                <input id="nome" type="text" placeholder="Nome do cliente / pedido" required />
+              </div>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <div style="flex:1">
+                  <label for="registro">Data de registro</label>
+                  <input id="registro" type="date" />
+                </div>
+                <div style="flex:1">
+                  <label for="status">Status</label>
+                  <select id="status">
+                    <option value="">Selecionar</option>
+                    <option value="Em uso">Em uso</option>
+                    <option value="Manutenção">Manutenção</option>
+                    <option value="Danificado">Danificado</option>
+                    <option value="Trocar">Trocar</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top:8px">
+                <label for="responsavel">Responsável</label>
+                <input id="responsavel" type="text" placeholder="Nome do responsável" />
+              </div>
+
+              <div class="actions">
+                <button id="submitBtn" type="submit" class="btn primary">Salvar</button>
+                <button id="resetBtn" type="button" class="btn">Limpar</button>
+              </div>
+
+              <div id="formMessage" style="margin-top:10px;display:none;padding:8px;border-radius:8px;font-weight:700"></div>
+            </form>
+          </div>
+
+          <div class="card-panel" style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0;color:var(--accent)">Ajuda Rápida</h4>
+            <ul style="color:var(--muted);line-height:1.5;margin:0;padding-left:18px">
+              <li>Cadastre com Código SV (obrigatório).</li>
+              <li>Use "Consultar" para recarregar a lista.</li>
+              <li>Gere QR Code por item e baixe em PNG.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Grupo Sovel da Amazônia</p>
+    </footer>
+  </div>
+
+  <!-- QR Modal (hidden) -->
+  <div id="qrModal" style="display:none" class="modal-backdrop" aria-hidden="true">
+    <div class="modal">
+      <button id="modalCloseBtn" class="modal-close">&times;</button>
+      <h3>QR Code do Ferramental</h3>
+      <canvas id="qrcodeCanvas" width="250" height="250" style="border-radius:8px;background:#fff;margin-top:12px"></canvas>
+      <div style="margin-top:12px;text-align:center">
+        <button id="downloadQR" class="btn primary">⬇️ Baixar QR Code</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Auth Modal -->
-<div id="authModal" style="display:none;align-items:center;justify-content:center">
-  <div class="auth-panel">
-    <h3 style="margin:0 0 8px 0;color:var(--accent)">Entrar / Registrar</h3>
-    <p class="small-muted">Crie conta ou acesse com email/senha. (Multi-user)</p>
-
-    <div style="margin-top:10px">
-      <label for="authEmail">Email</label>
-      <input id="authEmail" type="text" style="width:100%;padding:10px;border-radius:8px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.02);color:inherit" />
+  <!-- AUTH Modal (modal login) -->
+  <div id="authModal" style="display:none" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>Acessar Menu Interativo</h3>
+      <p style="color:var(--muted);margin-top:6px">Entre com seu e-mail e senha. Se não tiver conta, registre-se.</p>
+      <input id="authEmail" placeholder="Email" type="text" />
+      <input id="authPass" placeholder="Senha" type="password" />
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button id="btnSignin" class="btn primary">Entrar</button>
+        <button id="btnSignup" class="btn">Registrar</button>
+        <button id="btnCloseAuth" class="btn">Cancelar</button>
+      </div>
+      <div id="authMsg" style="margin-top:10px;display:none;padding:8px;border-radius:8px;font-weight:700"></div>
     </div>
-    <div style="margin-top:8px">
-      <label for="authPass">Senha</label>
-      <input id="authPass" type="password" style="width:100%;padding:10px;border-radius:8px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.02);color:inherit" />
-    </div>
-
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button id="btnSignin" class="btn positive">Entrar</button>
-      <button id="btnSignup" class="btn">Registrar</button>
-      <button id="btnCloseAuth" class="btn ghost">Fechar</button>
-    </div>
-    <div id="authMsg" style="margin-top:10px;display:none;padding:8px;border-radius:8px;font-weight:700"></div>
   </div>
-</div>
 
-<!-- Libraries (XLSX and jsPDF + autotable and QRious) -->
-<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-<!-- Firebase (modular) -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <!-- Firebase modular -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // ========= FIREBASE CONFIG =========
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-    authDomain: "dacsovel-53481.firebaseapp.com",
-    projectId: "dacsovel-53481",
-    storageBucket: "dacsovel-53481.firebasestorage.app",
-    messagingSenderId: "37867522513",
-    appId: "1:37867522513:web:336d687e3fc8408bd138f0"
-  };
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // ======= DOM refs =======
-  const btnOpenForm = document.getElementById("btnOpenForm");
-  const btnShowList = document.getElementById("btnShowList");
-  const btnRefresh = document.getElementById("btnRefresh");
-  const searchInput = document.getElementById("searchInput");
-  const listaEl = document.getElementById("lista");
-
-  const form = document.getElementById("formFerramental");
-  const tipoEl = document.getElementById("tipo");
-  const codigoEl = document.getElementById("codigo");
-  const nomeEl = document.getElementById("nome");
-  const registroEl = document.getElementById("registro");
-  const statusEl = document.getElementById("status");
-  const responsavelEl = document.getElementById("responsavel");
-  const submitBtn = document.getElementById("submitBtn");
-  const resetBtn = document.getElementById("resetBtn");
-  const formMessage = document.getElementById("formMessage");
-
-  const btnExportExcel = document.getElementById("btnExportExcel");
-  const btnExportPDF = document.getElementById("btnExportPDF");
-
-  // Auth modal refs
-  const authModal = document.getElementById("authModal");
-  const btnLogin = document.getElementById("btnLogin");
-  const btnLogout = document.getElementById("btnLogout");
-  const btnSignin = document.getElementById("btnSignin");
-  const btnSignup = document.getElementById("btnSignup");
-  const btnCloseAuth = document.getElementById("btnCloseAuth");
-  const authEmail = document.getElementById("authEmail");
-  const authPass = document.getElementById("authPass");
-  const authMsg = document.getElementById("authMsg");
-  const userEmail = document.getElementById("userEmail");
-
-  // QR modal refs
-  const qrModal = document.getElementById("qrModal");
-  const modalCloseBtn = document.getElementById("modalCloseBtn");
-  const qrcodeCanvas = document.getElementById("qrcodeCanvas");
-  const downloadQR = document.getElementById("downloadQR");
-
-  let allFerramentais = [];
-  let editId = null;
-  let qr = null;
-
-  // ===== helpers =====
-  function showFormMsg(text, ok=true){
-    formMessage.style.display = "block";
-    formMessage.textContent = text;
-    formMessage.style.background = ok ? "linear-gradient(90deg,#073b34,#095e4f)" : "linear-gradient(90deg,#3b0a0a,#6b1212)";
-    formMessage.style.color = ok ? "#bfffe4" : "#ffdcdc";
-    setTimeout(()=> formMessage.style.display = "none", 3800);
-  }
-  function showAuthMsg(text, ok=true){
-    authMsg.style.display = "block"; authMsg.textContent = text;
-    authMsg.style.background = ok ? "linear-gradient(90deg,#073b34,#095e4f)" : "linear-gradient(90deg,#3b0a0a,#6b1212)";
-    authMsg.style.color = ok ? "#bfffe4" : "#ffdcdc";
-    setTimeout(()=> authMsg.style.display = "none", 3600);
-  }
-  function clearForm(){ form.reset(); editId = null; submitBtn.textContent = "Salvar"; }
-  function formatDateShort(v){ if(!v) return ""; const d = new Date(v); if(isNaN(d)) return v; return d.toLocaleDateString(); }
-  function escapeHtml(s){ if(!s) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-  // ===== UI events =====
-  btnOpenForm.addEventListener("click", ()=> { codigoEl.focus(); window.scrollTo({top:0,behavior:"smooth"}) });
-  btnShowList.addEventListener("click", async ()=> { if(!auth.currentUser){ alert("Faça login para ver a lista."); openAuth(); return; } await listarFerramentais(); window.scrollTo({top:0,behavior:"smooth"})});
-  btnRefresh.addEventListener("click", ()=> { if(!auth.currentUser){ alert("Faça login para recarregar."); openAuth(); return; } listarFerramentais(); });
-
-  // Export buttons
-  btnExportExcel.addEventListener("click", exportExcel);
-  btnExportPDF.addEventListener("click", exportPDF);
-
-  resetBtn.addEventListener("click", clearForm);
-
-  // Submit create/update (do NOT auto-show list)
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    codigoEl.classList.remove("invalid"); nomeEl.classList.remove("invalid");
-    const tipo = tipoEl.value.trim() || "";
-    const codigo = codigoEl.value.trim();
-    const nome = nomeEl.value.trim();
-    const registro = registroEl.value || new Date().toISOString().split("T")[0];
-    const status = statusEl.value || "Disponível";
-    const responsavel = responsavelEl.value.trim() || "Não atribuído";
-    if(!codigo || !nome){ if(!codigo) codigoEl.classList.add("invalid"); if(!nome) nomeEl.classList.add("invalid"); showFormMsg("Preencha Código e Nome.", false); return; }
-    if(!auth.currentUser){ alert("Faça login para salvar."); openAuth(); return; }
-    try{
-      if(editId){
-        await updateDoc(doc(db, "ferramentais", editId), { tipo, codigo, nome, registro, status, responsavel });
-        showFormMsg("Atualizado com sucesso.", true);
-        editId = null; submitBtn.textContent = "Salvar";
-      } else {
-        await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString() });
-        showFormMsg("Registrado com sucesso.", true);
-      }
-      clearForm();
-    } catch(err){
-      console.error("Salvar erro:", err); showFormMsg("Erro ao salvar registro.", false);
-    }
-  });
-
-  // ===== Auth UI =====
-  btnLogin.addEventListener("click", openAuth);
-  btnCloseAuth.addEventListener("click", closeAuth);
-  btnLogout.addEventListener("click", async () => { await signOut(auth); });
-
-  btnSignin.addEventListener("click", async () => {
-    const email = authEmail.value.trim(), pass = authPass.value;
-    if(!email||!pass){ showAuthMsg("Preencha email e senha.", false); return; }
-    try {
-      await signInWithEmailAndPassword(auth, email, pass);
-      showAuthMsg("Login realizado.", true); closeAuth();
-    } catch(err){ console.error(err); showAuthMsg("Erro ao entrar: "+ (err.message||err.code), false); }
-  });
-
-  btnSignup.addEventListener("click", async () => {
-    const email = authEmail.value.trim(), pass = authPass.value;
-    if(!email||!pass){ showAuthMsg("Preencha email e senha.", false); return; }
-    try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-      // optional: set displayName later with updateProfile
-      await updateProfile(userCred.user, { displayName: email.split("@")[0] });
-      showAuthMsg("Conta criada. Você está logado.", true); closeAuth();
-    } catch(err){ console.error(err); showAuthMsg("Erro ao registrar: "+(err.message||err.code), false); }
-  });
-
-  function openAuth(){
-    authModal.style.display = "flex"; authModal.querySelector(".auth-panel").focus();
-  }
-  function closeAuth(){
-    authModal.style.display = "none"; authEmail.value = ""; authPass.value = "";
-  }
-
-  // ===== Auth state observer =====
-  onAuthStateChanged(auth, (user) => {
-    if(user){
-      userEmail.style.display = "inline-block"; userEmail.textContent = user.email;
-      btnLogin.style.display = "none"; btnLogout.style.display = "inline-block";
-      // enable export and operations
-      btnExportExcel.style.display = "inline-block"; btnExportPDF.style.display = "inline-block";
-    } else {
-      userEmail.style.display = "none"; userEmail.textContent = "";
-      btnLogin.style.display = "inline-block"; btnLogout.style.display = "none";
-      btnExportExcel.style.display = "none"; btnExportPDF.style.display = "none";
-      // clear list UI and local cache
-      listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Faça login para consultar ferramentais.</div>`;
-      allFerramentais = [];
-    }
-  });
-
-  // ===== Firestore list & render =====
-  async function listarFerramentais(){
-    listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Carregando...</div>`;
-    allFerramentais = [];
-    try{
-      const snapshot = await getDocs(collection(db, "ferramentais"));
-      if(snapshot.empty){ listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum ferramental cadastrado.</div>`; return; }
-      snapshot.forEach(docItem => { const d = docItem.data(); d.id = docItem.id; allFerramentais.push(d); });
-      renderLista(allFerramentais);
-    } catch(err){ console.error("Listar erro:", err); listaEl.innerHTML = `<div style="color:#ffb3b3; padding:18px">Erro ao carregar lista.</div>`; }
-  }
-
-  function renderLista(items){
-    listaEl.innerHTML = "";
-    if(!items || items.length === 0){ listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum resultado encontrado.</div>`; return; }
-    items.forEach(item => {
-      const card = document.createElement("div"); card.className = "card";
-      let badgeClass = "s-emuso";
-      switch((item.status||"").toLowerCase()){
-        case "em uso": badgeClass = "s-emuso"; break;
-        case "manutenção": badgeClass = "s-manut"; break;
-        case "danificado": badgeClass = "s-dan"; break;
-        case "trocar": badgeClass = "s-trocar"; break;
-        default: badgeClass = "s-emuso";
-      }
-      card.innerHTML = `
-        <div class="card-head">
-          <div>
-            <div class="code">${escapeHtml(item.codigo||"")}</div>
-            <div class="name">${escapeHtml(item.nome||"")}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="badge ${badgeClass}">${escapeHtml(item.status||"Disponível")}</div>
-            <div class="meta" style="margin-top:8px;color:var(--muted)">${escapeHtml(item.tipo||"—")}</div>
-          </div>
-        </div>
-
-        <div class="card-row" style="margin-top:10px">
-          <div style="color:var(--muted);font-size:0.9rem">
-            <div>Responsável: <strong style="color:#cfeffd">${escapeHtml(item.responsavel||"—")}</strong></div>
-            <div style="margin-top:6px">Registro: <span style="color:#aee8ff">${formatDateShort(item.registro)}</span></div>
-          </div>
-          <div class="card-actions">
-            <button class="icon-btn icon-edit" title="Editar">✏️</button>
-            <button class="icon-btn icon-del" title="Excluir">🗑️</button>
-            <button class="icon-btn icon-qr" title="QR Code">🔳</button>
-          </div>
-        </div>
-      `;
-
-      const btnEdit = card.querySelector(".icon-edit");
-      const btnDel = card.querySelector(".icon-del");
-      const btnQr = card.querySelector(".icon-qr");
-
-      btnEdit.addEventListener("click", () => {
-        tipoEl.value = item.tipo||""; codigoEl.value = item.codigo||""; nomeEl.value = item.nome||"";
-        registroEl.value = item.registro||""; statusEl.value = item.status||""; responsavelEl.value = item.responsavel||"";
-        editId = item.id; submitBtn.textContent = "Salvar alterações"; window.scrollTo({top:0,behavior:"smooth"});
-      });
-
-      btnDel.addEventListener("click", async () => {
-        if(!confirm(`Excluir ${item.codigo} — ${item.nome}?`)) return;
-        try { await deleteDoc(doc(db,"ferramentais", item.id)); await listarFerramentais(); } catch(err){ console.error(err); alert("Erro ao excluir"); }
-      });
-
-      btnQr.addEventListener("click", () => gerarQR(item));
-
-      listaEl.appendChild(card);
-    });
-  }
-
-  // search filter
-  searchInput.addEventListener("input", () => {
-    const q = searchInput.value.trim().toLowerCase();
-    if(!q){ renderLista(allFerramentais); return; }
-    const filtered = allFerramentais.filter(i => (i.codigo||"").toLowerCase().includes(q) || (i.nome||"").toLowerCase().includes(q) || (i.tipo||"").toLowerCase().includes(q));
-    renderLista(filtered);
-  });
-
-  // ===== QR modal + download =====
-  function gerarQR(item){
-    const txt =
-      `Código: ${item.codigo||""}\nNome: ${item.nome||""}\nTipo: ${item.tipo||""}\nStatus: ${item.status||""}\nResponsável: ${item.responsavel||""}\nRegistro: ${item.registro||""}`;
-    qr = new QRious({element: qrcodeCanvas, value: txt, size: 250, level: 'H', background: '#ffffff', foreground: '#000000'});
-    // show modal
-    qrModal.style.display = "flex"; qrModal.classList.add("show");
-    qrModal.setAttribute("aria-hidden","false");
-    downloadQR.onclick = () => {
-      try {
-        const dataUrl = qrcodeCanvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        const name = (item.codigo||"ferramental").replace(/[^a-z0-9_\-]/ig,"_");
-        link.href = dataUrl; link.download = `${name}_QR.png`; link.click();
-      } catch(err){ console.error(err); alert("Erro ao baixar QR"); }
+    // ===== CONFIG - substitua se necessário =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+      authDomain: "dacsovel-53481.firebaseapp.com",
+      projectId: "dacsovel-53481",
+      storageBucket: "dacsovel-53481.firebasestorage.app",
+      messagingSenderId: "37867522513",
+      appId: "1:37867522513:web:336d687e3fc8408bd138f0"
     };
-  }
-  function closeQR(){ qrModal.style.display = "none"; qrModal.setAttribute("aria-hidden","true"); const ctx = qrcodeCanvas.getContext("2d"); ctx.clearRect(0,0,qrcodeCanvas.width,qrcodeCanvas.height); qr = null; }
-  document.getElementById("modalCloseBtn").addEventListener("click", closeQR);
-  qrModal.addEventListener("click", (ev)=> { if(ev.target === qrModal) closeQR(); });
-  document.addEventListener("keydown", (ev) => { if(ev.key === "Escape") closeQR(); });
 
-  // ===== Export Excel (SheetJS) =====
-  function exportExcel(){
-    if(!allFerramentais || allFerramentais.length === 0){ alert("Nenhum registro para exportar."); return; }
-    // map into worksheet rows
-    const data = allFerramentais.map(i => ({
-      Código: i.codigo||"",
-      Nome: i.nome||"",
-      Tipo: i.tipo||"",
-      Status: i.status||"",
-      Responsável: i.responsavel||"",
-      Registro: i.registro||"",
-      CriadoEm: i.criadoEm||""
-    }));
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Ferramentais");
-    XLSX.writeFile(wb, `ferramentais_${new Date().toISOString().slice(0,10)}.xlsx`);
-  }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  // ===== Export PDF (jsPDF + autoTable) =====
-  async function exportPDF(){
-    if(!allFerramentais || allFerramentais.length === 0){ alert("Nenhum registro para exportar."); return; }
-    const { jsPDF } = window.jspdf;
-    const docpdf = new jsPDF();
-    docpdf.setFontSize(14);
-    docpdf.text("Relatório de Ferramentais — Grupo Sovel", 14, 18);
-    docpdf.setFontSize(10);
-    docpdf.text(`Gerado em: ${new Date().toLocaleString()}`, 14, 26);
+    // DOM refs
+    const btnAccess = document.getElementById("btnAccess");
+    const heroAccess = document.getElementById("heroAccess");
+    const authModal = document.getElementById("authModal");
+    const btnCloseAuth = document.getElementById("btnCloseAuth");
+    const btnSignin = document.getElementById("btnSignin");
+    const btnSignup = document.getElementById("btnSignup");
+    const authEmail = document.getElementById("authEmail");
+    const authPass = document.getElementById("authPass");
+    const authMsg = document.getElementById("authMsg");
 
-    const body = allFerramentais.map(i => [
-      i.codigo||"", i.nome||"", i.tipo||"", i.status||"", i.responsavel||"", i.registro||""
-    ]);
-    docpdf.autoTable({
-      startY: 34,
-      head: [['Código','Nome','Tipo','Status','Responsável','Registro']],
-      body,
-      styles: { fontSize: 9, cellPadding: 3 },
-      headStyles: { fillColor: [0,208,255], textColor: 20 },
-      theme: 'grid',
-      columnStyles: { 1: { cellWidth: 50 } }
+    const dashboard = document.getElementById("dashboard");
+    const hero = document.getElementById("hero");
+    const topControls = document.getElementById("topControls");
+    const userControls = document.getElementById("userControls");
+    const userEmailEl = document.getElementById("userEmail");
+    const btnLogout = document.getElementById("btnLogout");
+
+    const form = document.getElementById("formFerramental");
+    const tipoEl = document.getElementById("tipo");
+    const codigoEl = document.getElementById("codigo");
+    const nomeEl = document.getElementById("nome");
+    const registroEl = document.getElementById("registro");
+    const statusEl = document.getElementById("status");
+    const responsavelEl = document.getElementById("responsavel");
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const formMessage = document.getElementById("formMessage");
+
+    const listaEl = document.getElementById("lista");
+    const searchInput = document.getElementById("searchInput");
+    const btnRefresh = document.getElementById("btnRefresh");
+    const btnExportExcel = document.getElementById("btnExportExcel");
+    const btnExportPDF = document.getElementById("btnExportPDF");
+
+    // QR modal
+    const qrModal = document.getElementById("qrModal");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const qrcodeCanvas = document.getElementById("qrcodeCanvas");
+    const downloadQR = document.getElementById("downloadQR");
+    let qrInstance = null;
+
+    // state
+    let allFerramentais = [];
+    let editId = null;
+
+    // ------- Helpers -------
+    function showAuthMsg(text, ok=true){
+      authMsg.style.display = "block";
+      authMsg.textContent = text;
+      authMsg.style.background = ok ? "linear-gradient(90deg,#073b34,#095e4f)" : "linear-gradient(90deg,#3b0a0a,#6b1212)";
+      authMsg.style.color = ok ? "#bfffe4" : "#ffdcdc";
+      setTimeout(()=> authMsg.style.display = "none", 3500);
+    }
+    function showFormMsg(text, ok=true){
+      formMessage.style.display = "block";
+      formMessage.textContent = text;
+      formMessage.style.background = ok ? "linear-gradient(90deg,#073b34,#095e4f)" : "linear-gradient(90deg,#3b0a0a,#6b1212)";
+      formMessage.style.color = ok ? "#bfffe4" : "#ffdcdc";
+      setTimeout(()=> formMessage.style.display = "none", 3500);
+    }
+    function clearForm(){
+      form.reset();
+      editId = null;
+      submitBtn.textContent = "Salvar";
+    }
+    function formatDateShort(d){
+      if(!d) return "";
+      const date = new Date(d);
+      if(isNaN(date)) return d;
+      return date.toLocaleDateString();
+    }
+    function escapeHtml(s){ if(!s) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    // ------- AUTH FLOW (modal) -------
+    function openAuth(){
+      authModal.style.display = "flex";
+      authModal.setAttribute("aria-hidden","false");
+      authEmail.focus();
+    }
+    function closeAuth(){
+      authModal.style.display = "none";
+      authModal.setAttribute("aria-hidden","true");
+      authEmail.value = ""; authPass.value = "";
+    }
+
+    btnAccess.addEventListener("click", openAuth);
+    heroAccess.addEventListener("click", openAuth);
+    btnCloseAuth.addEventListener("click", closeAuth);
+
+    btnSignup.addEventListener("click", async () => {
+      const email = authEmail.value.trim();
+      const pass = authPass.value;
+      if(!email || !pass){ showAuthMsg("Preencha email e senha.", false); return; }
+      try{
+        await createUserWithEmailAndPassword(auth, email, pass);
+        showAuthMsg("Conta criada. Você está logado.", true);
+        closeAuth();
+      } catch(err){
+        console.error("signup", err);
+        showAuthMsg("Erro ao registrar: " + (err.message || err.code), false);
+      }
     });
-    docpdf.save(`relatorio_ferramentais_${new Date().toISOString().slice(0,10)}.pdf`);
-  }
 
-  // ===== Init state: show placeholder requiring login =====
-  listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Faça login para consultar e gerenciar ferramentais.</div>`;
+    btnSignin.addEventListener("click", async () => {
+      const email = authEmail.value.trim();
+      const pass = authPass.value;
+      if(!email || !pass){ showAuthMsg("Preencha email e senha.", false); return; }
+      try{
+        await signInWithEmailAndPassword(auth, email, pass);
+        showAuthMsg("Login realizado.", true);
+        closeAuth();
+      } catch(err){
+        console.error("signin", err);
+        showAuthMsg("Erro ao entrar: " + (err.message || err.code), false);
+      }
+    });
 
-  // End of module
-</script>
+    btnLogout.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    // observe auth state
+    onAuthStateChanged(auth, (user) => {
+      if(user){
+        // show dashboard, hide hero
+        hero.style.display = "none";
+        dashboard.style.display = "block";
+        userControls.style.display = "flex";
+        userEmailEl.textContent = user.email || user.displayName || "Usuário";
+        document.getElementById("btnAccess").style.display = "none";
+        // load data
+        listarFerramentais();
+      } else {
+        // hide dashboard, show hero (public)
+        hero.style.display = "flex";
+        dashboard.style.display = "none";
+        userControls.style.display = "none";
+        document.getElementById("btnAccess").style.display = "inline-block";
+        // clear listings
+        listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Faça login para consultar e gerenciar ferramentais.</div>`;
+        allFerramentais = [];
+        clearForm();
+      }
+    });
+
+    // ------- CRUD (Firestore) -------
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const tipo = tipoEl.value.trim() || "";
+      const codigo = codigoEl.value.trim();
+      const nome = nomeEl.value.trim();
+      const registro = registroEl.value || new Date().toISOString().split("T")[0];
+      const status = statusEl.value || "Disponível";
+      const responsavel = responsavelEl.value.trim() || "Não atribuído";
+
+      if(!codigo || !nome){
+        if(!codigo) codigoEl.style.borderColor = "tomato";
+        if(!nome) nomeEl.style.borderColor = "tomato";
+        showFormMsg("Preencha Código e Nome.", false);
+        return;
+      }
+      try{
+        if(editId){
+          await updateDoc(doc(db, "ferramentais", editId), { tipo, codigo, nome, registro, status, responsavel });
+          showFormMsg("Ferramental atualizado.", true);
+          editId = null; submitBtn.textContent = "Salvar";
+        } else {
+          await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString() });
+          showFormMsg("Ferramental registrado.", true);
+        }
+        clearForm();
+      } catch(err){
+        console.error("save", err);
+        showFormMsg("Erro ao salvar.", false);
+      }
+    });
+
+    // listar
+    async function listarFerramentais(){
+      listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Carregando...</div>`;
+      allFerramentais = [];
+      try{
+        const snapshot = await getDocs(collection(db, "ferramentais"));
+        if(snapshot.empty){
+          listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum ferramental cadastrado.</div>`;
+          return;
+        }
+        snapshot.forEach(docItem => { const d = docItem.data(); d.id = docItem.id; allFerramentais.push(d); });
+        renderLista(allFerramentais);
+      } catch(err){
+        console.error("listar", err);
+        listaEl.innerHTML = `<div style="color:#ffb3b3; padding:18px">Erro ao carregar lista.</div>`;
+      }
+    }
+
+    function renderLista(items){
+      listaEl.innerHTML = "";
+      if(!items || items.length === 0){
+        listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum resultado encontrado.</div>`;
+        return;
+      }
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "card";
+        let badgeClass = "s-emuso";
+        switch((item.status||"").toLowerCase()){
+          case "em uso": badgeClass = "s-emuso"; break;
+          case "manutenção": badgeClass = "s-manut"; break;
+          case "danificado": badgeClass = "s-dan"; break;
+          case "trocar": badgeClass = "s-trocar"; break;
+        }
+        el.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="code">${escapeHtml(item.codigo||"")}</div>
+              <div class="meta">${escapeHtml(item.nome||"")}</div>
+            </div>
+            <div style="text-align:right">
+              <div class="badge ${badgeClass}">${escapeHtml(item.status||"")}</div>
+              <div class="meta" style="margin-top:6px">${escapeHtml(item.tipo||"—")}</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+            <div style="color:var(--muted);font-size:0.9rem">
+              <div>Resp: <strong style="color:#cfeffd">${escapeHtml(item.responsavel||"—")}</strong></div>
+              <div style="margin-top:6px">Registro: <span style="color:#aee8ff">${formatDateShort(item.registro)}</span></div>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn edit">✏️</button>
+              <button class="icon-btn del">🗑️</button>
+              <button class="icon-btn qr">🔳</button>
+            </div>
+          </div>
+        `;
+        // attach events
+        const btnEdit = el.querySelector(".edit");
+        const btnDel = el.querySelector(".del");
+        const btnQr = el.querySelector(".qr");
+
+        btnEdit.addEventListener("click", () => {
+          tipoEl.value = item.tipo || "";
+          codigoEl.value = item.codigo || "";
+          nomeEl.value = item.nome || "";
+          registroEl.value = item.registro || "";
+          statusEl.value = item.status || "";
+          responsavelEl.value = item.responsavel || "";
+          editId = item.id;
+          submitBtn.textContent = "Salvar alterações";
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        btnDel.addEventListener("click", async () => {
+          if(!confirm(`Excluir ${item.codigo} — ${item.nome}?`)) return;
+          try{
+            await deleteDoc(doc(db, "ferramentais", item.id));
+            listarFerramentais();
+          } catch(err){ console.error(err); alert("Erro ao excluir."); }
+        });
+
+        btnQr.addEventListener("click", () => gerarQR(item));
+
+        listaEl.appendChild(el);
+      });
+    }
+
+    // search
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.trim().toLowerCase();
+      if(!q) return renderLista(allFerramentais);
+      const filtered = allFerramentais.filter(i =>
+        (i.codigo||"").toLowerCase().includes(q) ||
+        (i.nome||"").toLowerCase().includes(q) ||
+        (i.tipo||"").toLowerCase().includes(q)
+      );
+      renderLista(filtered);
+    });
+    btnRefresh.addEventListener("click", listarFerramentais);
+
+    // QR modal + download
+    function gerarQR(item){
+      const txt = `Código: ${item.codigo||""}\nNome: ${item.nome||""}\nTipo: ${item.tipo||""}\nStatus: ${item.status||""}\nResponsável: ${item.responsavel||""}\nRegistro: ${item.registro||""}`;
+      qrInstance = new QRious({ element: qrcodeCanvas, value: txt, size: 250, level: 'H', background: '#ffffff', foreground: '#000000' });
+      qrModal.style.display = "flex";
+      qrModal.setAttribute("aria-hidden","false");
+      downloadQR.onclick = () => {
+        try {
+          const dataUrl = qrcodeCanvas.toDataURL("image/png");
+          const link = document.createElement("a");
+          const safeName = (item.codigo||"ferramental").replace(/[^a-z0-9_\-]/ig,"_");
+          link.href = dataUrl;
+          link.download = `${safeName}_QR.png`;
+          link.click();
+        } catch(err){ console.error(err); alert("Erro ao baixar QR."); }
+      };
+    }
+    function closeQR(){
+      qrModal.style.display = "none";
+      qrModal.setAttribute("aria-hidden","true");
+      const ctx = qrcodeCanvas.getContext("2d");
+      ctx.clearRect(0,0,qrcodeCanvas.width,qrcodeCanvas.height);
+      qrInstance = null;
+    }
+    modalCloseBtn.addEventListener("click", closeQR);
+    qrModal.addEventListener("click", (ev) => { if(ev.target === qrModal) closeQR(); });
+    document.addEventListener("keydown", (ev) => { if(ev.key === "Escape") { closeQR(); closeAuth(); } });
+
+    // export Excel (SheetJS)
+    btnExportExcel.addEventListener("click", () => {
+      if(!allFerramentais || allFerramentais.length === 0){ alert("Nenhum registro para exportar."); return; }
+      const data = allFerramentais.map(i => ({
+        Código: i.codigo||"",
+        Nome: i.nome||"",
+        Tipo: i.tipo||"",
+        Status: i.status||"",
+        Responsável: i.responsavel||"",
+        Registro: i.registro||"",
+        CriadoEm: i.criadoEm||""
+      }));
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Ferramentais");
+      XLSX.writeFile(wb, `ferramentais_${new Date().toISOString().slice(0,10)}.xlsx`);
+    });
+
+    // export PDF (jsPDF + autoTable)
+    btnExportPDF.addEventListener("click", async () => {
+      if(!allFerramentais || allFerramentais.length === 0){ alert("Nenhum registro para exportar."); return; }
+      const { jsPDF } = window.jspdf;
+      const docpdf = new jsPDF();
+      docpdf.setFontSize(14);
+      docpdf.text("Relatório de Ferramentais — Grupo Sovel", 14, 18);
+      docpdf.setFontSize(10);
+      docpdf.text(`Gerado em: ${new Date().toLocaleString()}`, 14, 26);
+      const body = allFerramentais.map(i => [i.codigo||"", i.nome||"", i.tipo||"", i.status||"", i.responsavel||"", i.registro||""]);
+      docpdf.autoTable({
+        startY: 34,
+        head: [['Código','Nome','Tipo','Status','Responsável','Registro']],
+        body,
+        styles: { fontSize: 9, cellPadding: 3 },
+        headStyles: { fillColor: [30,136,229], textColor: 255 },
+        theme: 'grid'
+      });
+      docpdf.save(`relatorio_ferramentais_${new Date().toISOString().slice(0,10)}.pdf`);
+    });
+
+    // hide exports until auth
+    onAuthStateChanged(auth, (user) => {
+      if(user){
+        document.getElementById("btnExportExcel").style.display = "inline-block";
+        document.getElementById("btnExportPDF").style.display = "inline-block";
+      } else {
+        document.getElementById("btnExportExcel").style.display = "none";
+        document.getElementById("btnExportPDF").style.display = "none";
+      }
+    });
+
+    // End of script
+  </script>
 </body>
 </html>
