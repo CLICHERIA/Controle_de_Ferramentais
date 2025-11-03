@@ -4,74 +4,39 @@
 <meta charset="UTF-8">
 <title>Registrar Ferramental</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #111;
-    color: #fff;
-    text-align: center;
-}
-.centralizado {
-    width: 400px;
-    margin: 50px auto;
-    background: #222;
-    padding: 20px;
-    border-radius: 10px;
-}
-input, select, button {
-    width: 90%;
-    margin: 10px 0;
-    padding: 8px;
-    border-radius: 5px;
-    border: none;
-}
-.neon-button {
-    background: #00bfff;
-    color: #111;
-    font-weight: bold;
-    cursor: pointer;
-}
-.neon-button:hover {
-    background: #00e0ff;
-}
+body { font-family: Arial; background:#111; color:#fff; text-align:center;}
+.centralizado { width:400px; margin:50px auto; background:#222; padding:30px; border-radius:10px;}
+input, select { width:90%; margin:10px 0; padding:8px; border-radius:5px; border:none;}
+button { width:95%; padding:10px; border:none; border-radius:5px; background:#00bfff; color:#111; font-weight:bold; cursor:pointer;}
+button:hover { background:#00e0ff; }
+img.logo { width:150px; margin-bottom:20px; display:block; margin-left:auto; margin-right:auto; }
 </style>
 </head>
 <body>
 
 <div class="centralizado">
+    <img src="logosovel1337.png" alt="Logo" class="logo">
     <h2>Registrar Ferramental</h2>
-    <form id="formRegistro">
-        <label for="tipo">Tipo de Ferramental</label>
-        <select id="tipo" required>
-            <option value="">Selecione</option>
-            <option value="Faca">Faca</option>
-            <option value="Clichê">Clichê</option>
-        </select>
 
-        <label for="sv">SV</label>
-        <input type="text" id="sv" placeholder="Ex: A123" required>
+    <select id="tipo">
+        <option value="">Selecione Tipo</option>
+        <option value="faca">Faca</option>
+        <option value="cliche">Clichê</option>
+    </select>
+    <input type="text" id="sv" placeholder="SV (letra e número)">
+    <input type="text" id="cliente" placeholder="Cliente">
+    <input type="date" id="dataFabricacao" placeholder="Data de Fabricação (opcional)">
+    <input type="date" id="dataRegistro" placeholder="Data de Registro">
+    <input type="text" id="responsavel" placeholder="Responsável pelo registro">
 
-        <label for="cliente">Cliente</label>
-        <input type="text" id="cliente" placeholder="Nome do cliente" required>
-
-        <label for="dataFabricacao">Data de Fabricação</label>
-        <input type="date" id="dataFabricacao">
-
-        <label for="dataRegistro">Data de Registro no Sistema</label>
-        <input type="date" id="dataRegistro" required>
-
-        <label for="responsavel">Responsável pelo Registro</label>
-        <input type="text" id="responsavel" placeholder="Seu nome" required>
-
-        <button type="button" onclick="registrarFerramental()" class="neon-button">Registrar</button>
-        <a href="menu.html" class="neon-button" style="margin-left: 10px;">Voltar ao Menu</a>
-    </form>
+    <button onclick="registrarFerramental()">Registrar</button>
+    <button onclick="window.location.href='menu.html'">Menu Principal</button>
 </div>
 
 <script>
-// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
@@ -79,12 +44,15 @@ const firebaseConfig = {
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
 
-function registrarFerramental() {
+// Checa login
+firebase.auth().onAuthStateChanged(user=>{
+    if(!user) window.location.href="index.html";
+});
+
+function registrarFerramental(){
     const tipo = document.getElementById('tipo').value;
     const sv = document.getElementById('sv').value;
     const cliente = document.getElementById('cliente').value;
@@ -92,20 +60,17 @@ function registrarFerramental() {
     const dataRegistro = document.getElementById('dataRegistro').value;
     const responsavel = document.getElementById('responsavel').value;
 
-    if (!tipo || !sv || !cliente || !dataRegistro || !responsavel) {
+    if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
         alert("Preencha todos os campos obrigatórios!");
         return;
     }
 
-    const ferramentalRef = db.ref('ferramentais').push();
-    ferramentalRef.set({tipo, sv, cliente, dataFabricacao, dataRegistro, responsavel}, (err)=>{
-        if(err){
-            alert("Erro ao registrar: " + err);
-        } else {
-            alert("Ferramental registrado com sucesso!");
-            document.getElementById('formRegistro').reset();
-        }
-    });
+    const novoFerramental = {tipo, sv, cliente, dataFabricacao, dataRegistro, responsavel};
+
+    const key = firebase.database().ref('ferramentais').push().key;
+    firebase.database().ref('ferramentais/' + key).set(novoFerramental)
+    .then(()=> alert("Ferramental registrado com sucesso!"))
+    .catch(err=> alert("Erro: "+err.message));
 }
 </script>
 
