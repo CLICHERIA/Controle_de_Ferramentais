@@ -100,20 +100,33 @@
   <a href="menu.html">Voltar ao Menu</a>
 </div>
 
-<script>
-  const mockFerramentais = [
-    {nome: "Chave de Fenda", codigo: "CF123"},
-    {nome: "Martelo", codigo: "MRT456"},
-    {nome: "Alicate", codigo: "AL789"},
-  ];
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-  document.getElementById("btnConsultar").addEventListener("click", () => {
-    const query = document.getElementById("search").value.toLowerCase();
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  document.getElementById("btnConsultar").addEventListener("click", async () => {
+    const queryText = document.getElementById("search").value.toLowerCase();
     const resultadoDiv = document.getElementById("resultado");
     resultadoDiv.innerHTML = '';
-    const filtrados = mockFerramentais.filter(f => 
-      f.nome.toLowerCase().includes(query) || f.codigo.toLowerCase().includes(query)
+
+    const snapshot = await getDocs(collection(db, "ferramentais"));
+    const docs = snapshot.docs.map(doc => doc.data());
+    const filtrados = docs.filter(f => 
+      f.nome.toLowerCase().includes(queryText) || f.codigo.toLowerCase().includes(queryText)
     );
+
     if(filtrados.length > 0){
       filtrados.forEach(f => {
         resultadoDiv.innerHTML += `<p>${f.nome} - ${f.codigo}</p>`;
