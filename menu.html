@@ -1,62 +1,68 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu - SGF</title>
-  <style>
-    body {
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu - SGF</title>
+<style>
+  body {
+    background-color: #0a0f1a;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
 
-    .logo-container {
-      margin: 40px auto;
-      filter: drop-shadow(0 0 8px #00eaff);
-      display: inline-block;
-    }
+  .logo-container {
+    margin: 40px auto;
+    display: inline-block;
+    filter: drop-shadow(0 0 8px #00eaff);
+  }
 
-    img.logo {
-      width: 200px;
-    }
+  img.logo {
+    width: 200px;
+  }
 
-    .neon-button {
-      display: inline-block;
-      padding: 15px 35px;
-      margin: 15px;
-      color: #00eaff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-      border-radius: 10px;
-      background-color: #0d1b2a;
-      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 40px #00eaff55;
-      transition: 0.3s ease-in-out;
-      cursor: pointer;
-    }
+  h1 {
+    color: #00eaff;
+    margin-bottom: 50px;
+  }
 
-    .neon-button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff, 0 0 50px #00eaff77;
-    }
-  </style>
+  .menu-button {
+    display: inline-block;
+    padding: 20px 40px;
+    margin: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00eaff;
+    background-color: #0d1b2a;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
+    text-decoration: none;
+    transition: 0.3s ease-in-out;
+  }
+
+  .menu-button:hover {
+    color: #00ffff;
+    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
+  }
+</style>
 </head>
 <body>
 
-  <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
-  </div>
+<div class="logo-container">
+  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
+</div>
 
-  <h1 style="color:#00eaff; text-shadow:0 0 20px #00eaff;">⚙️ Sistema de Gestão de Ferramentais ⚙️</h1>
+<h1>Menu Principal</h1>
 
-  <p>
-    <a href="registrar.html" class="neon-button">Registrar Ferramental</a>
-    <a href="consultar.html" class="neon-button">Consultar Ferramental</a>
-  </p>
+<div>
+  <a href="registrar.html" class="menu-button">Registrar Ferramental</a>
+  <a href="consultar.html" class="menu-button">Consultar Ferramental</a>
+</div>
 
 </body>
 </html>
