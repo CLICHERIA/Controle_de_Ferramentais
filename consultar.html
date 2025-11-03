@@ -1,232 +1,152 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Consultar Ferramentais</title>
-<!-- ====================== -->
-<!-- Estilo Global Neon -->
-<!-- ====================== -->
+
 <style>
-  body {
+body {
     background-color: #0a0f1a;
     margin: 0;
     padding: 0;
     color: #ffffff;
     font-family: 'Segoe UI', sans-serif;
-  }
-  a {
-    color: #00eaff;
-    text-decoration: none;
-  }
-  .logo-container {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-    filter: drop-shadow(0 0 8px #00eaff);
-  }
-  img.logo {
-    display: inline-block;
-    max-width: 200px;
-  }
-  .neon-button {
-    display: inline-block;
-    padding: 10px 25px;
-    color: #00eaff;
-    font-weight: bold;
-    font-size: 14px;
-    border-radius: 8px;
-    background-color: #0d1b2a;
-    box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff;
-    transition: 0.3s;
-    margin: 5px;
-  }
-  .neon-button:hover {
-    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff;
-  }
-  .centralizado {
-    max-width: 1000px;
-    margin: 20px auto;
-    text-align: center;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  th, td {
-    border: 1px solid #00eaff44;
-    padding: 10px;
-    text-align: center;
-  }
-  th {
-    background-color: #0d1b2a;
-    color: #00eaff;
-  }
-  td {
-    background-color: #0a0f1a;
-    color: #c0dfff;
-  }
-  /* Modal QR Code */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    padding-top: 100px;
-    left:0;top:0;width:100%;height:100%;
-    overflow:auto;
-    background-color: rgba(0,0,0,0.9);
-  }
-  .modal-content {
-    margin: auto;
-    display: block;
-    text-align: center;
-  }
-  .close {
-    position: absolute;
-    top: 30px;
-    right: 50px;
-    color: #00eaff;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-  }
+}
+html, body { width: 100%; height: 100%; }
+a { color: #00eaff; text-decoration: none; }
+.logo-container { text-align: center; margin-top: 40px; filter: drop-shadow(0 0 8px #00eaff); }
+img.logo { width: 200px; }
+
+.centralizado { max-width: 800px; margin: 40px auto; text-align: center; }
+input { padding:10px; margin:5px; border-radius:8px; border:none; background:#0d1b2a; color:#00eaff; width:200px; }
+button { padding:10px 20px; border:none; border-radius:8px; background:#0d1b2a; color:#00eaff; cursor:pointer; margin:5px; }
+table { width:100%; border-collapse: collapse; margin-top:20px; }
+th, td { border:1px solid #00eaff; padding:8px; text-align:center; }
+th { background:#0b1a2a; }
 </style>
+
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script>
+// TODO: Substitua com sua configuração do Firebase
+const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_DOMINIO.firebaseapp.com",
+    databaseURL: "https://SEU_DOMINIO.firebaseio.com",
+    projectId: "SEU_PROJETO",
+    storageBucket: "SEU_PROJETO.appspot.com",
+    messagingSenderId: "SEU_ID",
+    appId: "SEU_APPID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function buscarFerramentais() {
+    const tabela = document.getElementById('tabelaFerramentais');
+    tabela.innerHTML = "<tr><th>Tipo</th><th>SV</th><th>Cliente</th><th>Data Fabricação</th><th>Data Registro</th><th>Responsável</th><th>Ações</th></tr>";
+    db.ref('ferramentais').once('value', snapshot => {
+        if(!snapshot.exists()){
+            alert("Nenhum ferramental encontrado.");
+            return;
+        }
+        snapshot.forEach(child => {
+            const f = child.val();
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+            <td>${f.tipo}</td>
+            <td>${f.sv}</td>
+            <td>${f.cliente}</td>
+            <td>${f.dataFabricacao || ''}</td>
+            <td>${f.dataRegistro}</td>
+            <td>${f.responsavel}</td>
+            <td>
+                <button onclick="editarFerramental('${child.key}')">Editar</button>
+                <button onclick="excluirFerramental('${child.key}')">Excluir</button>
+                <button onclick="gerarQRCode('${child.key}')">QR Code</button>
+            </td>
+            `;
+            tabela.appendChild(tr);
+        });
+    });
+}
+
+function editarFerramental(key){
+    const cliente = prompt("Digite o novo cliente:");
+    const dataRegistro = prompt("Digite a nova data de registro (AAAA-MM-DD):");
+    if(cliente && dataRegistro){
+        db.ref('ferramentais/' + key).update({cliente, dataRegistro}, err=>{
+            if(err) alert("Erro ao atualizar!");
+            else buscarFerramentais();
+        });
+    }
+}
+
+function excluirFerramental(key){
+    if(confirm("Deseja realmente excluir este ferramental?")){
+        db.ref('ferramentais/' + key).remove(err=>{
+            if(err) alert("Erro ao excluir!");
+            else buscarFerramentais();
+        });
+    }
+}
+
+function gerarQRCode(key){
+    db.ref('ferramentais/' + key).once('value', snap=>{
+        const f = snap.val();
+        const dados = `
+Tipo: ${f.tipo}
+SV: ${f.sv}
+Cliente: ${f.cliente}
+Data Fabricação: ${f.dataFabricacao || ''}
+Data Registro: ${f.dataRegistro}
+Responsável: ${f.responsavel}
+`;
+        const modal = document.createElement('div');
+        modal.style.position="fixed";
+        modal.style.top="0"; modal.style.left="0";
+        modal.style.width="100%"; modal.style.height="100%";
+        modal.style.background="rgba(0,0,0,0.8)";
+        modal.style.display="flex"; modal.style.justifyContent="center"; modal.style.alignItems="center";
+        modal.style.flexDirection="column";
+        modal.onclick = ()=>modal.remove();
+
+        const canvas = document.createElement('canvas');
+        QRCode.toCanvas(canvas, dados, {width:300}, function(error){ if(error) console.error(error); });
+        modal.appendChild(canvas);
+
+        const btnDownload = document.createElement('button');
+        btnDownload.textContent = "Baixar PNG";
+        btnDownload.onclick = (e)=>{
+            e.stopPropagation();
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        };
+        modal.appendChild(btnDownload);
+        document.body.appendChild(modal);
+    });
+}
+</script>
 </head>
 <body>
 
-<!-- Logo -->
 <div class="logo-container">
-  <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
 </div>
 
-<!-- Botão Menu -->
 <div class="centralizado">
-  <a href="menu.html" class="neon-button">🔙 Menu Principal</a>
+    <h2>Consultar Ferramentais</h2>
+    <button onclick="buscarFerramentais()">Buscar Todos</button>
+    <table id="tabelaFerramentais">
+        <tr><th>Tipo</th><th>SV</th><th>Cliente</th><th>Data Fabricação</th><th>Data Registro</th><th>Responsável</th><th>Ações</th></tr>
+    </table>
+    <a href="menu.html" class="neon-button">Voltar ao Menu</a>
 </div>
 
-<!-- Tabela -->
-<div class="centralizado">
-  <h2 style="color:#00bfff;">📋 Ferramentais Cadastrados</h2>
-  <table id="ferramentaisTable">
-    <thead>
-      <tr>
-        <th>Tipo</th>
-        <th>SV</th>
-        <th>Cliente</th>
-        <th>Data Fab.</th>
-        <th>Data Registro</th>
-        <th>Responsável</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Dados via JS -->
-    </tbody>
-  </table>
-</div>
-
-<!-- Modal QR -->
-<div id="qrModal" class="modal">
-  <span class="close" onclick="closeQR()">&times;</span>
-  <div class="modal-content">
-    <canvas id="qrCanvas"></canvas>
-    <br>
-    <a id="downloadQR" class="neon-button" download="qrcode.png">⬇️ Baixar QR Code</a>
-  </div>
-</div>
-
-<!-- Firebase e QRCode.js -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
-
-<script>
-  // Config Firebase
-  const firebaseConfig = {
-   apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // Buscar dados
-  const tableBody = document.querySelector("#ferramentaisTable tbody");
-
-  db.collection("ferramentais").get().then(snapshot => {
-    if (snapshot.empty) {
-      tableBody.innerHTML = '<tr><td colspan="7">Nenhum ferramental cadastrado</td></tr>';
-    } else {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${data.tipo || ''}</td>
-          <td>${data.SV || ''}</td>
-          <td>${data.cliente || ''}</td>
-          <td>${data.dataFabricacao || ''}</td>
-          <td>${data.dataRegistro || ''}</td>
-          <td>${data.responsavel || ''}</td>
-          <td>
-            <button class="neon-button" onclick="editarFerramental('${doc.id}')">✏️ Editar</button>
-            <button class="neon-button" onclick="excluirFerramental('${doc.id}')">🗑️ Excluir</button>
-            <button class="neon-button" onclick="gerarQR('${doc.id}')">🔳 QR Code</button>
-          </td>
-        `;
-        tableBody.appendChild(tr);
-      });
-    }
-  }).catch(error => {
-    tableBody.innerHTML = `<tr><td colspan="7">Erro ao buscar dados: ${error}</td></tr>`;
-  });
-
-  // Editar Ferramental
-  function editarFerramental(id) {
-    const newCliente = prompt("Novo Cliente:");
-    const newDataRegistro = prompt("Nova Data de Registro (YYYY-MM-DD):");
-    if (newCliente && newDataRegistro) {
-      db.collection("ferramentais").doc(id).update({
-        cliente: newCliente,
-        dataRegistro: newDataRegistro
-      }).then(()=>{ alert("Atualizado com sucesso!"); location.reload(); })
-      .catch(err=>alert(err));
-    }
-  }
-
-  // Excluir Ferramental
-  function excluirFerramental(id){
-    if(confirm("Deseja realmente excluir este ferramental?")){
-      db.collection("ferramentais").doc(id).delete()
-      .then(()=>location.reload())
-      .catch(err=>alert(err));
-    }
-  }
-
-  // QR Code
-  function gerarQR(id){
-    db.collection("ferramentais").doc(id).get().then(doc=>{
-      if(doc.exists){
-        const data = doc.data();
-        const qr = new QRious({
-          element: document.getElementById('qrCanvas'),
-          value: `Tipo: ${data.tipo}\nSV: ${data.SV}\nCliente: ${data.cliente}\nData Fab.: ${data.dataFabricacao}\nData Registro: ${data.dataRegistro}\nResponsável: ${data.responsavel}`,
-          size: 300,
-          level: 'H'
-        });
-        // Link download
-        const canvas = document.getElementById('qrCanvas');
-        document.getElementById('downloadQR').href = canvas.toDataURL("image/png");
-        document.getElementById('qrModal').style.display = 'block';
-      }
-    });
-  }
-
-  function closeQR(){
-    document.getElementById('qrModal').style.display = 'none';
-  }
-</script>
 </body>
 </html>
