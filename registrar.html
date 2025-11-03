@@ -89,16 +89,38 @@
   <a href="menu.html">Voltar ao Menu</a>
 </div>
 
-<script>
-  document.getElementById("btnRegistrar").addEventListener("click", () => {
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  document.getElementById("btnRegistrar").addEventListener("click", async () => {
     const nome = document.getElementById("nome").value;
     const codigo = document.getElementById("codigo").value;
-    if(nome && codigo) {
+
+    if(!nome || !codigo){
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "ferramentais"), { nome, codigo });
       alert(`Ferramental "${nome}" registrado com sucesso!`);
       document.getElementById("nome").value = '';
       document.getElementById("codigo").value = '';
-    } else {
-      alert("Preencha todos os campos!");
+    } catch (err) {
+      alert("Erro ao registrar: " + err.message);
     }
   });
 </script>
