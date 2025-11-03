@@ -40,8 +40,35 @@
       margin-top: 5px;
     }
 
-    form {
+    /* Botões do menu */
+    .menu {
       display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .menu button {
+      background: #0b2239;
+      color: #00c3ff;
+      border: 2px solid #00c3ff;
+      border-radius: 10px;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .menu button:hover {
+      background: #00c3ff;
+      color: #0a0f1a;
+      transform: scale(1.05);
+    }
+
+    form {
+      display: none; /* Formulário inicialmente escondido */
       flex-direction: column;
       gap: 12px;
       background: rgba(0, 195, 255, 0.05);
@@ -164,11 +191,18 @@
     <p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
   </header>
 
+  <div class="menu">
+    <button id="btnRegistrar">📝 Registrar Ferramental</button>
+    <button id="btnListar">🔍 Consultar Ferramentais</button>
+    <button onclick="alert('Gerador de QR Code em breve')">📱 Gerar QR Code</button>
+    <button onclick="alert('Área administrativa em construção')">⚙️ Administração</button>
+  </div>
+
   <form id="formFerramental">
     <input type="text" id="tipo" placeholder="Faca ou Clichê" required />
     <input type="text" id="codigo" placeholder="Código SV" required />
     <input type="text" id="nome" placeholder="Nome do Cliente" required />
-    <input type="date" id="registro" placeholder="Data de Registro" required />
+    <input type="date" id="registro" required />
     <select id="status" required>
       <option value="">Status</option>
       <option value="Em uso">Em uso</option>
@@ -238,16 +272,32 @@
     const buscaInput = document.getElementById("busca");
     const filtroStatus = document.getElementById("filtroStatus");
     const filtroDiv = document.getElementById("filtroFerramentais");
+    const listaDiv = document.getElementById("listaFerramentais");
     let editId = null;
+
+    const btnRegistrar = document.getElementById("btnRegistrar");
+    const btnListar = document.getElementById("btnListar");
+
+    btnRegistrar.addEventListener("click", () => {
+      form.style.display = "flex";
+      listaDiv.style.display = "none";
+      filtroDiv.style.display = "none";
+    });
+
+    btnListar.addEventListener("click", () => {
+      form.style.display = "none";
+      listarFerramentais();
+    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const tipo = document.getElementById("tipo").value;
+      const tipo = document.getElementById("tipo").value || "";
       const codigo = document.getElementById("codigo").value;
       const nome = document.getElementById("nome").value;
-      const registro = document.getElementById("registro").value;
-      const status = document.getElementById("status").value;
-      const responsavel = document.getElementById("responsavel").value;
+      const registroInput = document.getElementById("registro").value;
+      const registro = registroInput ? registroInput : new Date().toISOString();
+      const status = document.getElementById("status").value || "Disponível";
+      const responsavel = document.getElementById("responsavel").value || "Não atribuído";
 
       if (!codigo || !nome) return alert("Código e nome são obrigatórios!");
 
@@ -266,7 +316,6 @@
           alert("✅ Ferramental registrado com sucesso!");
         }
         form.reset();
-        listarFerramentais();
       } catch (err) {
         console.error("Erro:", err);
         alert("❌ Ocorreu um erro.");
@@ -274,16 +323,16 @@
     });
 
     async function listarFerramentais() {
-      const listaDiv = document.getElementById("listaFerramentais");
       const listaUl = document.getElementById("lista");
       listaUl.innerHTML = "";
-
       try {
         const snapshot = await getDocs(collection(db, "ferramentais"));
         if (snapshot.empty) {
           listaUl.innerHTML = "<li>Nenhum ferramental cadastrado.</li>";
         } else {
           filtroDiv.style.display = "flex";
+          listaDiv.style.display = "block";
+
           const searchTerm = buscaInput.value.toLowerCase();
           const statusTerm = filtroStatus.value;
 
@@ -294,8 +343,6 @@
             if (!concatenado.includes(searchTerm)) return;
 
             const item = document.createElement("li");
-
-            // Normaliza status para classe
             let classeStatus = "";
             switch (dados.status) {
               case "Em uso": classeStatus = "EmUso"; break;
@@ -332,7 +379,9 @@
               document.getElementById("registro").value = dados.registro || "";
               document.getElementById("status").value = dados.status || "";
               document.getElementById("responsavel").value = dados.responsavel || "";
-
+              form.style.display = "flex";
+              listaDiv.style.display = "none";
+              filtroDiv.style.display = "none";
               editId = docItem.id;
               submitBtn.textContent = "Salvar Alterações";
             });
@@ -340,7 +389,6 @@
             listaUl.appendChild(item);
           });
         }
-        listaDiv.style.display = "block";
       } catch (err) {
         console.error("Erro ao listar:", err);
       }
@@ -348,8 +396,6 @@
 
     buscaInput.addEventListener("input", listarFerramentais);
     filtroStatus.addEventListener("change", listarFerramentais);
-
-    listarFerramentais();
   </script>
 
 </body>
