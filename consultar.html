@@ -6,16 +6,17 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 body { font-family: Arial; background:#111; color:#fff; text-align:center;}
-.centralizado { width:800px; margin:30px auto; background:#222; padding:20px; border-radius:10px;}
-input { width:90%; margin:10px 0; padding:8px; border-radius:5px; border:none;}
-button { padding:5px 10px; margin:2px; border:none; border-radius:5px; background:#00bfff; color:#111; font-weight:bold; cursor:pointer;}
+.centralizado { width:90%; max-width:800px; margin:30px auto; background:#222; padding:20px; border-radius:10px;}
+input, select { width:80%; margin:10px 0; padding:8px; border-radius:5px; border:none;}
+button { padding:8px 15px; border:none; border-radius:5px; background:#00bfff; color:#111; font-weight:bold; cursor:pointer; margin:5px;}
 button:hover { background:#00e0ff; }
-img.logo { width:150px; margin-bottom:20px; display:block; margin-left:auto; margin-right:auto; }
-table { width:100%; margin-top:20px; border-collapse: collapse;}
-th, td { border:1px solid #fff; padding:5px;}
+table { width:100%; border-collapse: collapse; margin-top:20px;}
+th, td { border:1px solid #555; padding:8px; text-align:center;}
+th { background:#333;}
+img.logo { width:120px; margin-bottom:20px; display:block; margin-left:auto; margin-right:auto; }
 </style>
 </head>
 <body>
@@ -24,16 +25,35 @@ th, td { border:1px solid #fff; padding:5px;}
     <img src="logosovel1337.png" alt="Logo" class="logo">
     <h2>Consultar Ferramentais</h2>
 
-    <input type="text" id="buscar" placeholder="Buscar por SV ou Cliente">
-    <button onclick="buscarFerramental()">Buscar</button>
+    <input type="text" id="busca" placeholder="Buscar por SV ou Cliente">
+    <button id="btnBuscar">Buscar</button>
     <button onclick="window.location.href='menu.html'">Menu Principal</button>
 
     <table id="tabela">
         <thead>
-            <tr><th>Tipo</th><th>SV</th><th>Cliente</th><th>Data Fabricação</th><th>Data Registro</th><th>Responsável</th><th>Ações</th></tr>
+            <tr>
+                <th>Tipo</th>
+                <th>SV</th>
+                <th>Cliente</th>
+                <th>Data Fab.</th>
+                <th>Data Registro</th>
+                <th>Responsável</th>
+                <th>Ações</th>
+            </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+        </tbody>
     </table>
+</div>
+
+<!-- Modal para QR Code -->
+<div id="modalQR" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
+    <div style="background:#222; padding:20px; border-radius:10px; text-align:center;">
+        <h3>QR Code</h3>
+        <div id="qrcode"></div>
+        <button id="baixarQR">Baixar PNG</button>
+        <button onclick="document.getElementById('modalQR').style.display='none'">Fechar</button>
+    </div>
 </div>
 
 <script>
@@ -47,81 +67,124 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-firebase.auth().onAuthStateChanged(user=>{
-    if(!user) window.location.href="index.html";
-});
+// Verifica login
+firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+        alert("Faça login primeiro!");
+        window.location.href = "index.html";
+    }
+    
 
-function buscarFerramental(){
-    const filtro = document.getElementById('buscar').value.toLowerCase();
-    const tbody = document.querySelector('#tabela tbody');
-    tbody.innerHTML = '';
+const dbRef = firebase.database().ref('ferramentais');
+const tabela = document.getElementById('tabela').querySelector('tbody');
 
-    firebase.database().ref('ferramentais').once('value', snap=>{
-        const data = snap.val();
-        let encontrado = false;
-        for(const key in data){
-            const f = data[key];
-            if(f.sv.toLowerCase().includes(filtro) || f.cliente.toLowerCase().includes(filtro) || filtro==''){
-                encontrado = true;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${f.tipo}</td>
-                    <td>${f.sv}</td>
-                    <td>${f.cliente}</td>
-                    <td>${f.dataFabricacao || ''}</td>
-                    <td>${f.dataRegistro}</td>
-                    <td>${f.responsavel}</td>
-                    <td>
-                        <button onclick='editarFerramental("${key}")'>Editar</button>
-                        <button onclick='excluirFerramental("${key}")'>Excluir</button>
-                        <button onclick='gerarQR("${key}")'>QR Code</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+function exibirFerramentais(ferramentais) {
+    tabela.innerHTML = "";
+    for (let key in ferramentais) {
+        const f = ferramentais[key];
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td>${f.tipo}</td>
+            <td>${f.sv}</td>
+            <td><input type="text" value="${f.cliente}" data-key="${key}" class="editCliente"></td>
+            <td>${f.dataFabricacao || ''}</td>
+            <td><input type="date" value="${f.dataRegistro}" data-key="${key}" class="editData"></td>
+            <td>${f.responsavel}</td>
+            <td>
+                <button class="btnEditar" data-key="${key}">Salvar</button>
+                <button class="btnExcluir" data-key="${key}">Excluir</button>
+                <button class="btnQR" data-key="${key}">QR Code</button>
+            </td>
+        `;
+        tabela.appendChild(tr);
+    }
+    adicionarEventos();
+}
+
+function adicionarEventos() {
+    document.querySelectorAll('.btnEditar').forEach(btn => {
+        btn.onclick = () => {
+            const key = btn.dataset.key;
+            const cliente = document.querySelector(`.editCliente[data-key="${key}"]`).value;
+            const dataRegistro = document.querySelector(`.editData[data-key="${key}"]`).value;
+
+            dbRef.child(key).update({ cliente, dataRegistro })
+            .then(() => alert("Atualizado com sucesso!"))
+            .catch(err => alert(err.message));
+        };
+    });
+
+    document.querySelectorAll('.btnExcluir').forEach(btn => {
+        btn.onclick = () => {
+            const key = btn.dataset.key;
+            if (confirm("Deseja excluir este ferramental?")) {
+                dbRef.child(key).remove();
+            }
+        };
+    });
+
+    document.querySelectorAll('.btnQR').forEach(btn => {
+        btn.onclick = () => {
+            const key = btn.dataset.key;
+            dbRef.child(key).get().then(snapshot => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const conteudo = `Tipo: ${data.tipo}\nSV: ${data.sv}\nCliente: ${data.cliente}\nData Fab: ${data.dataFabricacao}\nData Registro: ${data.dataRegistro}\nResponsável: ${data.responsavel}`;
+                    
+                    const qrDiv = document.getElementById('qrcode');
+                    qrDiv.innerHTML = "";
+                    const qr = new QRCode(qrDiv, {
+                        text: conteudo,
+                        width: 200,
+                        height: 200
+                    });
+
+                    document.getElementById('baixarQR').onclick = () => {
+                        const img = qrDiv.querySelector('img');
+                        const link = document.createElement('a');
+                        link.href = img.src;
+                        link.download = `${data.sv}_QR.png`;
+                        link.click();
+                    };
+
+                    document.getElementById('modalQR').style.display = "flex";
+                }
+            });
+        };
+    });
+}
+
+// Buscar
+document.getElementById('btnBuscar').onclick = () => {
+    const termo = document.getElementById('busca').value.toLowerCase();
+    dbRef.get().then(snapshot => {
+        if (snapshot.exists()) {
+            const dados = snapshot.val();
+            const filtrados = {};
+            for (let k in dados) {
+                if (dados[k].sv.toLowerCase().includes(termo) || dados[k].cliente.toLowerCase().includes(termo)) {
+                    filtrados[k] = dados[k];
+                }
+            }
+            if (Object.keys(filtrados).length === 0) {
+                alert("Nenhum ferramental encontrado");
+                tabela.innerHTML = "";
+            } else {
+                exibirFerramentais(filtrados);
             }
         }
-        if(!encontrado) tbody.innerHTML='<tr><td colspan="7">Nenhum ferramental encontrado</td></tr>';
     });
-}
+};
 
-function editarFerramental(key){
-    const f = prompt("Novo cliente:");
-    const dr = prompt("Nova data de registro (YYYY-MM-DD):");
-    if(f && dr){
-        firebase.database().ref('ferramentais/'+key).update({cliente:f, dataRegistro:dr});
-        alert("Alterações salvas!");
-        buscarFerramental();
+// Exibe todos inicialmente
+dbRef.on('value', snapshot => {
+    if (snapshot.exists()) {
+        exibirFerramentais(snapshot.val());
+    } else {
+        tabela.innerHTML = "";
     }
-}
-
-function excluirFerramental(key){
-    if(confirm("Deseja excluir este ferramental?")){
-        firebase.database().ref('ferramentais/'+key).remove();
-        buscarFerramental();
-    }
-}
-
-function gerarQR(key){
-    firebase.database().ref('ferramentais/'+key).once('value', snap=>{
-        const f = snap.val();
-        const dados = `Tipo: ${f.tipo}\nSV: ${f.sv}\nCliente: ${f.cliente}\nData Fab: ${f.dataFabricacao||''}\nData Reg: ${f.dataRegistro}\nResponsável: ${f.responsavel}`;
-        const qrWindow = window.open("", "QR Code", "width=300,height=300");
-        qrWindow.document.write(`<h3>QR Code</h3><canvas id="qrcode"></canvas><br><button onclick="download()">Download PNG</button>
-        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-        <script>
-        QRCode.toCanvas(document.getElementById("qrcode"), \`${dados}\`, function (error) {
-            if (error) console.error(error);
-        });
-        function download(){
-            const canvas = document.getElementById("qrcode");
-            const link = document.createElement("a");
-            link.href = canvas.toDataURL("image/png");
-            link.download = "qrcode.png";
-            link.click();
-        }
-        </script>`);
-    });
-}
+});
 </script>
 
 </body>
