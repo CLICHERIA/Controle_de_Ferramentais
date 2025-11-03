@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menu Interativo</title>
+<title>Menu Futurista</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
@@ -23,6 +23,7 @@
     padding: 3rem;
     border-radius: 12px;
     box-shadow: 0 0 20px #00f0ff, 0 0 40px #ff00ff inset;
+    width: 350px;
     text-align: center;
   }
 
@@ -31,32 +32,72 @@
     text-shadow: 0 0 10px #00f0ff, 0 0 20px #ff00ff;
   }
 
-  a {
-    display: block;
-    margin: 1rem 0;
+  button {
+    width: 100%;
     padding: 1rem;
+    margin: 0.8rem 0;
+    border: none;
+    border-radius: 6px;
     background: linear-gradient(90deg, #00f0ff, #ff00ff);
     color: #fff;
-    text-decoration: none;
     font-weight: bold;
-    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     transition: 0.3s;
   }
 
-  a:hover {
+  button:hover {
     box-shadow: 0 0 20px #ff00ff, 0 0 40px #00f0ff;
-    transform: scale(1.05);
   }
 </style>
 </head>
 <body>
 
 <div class="menu-box">
-  <h1>Menu Interativo</h1>
-  <a href="registrar.html">Registrar Ferramental</a>
-  <a href="consultar.html">Consultar Ferramental</a>
-  <a href="workflows/index.html">Sair</a>
+  <h1>Menu Futurista</h1>
+  <button id="btnRegistrar">Registrar Ferramental</button>
+  <button id="btnConsultar">Consultar Ferramental</button>
+  <button id="btnSair">Sair</button>
 </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Redireciona para login se não estiver logado
+  onAuthStateChanged(auth, user => {
+    if(!user){
+      alert("Você precisa estar logado!");
+      window.location.href = "index.html";
+    }
+  });
+
+  document.getElementById("btnRegistrar").addEventListener("click", () => {
+    window.location.href = "registrar.html";
+  });
+
+  document.getElementById("btnConsultar").addEventListener("click", () => {
+    window.location.href = "consultar.html";
+  });
+
+  document.getElementById("btnSair").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
+</script>
 
 </body>
 </html>
