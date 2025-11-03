@@ -2,67 +2,52 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menu - SGF</title>
+<title>Menu SGF</title>
 <style>
-  body {
-    background-color: #0a0f1a;
-    color: #fff;
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-
-  .logo-container {
-    margin: 40px auto;
-    display: inline-block;
-    filter: drop-shadow(0 0 8px #00eaff);
-  }
-
-  img.logo {
-    width: 200px;
-  }
-
-  h1 {
-    color: #00eaff;
-    margin-bottom: 50px;
-  }
-
-  .menu-button {
-    display: inline-block;
-    padding: 20px 40px;
-    margin: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #00eaff;
-    background-color: #0d1b2a;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-    text-decoration: none;
-    transition: 0.3s ease-in-out;
-  }
-
-  .menu-button:hover {
-    color: #00ffff;
-    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-  }
+body { font-family: Arial; background:#111; color:#fff; text-align:center;}
+.centralizado { width:400px; margin:100px auto; background:#222; padding:30px; border-radius:10px;}
+button { width:90%; padding:12px; margin:10px 0; border:none; border-radius:5px; background:#00bfff; color:#111; font-weight:bold; cursor:pointer;}
+button:hover { background:#00e0ff; }
+img.logo { width:200px; margin-bottom:30px; display:block; margin-left:auto; margin-right:auto; }
 </style>
 </head>
 <body>
 
-<div class="logo-container">
-  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
+<div class="centralizado">
+    <img src="logosovel1337.png" alt="Logo" class="logo">
+    <h2>Menu Principal SGF</h2>
+    <button onclick="window.location.href='registrar.html'">Registrar Ferramental</button>
+    <button onclick="window.location.href='consultar.html'">Consultar Ferramentais</button>
+    <button onclick="logout()">Sair</button>
 </div>
 
-<h1>Menu Principal</h1>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script>
+// Firebase config
+const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
+firebase.initializeApp(firebaseConfig);
 
-<div>
-  <a href="registrar.html" class="menu-button">Registrar Ferramental</a>
-  <a href="consultar.html" class="menu-button">Consultar Ferramental</a>
-</div>
+function logout(){
+    firebase.auth().signOut().then(()=>{
+        window.location.href = "index.html";
+    });
+}
+
+firebase.auth().onAuthStateChanged(user=>{
+    if(!user){
+        window.location.href = "index.html";
+    }
+});
+</script>
 
 </body>
 </html>
+  
