@@ -96,4 +96,104 @@
           <td>${f.cliente}</td>
           <td>${f.dataRegistro}</td>
           <td>
-            <button class="neon-button" onclick="editarFerramental('${f.sv
+                        <button class="neon-button" onclick="editarFerramental('${f.sv}')">Editar</button>
+            <button class="neon-button" onclick="excluirFerramental('${f.sv}')">Excluir</button>
+            <button class="neon-button" onclick="gerarQRCode('${f.sv}')">QR Code</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+    } else {
+      document.getElementById('tabelaFerramentais').style.display = 'none';
+      alert('Nenhum ferramental encontrado.');
+    }
+  }
+
+  function editarFerramental(sv) {
+    const f = dadosFerramentais.find(f => f.sv === sv);
+    if(!f) return alert('Ferramental não encontrado!');
+    const novoCliente = prompt('Atualize o Cliente:', f.cliente);
+    if(novoCliente) f.cliente = novoCliente;
+    const novaDataRegistro = prompt('Atualize a Data de Registro:', f.dataRegistro);
+    if(novaDataRegistro) f.dataRegistro = novaDataRegistro;
+    alert('Ferramental atualizado!');
+    buscarFerramental();
+  }
+
+  function excluirFerramental(sv) {
+    if(confirm('Deseja realmente excluir este ferramental?')) {
+      const index = dadosFerramentais.findIndex(f => f.sv === sv);
+      if(index >= 0) {
+        dadosFerramentais.splice(index,1);
+        alert('Ferramental excluído!');
+        buscarFerramental();
+      }
+    }
+  }
+
+  function gerarQRCode(sv) {
+    const f = dadosFerramentais.find(f => f.sv === sv);
+    if(!f) return alert('Ferramental não encontrado!');
+    
+    // Criar modal
+    let modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = 0;
+    modal.style.left = 0;
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.flexDirection = 'column';
+    modal.style.zIndex = 9999;
+
+    let canvas = document.createElement('canvas');
+    modal.appendChild(canvas);
+
+    let btn = document.createElement('button');
+    btn.textContent = 'Fechar / Exportar PNG';
+    btn.className = 'neon-button';
+    btn.style.marginTop = '20px';
+    modal.appendChild(btn);
+
+    btn.onclick = () => {
+      // Exportar PNG
+      const link = document.createElement('a');
+      link.download = `${sv}_QRCode.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+      modal.remove();
+    };
+
+    document.body.appendChild(modal);
+
+    // Gerar QR code usando QRCode.js (ou você pode importar a biblioteca)
+    // Aqui vamos criar simples QR code com o logo centralizado
+    // Precisará da biblioteca QRCode.js https://github.com/davidshimjs/qrcodejs
+    const qr = new QRCode(canvas, {
+      text: `SV: ${f.sv}\nCliente: ${f.cliente}\nData Registro: ${f.dataRegistro}`,
+      width: 250,
+      height: 250,
+      colorDark : "#00eaff",
+      colorLight : "#0a0f1a",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+
+    // Para logo central, você precisaria sobrepor imagem depois de gerar QR
+    const imgLogo = new Image();
+    imgLogo.src = 'logosovel1337.png';
+    imgLogo.onload = () => {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width * 0.25;
+      ctx.drawImage(imgLogo, (canvas.width-size)/2, (canvas.height-size)/2, size, size);
+    }
+  }
+</script>
+
+<!-- QRCode.js Biblioteca (necessário) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+</body>
+</html>
+
