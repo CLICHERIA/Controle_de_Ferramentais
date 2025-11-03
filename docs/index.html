@@ -1,128 +1,182 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema de Gestão - Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autenticação - Sistema de Ferramentais</title>
 
-<!-- ====================== -->
-<!-- Estilo Neon Futurista -->
-<!-- ====================== -->
-<style>
-body {
-    background-color: #0a0f1a;
-    margin: 0; padding: 0;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-    display: flex; flex-direction: column; align-items: center;
-}
+  <!-- ====================== -->
+  <!-- Estilo futurista (README) -->
+  <!-- ====================== -->
+  <style>
+    body {
+      background-color: #0a0f1a;
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-h1 { color: #00eaff; text-shadow: 0 0 20px #00eaff; margin-top: 40px; text-align:center; }
+    .login-box {
+      background: #0d1b2a;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 
+        0 0 10px #00eaff,
+        0 0 20px #00eaff55;
+      width: 350px;
+      text-align: center;
+      animation: neonCardPulse 2s infinite alternate;
+    }
 
-.logo-container {
-    display: inline-block;
-    background: transparent;
-    padding: 0;
-    margin: 20px;
-    filter: drop-shadow(0 0 8px #00eaff);
-}
+    @keyframes neonCardPulse {
+      0%, 100% {
+        box-shadow: 0 0 5px #00eaff, 0 0 15px #00eaff22;
+      }
+      50% {
+        box-shadow: 0 0 15px #00eaff, 0 0 30px #00eaff44;
+      }
+    }
 
-img.logo { display: block; margin: 0 auto; }
+    .login-box h1 {
+      color: #00eaff;
+      text-shadow: 0 0 15px #00eaff;
+      margin-bottom: 1.5rem;
+    }
 
-form {
-    display: flex; flex-direction: column; align-items: center;
-    background: #0d1b2a;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px #00eaff33;
-    margin-top: 20px;
-}
+    .login-box input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      border: 1px solid #00eaff44;
+      background-color: #0a0f1a;
+      color: #00eaff;
+      font-size: 1rem;
+      text-align: center;
+    }
 
-input {
-    padding: 12px;
-    margin: 10px 0;
-    width: 250px;
-    border-radius: 10px;
-    border: 1px solid #00eaff;
-    background-color: #0a0f1a;
-    color: #00eaff;
-}
+    .neon-button {
+      display: inline-block;
+      width: 100%;
+      padding: 1rem;
+      color: #00eaff;
+      background-color: #0d1b2a;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      box-shadow:
+        0 0 5px #00eaff,
+        0 0 10px #00eaff,
+        0 0 20px #00eaff,
+        0 0 40px #00eaff55;
+      transition: 0.3s ease-in-out;
+      animation: neonPulse 1.5s infinite alternate;
+    }
 
-input::placeholder { color: #66d9ff; }
+    .neon-button:hover {
+      color: #00ffff;
+      box-shadow:
+        0 0 10px #00eaff,
+        0 0 20px #00eaff,
+        0 0 30px #00eaff,
+        0 0 50px #00eaff77;
+    }
 
-button {
-    padding: 12px 20px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 10px;
-    background-color: #0d1b2a;
-    color: #00eaff;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-    transition: 0.3s ease-in-out;
-}
+    @keyframes neonPulse {
+      0%, 100% {
+        box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
+      }
+      50% {
+        box-shadow: 0 0 15px #00eaff, 0 0 30px #00eaff, 0 0 45px #00eaff77;
+      }
+    }
 
-button:hover {
-    color: #00ffff;
-    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-}
+    .login-box p {
+      margin-top: 1rem;
+      color: #9fd0ff;
+      font-size: 0.9rem;
+    }
 
-.error { color: #ff5555; margin-top: 10px; }
-</style>
+    .login-box a {
+      color: #00eaff;
+      text-decoration: none;
+    }
 
-<!-- ====================== -->
-<!-- Firebase SDK -->
-<!-- ====================== -->
-<script type="module">
-  // Importando módulos Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+    .login-box a:hover {
+      text-decoration: underline;
+    }
 
-  const firebaseConfig = {
-  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+    .logo-container {
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 10px #00eaff);
+    }
+
+    .logo-container img {
+      width: 150px;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <!-- Logo centralizada -->
+    <div class="logo-container">
+      <img src="logosovel1337.png" alt="Logo Grupo Sovel">
+    </div>
+
+    <h1>Autenticação</h1>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="btnLogin" class="neon-button">Entrar</button>
+    <p>Não tem conta? <a href="#" id="btnCadastrar">Cadastrar</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-  };
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  window.login = function(e) {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
-    const erro = document.getElementById("erro");
+    document.getElementById("btnLogin").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
 
-    signInWithEmailAndPassword(auth, email, senha)
-      .then((userCredential) => {
-        // Login bem-sucedido → redirecionar para docs/index.html
-        window.location.href = "docs/index.html";
-      })
-      .catch((error) => {
-        erro.textContent = "Erro no login: " + error.message;
-      });
-  };
-</script>
-</head>
+      signInWithEmailAndPassword(auth, email, senha)
+        .then(() => { 
+          // Corrigindo caminho após login
+          window.location.href = "../menu.html"; 
+        })
+        .catch(err => alert("Erro no login: " + err.message));
+    });
 
-<body>
+    document.getElementById("btnCadastrar").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
 
-<div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" width="200" class="logo">
-</div>
-
-<h1>⚙️ Sistema de Gestão de Ferramentais ⚙️</h1>
-
-<form onsubmit="login(event)">
-    <input type="email" id="email" placeholder="E-mail" required>
-    <input type="password" id="senha" placeholder="Senha" required>
-    <button type="submit">Entrar</button>
-    <div id="erro" class="error"></div>
-</form>
+      createUserWithEmailAndPassword(auth, email, senha)
+        .then(() => { alert("Conta criada! Faça login."); })
+        .catch(err => alert("Erro ao cadastrar: " + err.message));
+    });
+  </script>
 
 </body>
 </html>
