@@ -1,175 +1,225 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consultar Ferramentais</title>
-
-<!-- ====================== -->
-<!-- Estilo Futurista -->
-<!-- ====================== -->
-<style>
-body {
-  background-color: #0a0f1a;
-  margin: 0;
-  padding: 0;
-  color: #ffffff;
-  font-family: 'Segoe UI', sans-serif;
-}
-html, body {
-  width: 100%;
-  height: 100%;
-}
-a { color: #00eaff; text-decoration: none; }
-.logo-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 30px;
-  filter: drop-shadow(0 0 8px #00eaff);
-}
-img.logo { max-width: 200px; }
-.centralizado { text-align: center; max-width: 900px; margin: 30px auto; }
-input[type=text] {
-  width: 60%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #00eaff55;
-  background-color: #0a0f1a;
-  color: #ffffff;
-  font-size: 16px;
-}
-button {
-  padding: 10px 20px;
-  margin-left: 10px;
-  font-weight: bold;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  background-color: #0d1b2a;
-  color: #00eaff;
-  box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-  transition: 0.3s ease-in-out;
-}
-button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff; }
-.card {
-  background: #0d1b2a;
-  border-radius: 15px;
-  padding: 20px;
-  margin: 15px auto;
-  max-width: 700px;
-  text-align: left;
-  box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff44;
-}
-.card h3 { color: #00eaff; margin: 0 0 10px 0; }
-.card p { margin: 0 0 10px 0; color: #c0dfff; }
-.card .acoes { margin-top: 10px; display: flex; gap: 10px; }
-canvas.qrcode { margin-top: 10px; }
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar Ferramentais</title>
+  <style>
+    body {
+      background-color: #0a0f1a;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .logo-container {
+      display: block;
+      margin: 20px auto;
+      filter: drop-shadow(0 0 8px #00eaff);
+    }
+    img.logo {
+      width: 150px;
+    }
+    input, select {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      margin: 5px;
+      width: 200px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #0d1b2a;
+      color: #00eaff;
+      box-shadow: 0 0 10px #00eaff;
+      transition: 0.3s;
+    }
+    button:hover {
+      box-shadow: 0 0 20px #00eaff;
+      color: #00ffff;
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #00eaff44;
+    }
+    th {
+      background-color: #0d1b2a;
+    }
+    td {
+      background-color: #0a0f1a;
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: #0a0f1a;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00eaff44;
+      text-align: center;
+      position: relative;
+    }
+    .close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #00eaff;
+    }
+  </style>
 </head>
 <body>
 
 <div class="logo-container">
-  <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" class="logo">
+  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
 </div>
 
-<div class="centralizado">
-  <h1 style="color:#00eaff; text-shadow:0 0 20px #00eaff;">Consultar Ferramentais</h1>
+<h1>Consultar Ferramentais</h1>
 
-  <div style="margin-bottom:20px;">
-    <input type="text" id="buscar" placeholder="Digite SV ou Cliente...">
-    <button onclick="buscarFerramentais()">Buscar</button>
-    <button onclick="window.location.href='index.html'">Menu Principal</button>
+<input type="text" id="busca" placeholder="Buscar por SV ou Cliente">
+<button onclick="buscarFerramentais()">Buscar</button>
+<button onclick="window.location.href='menu.html'">Menu Principal</button>
+
+<table id="tabelaFerramentais">
+  <thead>
+    <tr>
+      <th>Tipo</th>
+      <th>SV</th>
+      <th>Cliente</th>
+      <th>Data Registro</th>
+      <th>Responsável</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Ferramentais populados via JS -->
+  </tbody>
+</table>
+
+<!-- Modal QR Code -->
+<div id="modalQR" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModal()">×</span>
+    <canvas id="canvasModalQR"></canvas>
+    <br>
+    <button onclick="baixarQR()">Exportar PNG</button>
   </div>
-
-  <div id="resultados"></div>
 </div>
 
-<!-- QRCode.js Library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-
 <script>
-// Mock de dados para exemplo
-let dadosFerramentais = [
-  { tipo: 'Faca', sv: 'A123', cliente: 'Cliente1', dataFabricacao: '2025-01-10', dataRegistro: '2025-11-03', responsavel: 'Samueldson' },
-  { tipo: 'Clichê', sv: 'B456', cliente: 'Cliente2', dataFabricacao: '', dataRegistro: '2025-11-01', responsavel: 'Rafaelly' }
-];
+  // Dados de exemplo, substituir por banco real
+  let dadosFerramentais = [
+    {tipo: 'Faca', sv:'F001', cliente:'Cliente A', dataFabricacao:'2025-01-01', dataRegistro:'2025-10-01', responsavel:'João'},
+    {tipo: 'Clichê', sv:'C001', cliente:'Cliente B', dataFabricacao:'2025-02-01', dataRegistro:'2025-10-02', responsavel:'Maria'}
+  ];
 
-// Função de busca
-function buscarFerramentais() {
-  const query = document.getElementById('buscar').value.toLowerCase();
-  const resultados = dadosFerramentais.filter(f => 
-    f.sv.toLowerCase().includes(query) || f.cliente.toLowerCase().includes(query)
-  );
-  renderizarResultados(resultados);
-}
-
-// Renderizar resultados
-function renderizarResultados(lista) {
-  const container = document.getElementById('resultados');
-  container.innerHTML = '';
-
-  if(lista.length === 0) {
-    container.innerHTML = '<p style="color:#c0dfff;">Nenhum ferramental encontrado.</p>';
-    return;
+  function popularTabela(filtro='') {
+    const tbody = document.querySelector('#tabelaFerramentais tbody');
+    tbody.innerHTML = '';
+    dadosFerramentais
+      .filter(item => item.sv.includes(filtro) || item.cliente.toLowerCase().includes(filtro.toLowerCase()))
+      .forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.tipo}</td>
+          <td>${item.sv}</td>
+          <td>${item.cliente}</td>
+          <td>${item.dataRegistro}</td>
+          <td>${item.responsavel}</td>
+          <td>
+            <button onclick="editarFerramental('${item.sv}')">Editar</button>
+            <button onclick="excluirFerramental('${item.sv}')">Excluir</button>
+            <button onclick="gerarQRCodeModal('${item.sv}')">Gerar QR Code</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
   }
 
-  lista.forEach(f => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <h3>${f.tipo} - SV: ${f.sv}</h3>
-      <p>Cliente: ${f.cliente}</p>
-      <p>Data de Fabricação: ${f.dataFabricacao || 'Não informado'}</p>
-      <p>Data de Registro: ${f.dataRegistro}</p>
-      <p>Responsável: ${f.responsavel}</p>
-      <div class="acoes">
-        <button onclick="editarFerramental('${f.sv}')">Editar</button>
-        <button onclick="excluirFerramental('${f.sv}')">Excluir</button>
-        <button onclick="gerarQRCode('${f.sv}', this)">Gerar QR Code</button>
-      </div>
-      <div class="qrcode-container"></div>
-    `;
-    container.appendChild(card);
-  });
-}
-
-// Funções de ação
-function editarFerramental(sv) {
-  alert('Editar: ' + sv);
-}
-
-function excluirFerramental(sv) {
-  if(confirm('Deseja realmente excluir ' + sv + '?')) {
-    dadosFerramentais = dadosFerramentais.filter(f => f.sv !== sv);
-    buscarFerramentais();
+  function buscarFerramentais() {
+    const filtro = document.getElementById('busca').value;
+    popularTabela(filtro);
   }
-}
 
-function gerarQRCode(sv, btn) {
-  const container = btn.parentElement.nextElementSibling;
-  container.innerHTML = ''; // limpa QR anterior
-  const qrCanvas = document.createElement('canvas');
-  container.appendChild(qrCanvas);
+  function editarFerramental(sv) {
+    const item = dadosFerramentais.find(f => f.sv === sv);
+    if(!item) return;
+    const novoCliente = prompt('Editar Cliente:', item.cliente);
+    if(novoCliente) item.cliente = novoCliente;
+    const novaData = prompt('Editar Data de Registro:', item.dataRegistro);
+    if(novaData) item.dataRegistro = novaData;
+    popularTabela();
+  }
 
-  // Gerar QR code com o texto do SV
-  QRCode.toCanvas(qrCanvas, sv, { width: 200, margin: 2 }, function (error) {
-    if(error) console.error(error);
-    else {
-      // Desenhar logo no centro
-      const ctx = qrCanvas.getContext('2d');
-      const logo = new Image();
-      logo.src = 'logosovel1337.png';
-      logo.onload = function() {
-        const logoSize = qrCanvas.width * 0.25;
-        const x = (qrCanvas.width - logoSize)/2;
-        const y = (qrCanvas.height - logoSize)/2;
-        ctx.drawImage(logo, x, y, logoSize, logoSize);
-      };
+  function excluirFerramental(sv) {
+    if(confirm('Deseja realmente excluir este ferramental?')) {
+      dadosFerramentais = dadosFerramentais.filter(f => f.sv !== sv);
+      popularTabela();
     }
-  });
-}
+  }
 
+  function gerarQRCodeModal(sv) {
+    const item = dadosFerramentais.find(f => f.sv === sv);
+    if(!item) return;
+
+    const modal = document.getElementById('modalQR');
+    const canvas = document.getElementById('canvasModalQR');
+    modal.style.display = 'flex';
+    canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+
+    const qrTexto = `SV: ${item.sv}\nTipo: ${item.tipo}\nCliente: ${item.cliente}\nData de Fabricação: ${item.dataFabricacao || 'Não informada'}\nData de Registro: ${item.dataRegistro}\nResponsável: ${item.responsavel}`;
+
+    QRCode.toCanvas(canvas, qrTexto, { width: 250, margin: 2 }, function (error) {
+      if(error) console.error(error);
+      else {
+        const ctx = canvas.getContext('2d');
+        const logo = new Image();
+        logo.src = 'logosovel1337.png';
+        logo.onload = function() {
+          const logoSize = canvas.width * 0.25;
+          const x = (canvas.width - logoSize)/2;
+          const y = (canvas.height - logoSize)/2;
+          ctx.drawImage(logo, x, y, logoSize, logoSize);
+        };
+      }
+    });
+  }
+
+  function fecharModal() {
+    document.getElementById('modalQR').style.display = 'none';
+  }
+
+  function baixarQR() {
+    const canvas = document.getElementById('canvasModalQR');
+    const link = document.createElement('a');
+    link.download = 'qr_ferramental.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  // Inicializa tabela
+  popularTabela();
 </script>
 
 </body>
