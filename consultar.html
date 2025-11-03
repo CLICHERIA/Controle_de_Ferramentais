@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consultar Ferramental</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
+    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 2rem; background: #f5f5f5; }
     h1 { margin-bottom: 1rem; }
     table { width: 100%; max-width: 600px; border-collapse: collapse; }
     th, td { padding: 0.8rem; border: 1px solid #ccc; text-align: left; }
     th { background: #007BFF; color: #fff; }
     tr:nth-child(even) { background: #e9ecef; }
-    .back { margin-top: 1rem; padding: 1rem; background: #007BFF; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
-    .back:hover { background: #0056b3; }
+    .voltar { margin-top: 1rem; padding: 1rem; background: #007BFF; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    .voltar:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
@@ -31,12 +31,12 @@
   <tbody id="tabelaFerramentais"></tbody>
 </table>
 
-<button class="back" onclick="location.href='menu.html'">Voltar ao Menu</button>
+<button class="voltar" onclick="location.href='menu.html'">Voltar ao Menu</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
@@ -51,10 +51,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Redireciona para login se não estiver autenticado
-  onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "index.html";
-  });
+  onAuthStateChanged(auth, user => { if (!user) window.location.href = "index.html"; });
 
   const tabela = document.getElementById("tabelaFerramentais");
 
@@ -63,13 +60,9 @@
     const querySnapshot = await getDocs(collection(db, "ferramentais"));
     querySnapshot.forEach(doc => {
       const data = doc.data();
+      const criado = data.criadoEm instanceof Timestamp ? data.criadoEm.toDate().toLocaleString() : "";
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${data.nome}</td>
-        <td>${data.codigo}</td>
-        <td>${data.status}</td>
-        <td>${data.criadoEm.toDate().toLocaleString()}</td>
-      `;
+      tr.innerHTML = `<td>${data.nome}</td><td>${data.codigo}</td><td>${data.status}</td><td>${criado}</td>`;
       tabela.appendChild(tr);
     });
   }
