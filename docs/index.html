@@ -1,391 +1,600 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Sistema de Gestão de Ferramentais - Grupo Sovel da Amazônia">
-<title>Gestão de Ferramentais | Grupo Sovel da Amazônia</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gestão de Ferramentais — Grupo Sovel</title>
+<meta name="description" content="Sistema moderno de gestão de ferramentais com QR Code" />
 
-<!-- Estilo -->
+<!-- ===========================
+     STYLES - Modern Dashboard
+     =========================== -->
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    background: linear-gradient(135deg, #0a0f1a, #020409);
-    color: #e0e0e0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+  :root{
+    --bg-1: #071225;
+    --bg-2: #07101a;
+    --accent: #00d0ff;
+    --muted: #9aa6b2;
+    --card-bg: rgba(11,34,57,0.7);
+    --glass: rgba(255,255,255,0.03);
+    --success: #28a745;
+    --danger: #ff4d4f;
+    --warn: #ffcc00;
   }
 
-  header { text-align: center; margin-bottom: 25px; }
-  header h1 { font-size: 2.5rem; color: #00c3ff; text-shadow: 0 0 15px #00c3ff; }
-  header p { color: #aaa; font-size: 1.1rem; margin-top: 5px; }
-
-  .menu {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 25px;
-  }
-  .menu button {
-    background: #0b2239;
-    color: #00c3ff;
-    border: 2px solid #00c3ff;
-    border-radius: 15px;
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 0 10px #00c3ff55;
-  }
-  .menu button:hover {
-    background: #00c3ff;
-    color: #0a0f1a;
-    transform: scale(1.05);
-    box-shadow: 0 0 20px #00c3ff88;
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 600px at 10% 10%, #081428 0%, #02040a 35%), linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    color:#e6eef6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:28px;
+    gap:18px;
   }
 
-  /* Formulário */
-  form {
-    display: none;
-    flex-direction: column;
-    gap: 12px;
-    background: rgba(0,195,255,0.05);
-    padding: 25px 30px;
-    border-radius: 15px;
-    border: 1px solid rgba(0,195,255,0.2);
-    width: 100%;
-    max-width: 550px;
-    position: relative;
-    box-shadow: 0 0 20px #00c3ff22;
+  /* Header */
+  header{
+    width:100%;
+    max-width:1100px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:14px 20px;
+    border-radius:12px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow: 0 6px 30px rgba(0,0,0,0.45), 0 0 40px rgba(0,208,255,0.04) inset;
+    backdrop-filter: blur(6px);
   }
-  .message {
-    position: absolute;
-    top: -35px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-weight: 600;
-    padding: 5px 0;
-    border-radius: 6px;
-    display: none;
+  .brand {
+    display:flex; align-items:center; gap:12px;
   }
-  .message.success { background: #28a745; }
-  .message.error { background: #dc3545; }
+  .logo {
+    width:48px; height:48px; border-radius:10px;
+    background: linear-gradient(135deg, #00d0ff, #2dd4bf);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 6px 18px rgba(0,208,255,0.08);
+    font-weight:700; color:#021018;
+  }
+  header h1{font-size:1.25rem; margin:0; color:var(--accent); text-shadow:0 3px 18px rgba(0,208,255,0.08);}
+  header p{margin:0; color:var(--muted); font-size:0.88rem;}
 
-  form input, form select {
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #00c3ff55;
-    background: #0b2239;
-    color: #e0e0e0;
-    font-size: 1rem;
-    transition: 0.3s;
+  /* Top controls */
+  .controls{
+    display:flex; gap:10px; align-items:center;
   }
-  form input.invalid, form select.invalid { border-color: #ff4444; }
+  .btn {
+    appearance:none; border:0; cursor:pointer; padding:10px 14px; border-radius:10px;
+    font-weight:600; color:var(--accent); background: rgba(0,0,0,0.25);
+    border:1px solid rgba(0,208,255,0.12);
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+  }
+  .btn:hover{ transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,208,255,0.08); background:linear-gradient(90deg, rgba(0,208,255,0.08), rgba(0,208,255,0.03)); color:#021018 }
+  .btn.positive{ background: linear-gradient(90deg,#05262a,#043640); color:#00ffd1; border:1px solid rgba(0,255,209,0.08); }
+  .btn.ghost{ background:transparent; color:var(--accent); border:1px dashed rgba(0,208,255,0.06) }
 
-  form button {
-    background: #0b2239;
-    color: #00c3ff;
-    border: 2px solid #00c3ff;
-    border-radius: 12px;
-    padding: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  form button:hover {
-    background: #00c3ff;
-    color: #0a0f1a;
-    transform: scale(1.05);
+  /* Layout container */
+  .container{
+    width:100%; max-width:1100px;
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:20px;
+    align-items:start;
   }
 
-  /* Lista e cards */
-  #listaFerramentais {
-    display: none;
-    width: 100%;
-    max-width: 800px;
-    flex-direction: column;
-    gap: 15px;
+  /* Left column (list) */
+  .panel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+    border-radius:14px; padding:18px;
+    box-shadow: 0 10px 30px rgba(1,10,20,0.45);
+    border:1px solid rgba(255,255,255,0.02);
   }
-  #searchInput {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #00c3ff55;
-    background: #0b2239;
-    color: #e0e0e0;
-    margin-bottom: 15px;
-    font-size: 1rem;
+
+  /* Search */
+  .search {
+    display:flex; gap:12px; align-items:center; margin-bottom:14px;
   }
+  .search input{
+    flex:1; padding:12px 14px; border-radius:10px;
+    background:var(--card-bg); color:inherit; border:1px solid rgba(255,255,255,0.03);
+    outline:none; font-size:0.98rem;
+    transition: box-shadow .16s ease, transform .12s ease;
+  }
+  .search input:focus{ box-shadow: 0 6px 24px rgba(0,208,255,0.06); transform:translateY(-2px); border-color: rgba(0,208,255,0.12) }
+
+  /* Grid of cards */
+  #lista { display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
 
   .card {
-    background: #0b2239;
-    border-radius: 15px;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 15px;
-    box-shadow: 0 0 10px #00c3ff44;
-    transition: all 0.3s;
-    position: relative;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px; padding:14px; position:relative;
+    border:1px solid rgba(255,255,255,0.02);
+    transition: transform .18s ease, box-shadow .22s ease;
+    display:flex; flex-direction:column; gap:10px;
+    min-height:110px;
   }
-  .card:hover { box-shadow: 0 0 25px #00c3ff88; transform: translateY(-2px); }
-  .card-info { flex: 1; min-width: 180px; }
-  .status {
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 6px;
-    display: inline-block;
-    margin-top: 5px;
-    font-size: 0.9rem;
-    color: #0a0f1a;
-  }
-  .EmUso { background: #00c3ff; }
-  .Manutencao { background: #ffcc00; }
-  .Danificado { background: #ff4444; }
-  .Trocar { background: #ff8800; }
+  .card:hover{ transform: translateY(-6px); box-shadow: 0 24px 44px rgba(0,0,0,0.6), 0 0 30px rgba(0,208,255,0.06) }
 
-  .card-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .card-buttons button {
-    padding: 6px 10px;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  .edit-btn { background: #ffaa00; color: #0a0f1a; }
-  .delete-btn { background: #ff4444; color: #fff; }
-  .qr-btn { background: #00c3ff; color: #0a0f1a; }
+  .card-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .code { font-weight:800; font-size:1.02rem; color:#cdefff; letter-spacing:0.6px; }
+  .name { color:var(--muted); font-size:0.95rem; margin-top:4px; }
+  .meta { font-size:0.8rem; color:#98a6b3; }
 
-  footer { text-align: center; font-size: 0.9rem; color: #888; margin-top: 30px; }
+  /* status badge with gradient variants */
+  .badge{ padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.78rem; color:#071018; display:inline-block; }
+  .s-emuso{ background: linear-gradient(90deg,#00d0ff,#00b4ff); box-shadow: 0 6px 18px rgba(0,208,255,0.08); }
+  .s-manut{ background: linear-gradient(90deg,#ffd866,#ffb84d); box-shadow: 0 6px 18px rgba(255,200,70,0.06); }
+  .s-dan{ background: linear-gradient(90deg,#ff6b6b,#ff4d4f); box-shadow: 0 6px 18px rgba(255,80,80,0.06); }
+  .s-trocar{ background: linear-gradient(90deg,#ffb86b,#ff8b3d); box-shadow: 0 6px 18px rgba(255,140,60,0.06); }
 
-  /* Modal QR */
-  #qrModal {
-    display: none;
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.85);
-    justify-content: center;
-    align-items: center;
-    z-index:1000;
-  }
-  #qrModalContent {
-    background: #0b2239;
-    padding: 30px;
-    border-radius: 18px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 0 30px #00c3ff66;
-  }
-  #qrModalContent span {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    cursor: pointer;
-    font-size: 24px;
-    color: #ff4444;
-  }
-  #qrModalContent h3 { color: #00c3ff; margin-bottom: 20px; }
-  #downloadQR {
-    margin-top: 20px;
-    background: #00c3ff;
-    color: #0a0f1a;
-    border: none;
-    padding: 12px 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+  .card-row { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
 
-  @media(max-width:650px){.card{flex-direction:column;align-items:flex-start;}}
+  .card-actions { display:flex; gap:8px; margin-top:6px; }
+  .icon-btn { background:transparent; border:1px solid rgba(255,255,255,0.03); padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--accent); transition:transform .14s ease; }
+  .icon-btn:hover{ transform:translateY(-3px); box-shadow:0 8px 22px rgba(0,208,255,0.04) }
+  .icon-edit{ background: linear-gradient(90deg,#ffd866,#ffb84d); color:#072018; border:0 }
+  .icon-del{ background: linear-gradient(90deg,#ff8b90,#ff6b6b); color:#fff; border:0 }
+  .icon-qr{ background: linear-gradient(90deg,#00d0ff,#00b4ff); color:#021018; border:0 }
+
+  /* Right column (form / details) */
+  .side {
+    display:flex; flex-direction:column; gap:14px;
+    position:sticky; top:28px;
+  }
+  .card-panel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+    padding:18px; border-radius:12px; border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 10px 30px rgba(1,10,20,0.45);
+  }
+  .form-row { display:flex; gap:10px; }
+  .form-row .half { flex:1; }
+
+  label { font-size:0.85rem; color:var(--muted); margin-bottom:6px; display:block; }
+  input[type="text"], input[type="date"], select {
+    width:100%; padding:10px 12px; border-radius:10px; background:var(--card-bg);
+    border:1px solid rgba(255,255,255,0.02); color:inherit; outline:none;
+  }
+  input:focus, select:focus{ box-shadow:0 8px 24px rgba(0,208,255,0.04); transform:translateY(-1px) }
+
+  .submit-row{ display:flex; gap:10px; margin-top:10px; }
+  .small-muted{ font-size:0.82rem; color:var(--muted) }
+
+  /* QR Modal */
+  #qrModal{ display:none; align-items:center; justify-content:center; }
+  .modal-panel { width:320px; background:linear-gradient(180deg,#051827,#0b2330); padding:22px; border-radius:14px; text-align:center; box-shadow:0 30px 80px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.03); transform:translateY(18px); opacity:0; transition: all .26s cubic-bezier(.2,.9,.2,1); }
+  #qrModal.show .modal-panel{ transform:translateY(0); opacity:1 }
+  .modal-close{ position:absolute; top:14px; right:18px; background:transparent; border:0; color:#ff7b7b; font-size:22px; cursor:pointer }
+
+  /* Responsive */
+  @media (max-width:1024px){
+    .container{ grid-template-columns: 1fr; padding-bottom:40px }
+    .side{ position:relative; top:0 }
+  }
 </style>
 </head>
 <body>
 
 <header>
-<h1>🔧 Sistema de Gestão de Ferramentais</h1>
-<p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
+  <div class="brand">
+    <div class="logo">SV</div>
+    <div>
+      <h1>Gestão de Ferramentais</h1>
+      <p>Grupo Sovel da Amazônia — Departamento de Amostras e Clicheria</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="btnOpenForm" class="btn positive">📝 Registrar Ferramental</button>
+    <button id="btnShowList" class="btn">🔍 Consultar Ferramentais</button>
+  </div>
 </header>
 
-<div class="menu">
-  <button id="btnRegistrar">📝 Registrar Ferramental</button>
-  <button id="btnListar">🔍 Consultar Ferramentais</button>
+<div class="container">
+  <!-- LIST / CARDS -->
+  <div class="panel">
+    <div class="search">
+      <input id="searchInput" placeholder="Pesquisar por código, nome ou tipo..." />
+      <button id="btnRefresh" class="btn ghost" title="Recarregar">⟳</button>
+    </div>
+
+    <div id="lista">
+      <!-- cards serão injetados aqui -->
+    </div>
+  </div>
+
+  <!-- SIDEBAR (form) -->
+  <aside class="side">
+    <div class="card-panel">
+      <h3 style="color:var(--accent); margin:0 0 8px 0">Registrar / Editar</h3>
+      <p class="small-muted">Use este formulário para cadastrar ou atualizar um ferramental.</p>
+
+      <form id="formFerramental" autocomplete="off" style="margin-top:12px">
+        <div>
+          <label for="tipo">Tipo</label>
+          <input id="tipo" type="text" placeholder="Faca ou Clichê" />
+        </div>
+        <div style="margin-top:8px">
+          <label for="codigo">Código SV <span style="color:#ffb3b3">*</span></label>
+          <input id="codigo" type="text" placeholder="Ex: SV-1234" required />
+        </div>
+
+        <div style="margin-top:8px">
+          <label for="nome">Nome do Cliente <span style="color:#ffb3b3">*</span></label>
+          <input id="nome" type="text" placeholder="Nome do cliente / pedido" required />
+        </div>
+
+        <div class="form-row" style="margin-top:8px">
+          <div class="half">
+            <label for="registro">Data de registro</label>
+            <input id="registro" type="date" />
+          </div>
+          <div class="half">
+            <label for="status">Status</label>
+            <select id="status">
+              <option value="">Selecionar status</option>
+              <option value="Em uso">Em uso</option>
+              <option value="Manutenção">Manutenção</option>
+              <option value="Danificado">Danificado</option>
+              <option value="Trocar">Trocar</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:8px">
+          <label for="responsavel">Responsável</label>
+          <input id="responsavel" type="text" placeholder="Nome do responsável" />
+        </div>
+
+        <div class="submit-row">
+          <button id="submitBtn" type="submit" class="btn positive">Salvar</button>
+          <button id="resetBtn" type="button" class="btn">Limpar</button>
+        </div>
+
+        <div id="formMessage" style="margin-top:10px; display:none; padding:8px; border-radius:8px; font-weight:700"></div>
+      </form>
+    </div>
+
+    <!-- extras / instruções -->
+    <div class="card-panel" style="margin-top:12px">
+      <h4 style="margin:0 0 8px 0; color:#cfeefd">Dicas rápidas</h4>
+      <ul style="color:var(--muted); font-size:0.95rem; margin-top:6px; line-height:1.45;">
+        <li>Cadastre o código SV para identificar cada item.</li>
+        <li>Use o botão <strong>Consultar Ferramentais</strong> para ver a lista.</li>
+        <li>Gere o QR Code em cada card e baixe como PNG.</li>
+      </ul>
+    </div>
+  </aside>
 </div>
 
-<form id="formFerramental">
-  <div class="message" id="formMessage"></div>
-  <input type="text" id="tipo" placeholder="Faca ou Clichê">
-  <input type="text" id="codigo" placeholder="Código SV" required>
-  <input type="text" id="nome" placeholder="Nome do Cliente" required>
-  <input type="date" id="registro">
-  <select id="status">
-    <option value="">Status</option>
-    <option value="Em uso">Em uso</option>
-    <option value="Danificado">Danificado</option>
-    <option value="Manutenção">Manutenção</option>
-    <option value="Trocar">Trocar</option>
-  </select>
-  <input type="text" id="responsavel" placeholder="Responsável pelo registro">
-  <button type="submit" id="submitBtn">Registrar Ferramental</button>
-</form>
-
-<div id="listaFerramentais">
-  <input type="text" id="searchInput" placeholder="Pesquisar por Código, Nome ou Tipo">
-  <div id="lista"></div>
-</div>
-
-<footer>
-<p>&copy; 2025 Grupo Sovel da Amazônia</p>
+<footer style="width:100%; max-width:1100px; text-align:center">
+  <p style="margin:0; color:var(--muted)">&copy; 2025 Grupo Sovel da Amazônia</p>
 </footer>
 
-<div id="qrModal">
-  <div id="qrModalContent">
-    <span id="closeQR">&times;</span>
-    <h3>QR Code do Ferramental</h3>
-    <canvas id="qrcodeCanvas"></canvas>
-    <button id="downloadQR">Baixar QR Code</button>
+<!-- QR Modal -->
+<div id="qrModal" aria-hidden="true">
+  <div class="modal-panel" id="qrModalContent" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+    <button class="modal-close" id="modalCloseBtn" title="Fechar">&times;</button>
+    <h3 id="qrTitle" style="margin-top:6px; color:var(--accent)">QR Code do Ferramental</h3>
+    <canvas id="qrcodeCanvas" width="250" height="250" style="margin-top:8px; border-radius:10px; background:#fff"></canvas>
+    <div style="margin-top:12px">
+      <button id="downloadQR" class="btn positive">⬇️ Baixar QR Code</button>
+    </div>
   </div>
 </div>
 
-<!-- Biblioteca QRious -->
+<!-- QRIOUS (gera canvas) -->
 <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 
+<!-- Firebase (client SDK) -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  // ===== Firebase imports (modular) =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
-};
+  // ===== Firebase config (use your config) =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+    authDomain: "dacsovel-53481.firebaseapp.com",
+    projectId: "dacsovel-53481",
+    storageBucket: "dacsovel-53481.firebasestorage.app",
+    messagingSenderId: "37867522513",
+    appId: "1:37867522513:web:336d687e3fc8408bd138f0"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-const form = document.getElementById("formFerramental");
-const listaDiv = document.getElementById("listaFerramentais");
-const listaContainer = document.getElementById("lista");
-const btnRegistrar = document.getElementById("btnRegistrar");
-const btnListar = document.getElementById("btnListar");
-const formMessage = document.getElementById("formMessage");
-const searchInput = document.getElementById("searchInput");
-let editId = null;
-let allFerramentais = [];
+  // ===== DOM refs =====
+  const btnOpenForm = document.getElementById("btnOpenForm");
+  const btnShowList = document.getElementById("btnShowList");
+  const btnRefresh = document.getElementById("btnRefresh");
+  const searchInput = document.getElementById("searchInput");
+  const listaEl = document.getElementById("lista");
 
-// QR Modal
-const qrModal = document.getElementById("qrModal");
-const closeQR = document.getElementById("closeQR");
-const qrcodeCanvas = document.getElementById("qrcodeCanvas");
-const downloadQR = document.getElementById("downloadQR");
+  const form = document.getElementById("formFerramental");
+  const tipoEl = document.getElementById("tipo");
+  const codigoEl = document.getElementById("codigo");
+  const nomeEl = document.getElementById("nome");
+  const registroEl = document.getElementById("registro");
+  const statusEl = document.getElementById("status");
+  const responsavelEl = document.getElementById("responsavel");
+  const submitBtn = document.getElementById("submitBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const formMessage = document.getElementById("formMessage");
 
-function gerarQR(dados){
-  qrModal.style.display = "flex";
-  const qrText = `Código: ${dados.codigo}\nNome: ${dados.nome}\nTipo: ${dados.tipo}\nStatus: ${dados.status}\nRegistro: ${dados.registro}`;
-  new QRious({element:qrcodeCanvas, value:qrText, size:250});
-}
-closeQR.addEventListener("click",()=>{qrModal.style.display="none";});
-downloadQR.addEventListener("click",()=>{
-  const link=document.createElement("a");
-  link.href=qrcodeCanvas.toDataURL("image/png");
-  link.download="ferramental_qr.png";
-  link.click();
-});
+  let editId = null;
+  let allFerramentais = [];
 
-// Eventos
-btnRegistrar.addEventListener("click",()=>{form.style.display="flex"; listaDiv.style.display="none"; formMessage.style.display="none";});
-btnListar.addEventListener("click",()=>{form.style.display="none"; listarFerramentais();});
+  // QR modal refs
+  const qrModal = document.getElementById("qrModal");
+  const modalCloseBtn = document.getElementById("modalCloseBtn");
+  const qrcodeCanvas = document.getElementById("qrcodeCanvas");
+  const downloadQR = document.getElementById("downloadQR");
+  let qr; // QRious instance
 
-form.addEventListener("submit", async e=>{
-  e.preventDefault();
-  formMessage.style.display="none";
-  form.querySelectorAll("input,select").forEach(el=>el.classList.remove("invalid"));
-  const tipo = document.getElementById("tipo").value || "";
-  const codigo = document.getElementById("codigo").value.trim();
-  const nome = document.getElementById("nome").value.trim();
-  const registroInput = document.getElementById("registro").value;
-  const registro = registroInput ? registroInput : new Date().toISOString().split("T")[0];
-  const status = document.getElementById("status").value || "Disponível";
-  const responsavel = document.getElementById("responsavel").value || "Não atribuído";
+  // ===== Helpers =====
+  function showMessage(text, type = "success"){
+    formMessage.style.display = "block";
+    formMessage.textContent = text;
+    formMessage.style.background = (type === "success") ? "linear-gradient(90deg,#073b34,#095e4f)" : "linear-gradient(90deg,#3b0a0a,#6b1212)";
+    formMessage.style.color = (type === "success") ? "#bfffe4" : "#ffdcdc";
+    setTimeout(()=>{ formMessage.style.display = "none"; }, 3800);
+  }
 
-  if(!codigo||!nome){ if(!codigo) document.getElementById("codigo").classList.add("invalid"); if(!nome) document.getElementById("nome").classList.add("invalid"); formMessage.textContent="Preencha os campos obrigatórios!"; formMessage.className="message error"; formMessage.style.display="block"; return; }
+  function clearForm(){
+    form.reset();
+    editId = null;
+    submitBtn.textContent = "Salvar";
+    codigoEl.classList.remove("invalid");
+    nomeEl.classList.remove("invalid");
+  }
 
-  try{
-    if(editId){ await updateDoc(doc(db,"ferramentais",editId),{tipo,codigo,nome,registro,status,responsavel}); formMessage.textContent="✅ Ferramental atualizado!"; editId=null; document.getElementById("submitBtn").textContent="Registrar Ferramental"; }
-    else{ await addDoc(collection(db,"ferramentais"),{tipo,codigo,nome,registro,status,responsavel,criadoEm:new Date().toISOString()}); formMessage.textContent="✅ Ferramental registrado!"; }
-    formMessage.className="message success"; formMessage.style.display="block"; form.reset();
-  } catch(err){ console.error(err); formMessage.textContent="❌ Erro ao registrar."; formMessage.className="message error"; formMessage.style.display="block"; }
-});
+  function formatDateShort(value){
+    if(!value) return "";
+    // assume ISO YYYY-MM-DD or ISO string
+    const d = new Date(value);
+    if(isNaN(d)) return value;
+    return d.toLocaleDateString();
+  }
 
-searchInput.addEventListener("input",()=>{ const filtro=searchInput.value.toLowerCase(); renderLista(allFerramentais.filter(f=>f.codigo.toLowerCase().includes(filtro)||f.nome.toLowerCase().includes(filtro)||f.tipo.toLowerCase().includes(filtro))); });
-
-async function listarFerramentais(){
-  listaContainer.innerHTML="";
-  allFerramentais=[];
-  try{
-    const snapshot = await getDocs(collection(db,"ferramentais"));
-    if(snapshot.empty){ listaContainer.innerHTML="<p>Nenhum ferramental cadastrado.</p>"; listaDiv.style.display="flex"; return; }
-    snapshot.forEach(docItem => { const dados = docItem.data(); dados.id = docItem.id; allFerramentais.push(dados); });
-    renderLista(allFerramentais);
-    listaDiv.style.display="flex";
-  } catch(err){ console.error(err); }
-}
-
-function renderLista(ferramentais){
-  listaContainer.innerHTML="";
-  if(ferramentais.length===0){ listaContainer.innerHTML="<p>Nenhum resultado encontrado.</p>"; return; }
-  ferramentais.forEach(dados=>{
-    const card = document.createElement("div"); card.className="card";
-    let classeStatus = ""; switch(dados.status){ case "Em uso": classeStatus="EmUso"; break; case "Manutenção": classeStatus="Manutencao"; break; case "Danificado": classeStatus="Danificado"; break; case "Trocar": classeStatus="Trocar"; break; }
-    card.innerHTML=`
-      <div class="card-info">
-        <strong>${dados.codigo}</strong> — ${dados.nome}<br>
-        <span class="status ${classeStatus}">${dados.status}</span><br>
-        <small>Tipo: ${dados.tipo} | Responsável: ${dados.responsavel} | Registro: ${dados.registro}</small>
-      </div>
-      <div class="card-buttons">
-        <button class="edit-btn">Editar</button>
-        <button class="delete-btn">Excluir</button>
-        <button class="qr-btn">QR Code</button>
-      </div>
-    `;
-    card.querySelector(".delete-btn").addEventListener("click", async()=>{
-      if(confirm("Deseja excluir este ferramental?")){
-        await deleteDoc(doc(db,"ferramentais",dados.id));
-        listarFerramentais();
-      }
-    });
-    card.querySelector(".edit-btn").addEventListener("click",()=>{
-      document.getElementById("tipo").value=dados.tipo;
-      document.getElementById("codigo").value=dados.codigo;
-      document.getElementById("nome").value=dados.nome;
-      document.getElementById("registro").value=dados.registro;
-      document.getElementById("status").value=dados.status;
-      document.getElementById("responsavel").value=dados.responsavel;
-      form.style.display="flex"; listaDiv.style.display="none"; editId=dados.id; document.getElementById("submitBtn").textContent="Salvar Alterações"; formMessage.style.display="none";
-    });
-    card.querySelector(".qr-btn").addEventListener("click",()=>{ gerarQR(dados); });
-    listaContainer.appendChild(card);
+  // ===== UI Events =====
+  btnOpenForm.addEventListener("click", () => {
+    // show form panel (it's always visible on the right), focus code
+    codigoEl.focus();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
-}
+
+  btnShowList.addEventListener("click", async () => {
+    // load and show list
+    await listarFerramentais();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  btnRefresh.addEventListener("click", () => listarFerramentais());
+
+  resetBtn.addEventListener("click", () => clearForm());
+
+  // Submit: create or update, but DO NOT auto-open list
+  form.addEventListener("submit", async (evt) => {
+    evt.preventDefault();
+    codigoEl.classList.remove("invalid");
+    nomeEl.classList.remove("invalid");
+
+    const tipo = tipoEl.value.trim() || "";
+    const codigo = codigoEl.value.trim();
+    const nome = nomeEl.value.trim();
+    const registro = registroEl.value || new Date().toISOString().split("T")[0];
+    const status = statusEl.value || "Disponível";
+    const responsavel = responsavelEl.value.trim() || "Não atribuído";
+
+    if(!codigo || !nome){
+      if(!codigo) codigoEl.classList.add("invalid");
+      if(!nome) nomeEl.classList.add("invalid");
+      showMessage("Preencha os campos obrigatórios (Código e Nome).", "error");
+      return;
+    }
+
+    try {
+      if(editId){
+        await updateDoc(doc(db, "ferramentais", editId), { tipo, codigo, nome, registro, status, responsavel });
+        showMessage("Ferramental atualizado com sucesso.", "success");
+        editId = null;
+        submitBtn.textContent = "Salvar";
+      } else {
+        await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString() });
+        showMessage("Ferramental registrado com sucesso.", "success");
+      }
+      clearForm();
+      // DO NOT call listarFerramentais() here - user decides when to view list
+    } catch (err) {
+      console.error("Erro ao salvar:", err);
+      showMessage("Erro ao salvar ferramental.", "error");
+    }
+  });
+
+  // ===== Firestore list & render =====
+  async function listarFerramentais(){
+    listaEl.innerHTML = "";
+    allFerramentais = [];
+    try {
+      const snapshot = await getDocs(collection(db, "ferramentais"));
+      if(snapshot.empty){
+        listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum ferramental cadastrado.</div>`;
+        return;
+      }
+      snapshot.forEach(docItem => {
+        const data = docItem.data();
+        data.id = docItem.id;
+        allFerramentais.push(data);
+      });
+      renderLista(allFerramentais);
+    } catch (err) {
+      console.error("Erro ao listar:", err);
+      listaEl.innerHTML = `<div style="color:#ffb3b3; padding:18px">Erro ao carregar a lista.</div>`;
+    }
+  }
+
+  function renderLista(items){
+    listaEl.innerHTML = "";
+    if(!items || items.length === 0){
+      listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum resultado encontrado.</div>`;
+      return;
+    }
+
+    items.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      // choose badge class based on status
+      let badgeClass = "s-emuso";
+      switch((item.status || "").toLowerCase()){
+        case "em uso": badgeClass = "s-emuso"; break;
+        case "manutenção": badgeClass = "s-manut"; break;
+        case "danificado": badgeClass = "s-dan"; break;
+        case "trocar": badgeClass = "s-trocar"; break;
+        default: badgeClass = "s-emuso";
+      }
+
+      card.innerHTML = `
+        <div class="card-head">
+          <div>
+            <div class="code">${escapeHtml(item.codigo || "")}</div>
+            <div class="name">${escapeHtml(item.nome || "")}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="badge ${badgeClass}">${escapeHtml(item.status || "Disponível")}</div>
+            <div class="meta" style="margin-top:8px">${escapeHtml(item.tipo || "—")}</div>
+          </div>
+        </div>
+
+        <div class="card-row" style="margin-top:6px">
+          <div style="color:var(--muted); font-size:0.88rem">
+            <div>Responsável: <strong style="color:#cfeffd">${escapeHtml(item.responsavel || "—")}</strong></div>
+            <div style="margin-top:6px">Registro: <span style="color:#aee8ff">${formatDateShort(item.registro)}</span></div>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn icon-edit" title="Editar">✏️</button>
+            <button class="icon-btn icon-del" title="Excluir">🗑️</button>
+            <button class="icon-btn icon-qr" title="QR Code">🔳</button>
+          </div>
+        </div>
+      `;
+
+      // attach events
+      const btns = card.querySelectorAll(".icon-btn");
+      // edit
+      btns[0].addEventListener("click", () => {
+        tipoEl.value = item.tipo || "";
+        codigoEl.value = item.codigo || "";
+        nomeEl.value = item.nome || "";
+        registroEl.value = item.registro || "";
+        statusEl.value = item.status || "";
+        responsavelEl.value = item.responsavel || "";
+        editId = item.id;
+        submitBtn.textContent = "Salvar alterações";
+        // scroll to form
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      // delete
+      btns[1].addEventListener("click", async () => {
+        const ok = confirm(`Deseja excluir o ferramental ${item.codigo} — ${item.nome}?`);
+        if(!ok) return;
+        try {
+          await deleteDoc(doc(db, "ferramentais", item.id));
+          await listarFerramentais();
+        } catch(err) {
+          console.error("Erro ao excluir:", err);
+          alert("Erro ao excluir o item.");
+        }
+      });
+      // qr
+      btns[2].addEventListener("click", () => {
+        gerarQR(item);
+      });
+
+      listaEl.appendChild(card);
+    });
+  }
+
+  // search filter
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if(!q){ renderLista(allFerramentais); return; }
+    const filtered = allFerramentais.filter(i => {
+      return (i.codigo||"").toLowerCase().includes(q) ||
+             (i.nome||"").toLowerCase().includes(q) ||
+             (i.tipo||"").toLowerCase().includes(q);
+    });
+    renderLista(filtered);
+  });
+
+  // ===== QR functions (modal + download) =====
+  function gerarQR(item){
+    // prepare text with all fields
+    const txt =
+      `Código: ${item.codigo || ""}\n` +
+      `Nome: ${item.nome || ""}\n` +
+      `Tipo: ${item.tipo || ""}\n` +
+      `Status: ${item.status || ""}\n` +
+      `Responsável: ${item.responsavel || ""}\n` +
+      `Registro: ${item.registro || ""}`;
+    // create QRious (canvas)
+    qr = new QRious({element: qrcodeCanvas, value: txt, size: 250, level: 'H', background: '#ffffff', foreground: '#000000'});
+    // show modal
+    qrModal.classList.add("show");
+    qrModal.style.display = "flex";
+    // set aria
+    qrModal.setAttribute("aria-hidden", "false");
+    // download button handler (fresh)
+    downloadQR.onclick = () => {
+      try {
+        const dataUrl = qrcodeCanvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        const filename = `${(item.codigo||"ferramental").replace(/[^a-z0-9_\-]/ig,"_")}_QR.png`;
+        link.download = filename;
+        link.click();
+      } catch (err) { console.error("Erro ao baixar QR:", err); alert("Não foi possível baixar o QR."); }
+    };
+  }
+
+  // close modal by close button, click outside or ESC
+  modalCloseBtn.addEventListener("click", closeModal);
+  qrModal.addEventListener("click", (ev) => {
+    if(ev.target === qrModal) closeModal();
+  });
+  document.addEventListener("keydown", (ev) => {
+    if(ev.key === "Escape") closeModal();
+  });
+  function closeModal(){
+    qrModal.classList.remove("show");
+    qrModal.style.display = "none";
+    qrModal.setAttribute("aria-hidden", "true");
+    // clear canvas
+    const ctx = qrcodeCanvas.getContext("2d");
+    ctx.clearRect(0,0,qrcodeCanvas.width,qrcodeCanvas.height);
+    qr = null;
+  }
+
+  // ===== util helpers =====
+  function escapeHtml(s){
+    if(!s) return "";
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  // ===== initial load hint =====
+  // do not auto-list; user will click "Consultar Ferramentais"
+  // but we can pre-load small sample or not. We'll keep no auto-list to respect your request.
+
+  // optional: auto refresh every X minutes (disabled by default)
+  // setInterval(() => { if(document.visibilityState === "visible") listarFerramentais(); }, 1000 * 60 * 5);
 </script>
 </body>
 </html>
