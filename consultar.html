@@ -2,198 +2,196 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consultar Ferramental</title>
+<title>Consultar Ferramental - SGF</title>
 
-<!-- ====================== -->
-<!-- Estilo Futurista -->
-<!-- ====================== -->
 <style>
-  body { background-color: #0a0f1a; margin:0; padding:0; color:#ffffff; font-family:'Segoe UI',sans-serif; }
+  body {
+    background-color: #0a0f1a;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
   html, body { width:100%; height:100%; }
-  a { color:#00eaff; text-decoration:none; }
-  .logo-container { display:block; text-align:center; margin-top:20px; filter:drop-shadow(0 0 8px #00eaff); }
-  img.logo { max-width:200px; }
-  .centralizado { max-width:800px; margin:50px auto 0 auto; text-align:center; }
-  input { width:80%; padding:10px; margin:10px 0; border-radius:10px; border:none; background:#0d1b2a; color:#00eaff; box-shadow:0 0 10px #00eaff22; }
-  button.neon-button { display:inline-block; padding:10px 25px; color:#00eaff; font-weight:bold; border-radius:10px; background-color:#0d1b2a; box-shadow:0 0 10px #00eaff55; margin:5px; cursor:pointer; transition:0.3s; }
-  button.neon-button:hover { color:#00ffff; box-shadow:0 0 20px #00eaff77; }
+
+  a { color: #00eaff; text-decoration: none; }
+
+  .logo-container {
+    display: block;
+    text-align: center;
+    margin: 40px 0 20px 0;
+  }
+
+  img.logo { width: 200px; filter: drop-shadow(0 0 8px #00eaff); }
+
+  .neon-button {
+    display: inline-block;
+    padding: 8px 20px;
+    color: #00eaff;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 10px;
+    background-color: #0d1b2a;
+    box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
+    transition: 0.3s ease-in-out;
+    margin: 3px;
+    animation: neonPulse 1.5s infinite alternate;
+    cursor:pointer;
+  }
+
+  .neon-button:hover {
+    color: #00ffff;
+    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
+  }
+
+  @keyframes neonPulse {
+    0%,100{box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff;}
+    50%{box-shadow:0 0 15px #00eaff,0 0 30px #00eaff,0 0 45px #00eaff77;}
+  }
+
+  #painelUsuario {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #0d1b2a;
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00eaff55;
+    color: #00eaff;
+    text-align: right;
+    z-index: 1000;
+  }
+
+  .centralizado {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
   table { width:100%; border-collapse: collapse; margin-top:20px; }
-  th, td { border:1px solid #00eaff44; padding:8px; text-align:center; }
-  th { background-color:#0d1b2a; color:#00eaff; }
-  #painelUsuario { position: fixed; top: 10px; right: 10px; background-color: #0d1b2a; color: #00eaff; padding: 10px 15px; border-radius: 10px; font-size: 14px; text-align: right; box-shadow: 0 0 10px #00eaff44; }
+  th, td { padding:10px; text-align:left; border-bottom:1px solid #00eaff44; }
 </style>
 </head>
 <body>
 
-<!-- Painel do Usuário -->
 <div id="painelUsuario">
-  <div>Nome: <span id="usuarioNome"></span></div>
-  <div>Função: <span id="usuarioFuncao"></span></div>
-  <div>Login: <span id="usuarioHoraLogin"></span></div>
-  <div>Tempo Online: <span id="tempoOnline">00:00:00</span></div>
+  <div><b>Nome:</b> <span id="nomeUsuario">---</span></div>
+  <div><b>Função:</b> <span id="funcaoUsuario">---</span></div>
 </div>
 
-<!-- Logo Centralizada -->
 <div class="logo-container">
   <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
 </div>
 
 <div class="centralizado">
-  <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">🔍 Consultar Ferramental</h2>
-  <input type="text" id="buscarSV" placeholder="Digite SV ou Cliente">
-  <button class="neon-button" onclick="buscarFerramental()">Buscar</button>
+  <h2 style="color:#00bfff;">Consultar Ferramental</h2>
 
-  <table id="tabelaFerramentais" style="display:none;">
+  <input type="text" id="busca" placeholder="Buscar por SV ou Cliente">
+  <button id="btnBuscar" class="neon-button">Buscar</button>
+
+  <table id="tabelaResultados">
     <thead>
       <tr>
         <th>SV</th>
         <th>Cliente</th>
+        <th>Tipo</th>
         <th>Data Registro</th>
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+      <!-- Resultados aparecem aqui -->
+    </tbody>
   </table>
 </div>
 
-<script>
-  function atualizarPainelUsuario() {
-    const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
-    if (!usuario) return;
-    document.getElementById('usuarioNome').textContent = usuario.nome;
-    document.getElementById('usuarioFuncao').textContent = usuario.funcao;
-    const horaLogin = new Date(usuario.horaLogin);
-    document.getElementById('usuarioHoraLogin').textContent = horaLogin.toLocaleString();
-    setInterval(() => {
-      const agora = new Date();
-      const diff = Math.floor((agora - horaLogin)/1000);
-      const horas = String(Math.floor(diff/3600)).padStart(2,'0');
-      const minutos = String(Math.floor((diff%3600)/60)).padStart(2,'0');
-      const segundos = String(diff%60).padStart(2,'0');
-      document.getElementById('tempoOnline').textContent = `${horas}:${minutos}:${segundos}`;
-    }, 1000);
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const equipeDAC = {
+  "samueldson@example.com":"Supervisor",
+  "rafaelly@example.com":"Analista Administrativo",
+  "elienson@example.com":"Assistente",
+  "gustavo@example.com":"Assistente",
+  "vanessa@example.com":"Assistente"
+};
+
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    const nome = user.displayName || user.email;
+    const funcao = equipeDAC[user.email] || "Operador";
+    document.getElementById('nomeUsuario').textContent = nome;
+    document.getElementById('funcaoUsuario').textContent = funcao;
+  } else {
+    window.location.href = "index.html";
   }
-  atualizarPainelUsuario();
+});
 
-  // Simulação de dados
-  const dadosFerramentais = [
-    {sv:'F123', cliente:'Cliente A', dataRegistro:'2025-11-03'},
-    {sv:'C456', cliente:'Cliente B', dataRegistro:'2025-11-03'}
-  ];
+// Exemplo de dados
+const dadosExemplo = [
+  {sv:"SV123", cliente:"Cliente A", tipo:"Faca", data:"2025-11-03"},
+  {sv:"SV456", cliente:"Cliente B", tipo:"Clichê", data:"2025-11-02"}
+];
 
-  function buscarFerramental(){
-    const query = document.getElementById('buscarSV').value.toLowerCase();
-    const tbody = document.querySelector('#tabelaFerramentais tbody');
-    tbody.innerHTML = '';
-    const resultados = dadosFerramentais.filter(f => f.sv.toLowerCase().includes(query) || f.cliente.toLowerCase().includes(query));
-    if(resultados.length>0){
-      document.getElementById('tabelaFerramentais').style.display='table';
-      resultados.forEach(f => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${f.sv}</td>
-          <td>${f.cliente}</td>
-          <td>${f.dataRegistro}</td>
-          <td>
-                        <button class="neon-button" onclick="editarFerramental('${f.sv}')">Editar</button>
-            <button class="neon-button" onclick="excluirFerramental('${f.sv}')">Excluir</button>
-            <button class="neon-button" onclick="gerarQRCode('${f.sv}')">QR Code</button>
-          </td>`;
-        tbody.appendChild(tr);
-      });
-    } else {
-      document.getElementById('tabelaFerramentais').style.display = 'none';
-      alert('Nenhum ferramental encontrado.');
-    }
-  }
+function renderTabela(ferramentais){
+  const tbody = document.querySelector("#tabelaResultados tbody");
+  tbody.innerHTML = "";
+  ferramentais.forEach(f=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${f.sv}</td>
+      <td contenteditable="false">${f.cliente}</td>
+      <td>${f.tipo}</td>
+      <td contenteditable="false">${f.data}</td>
+      <td>
+        <button class="neon-button editar">Editar</button>
+        <button class="neon-button excluir">Excluir</button>
+        <button class="neon-button gerarQR">QR Code</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
 
-  function editarFerramental(sv) {
-    const f = dadosFerramentais.find(f => f.sv === sv);
-    if(!f) return alert('Ferramental não encontrado!');
-    const novoCliente = prompt('Atualize o Cliente:', f.cliente);
-    if(novoCliente) f.cliente = novoCliente;
-    const novaDataRegistro = prompt('Atualize a Data de Registro:', f.dataRegistro);
-    if(novaDataRegistro) f.dataRegistro = novaDataRegistro;
-    alert('Ferramental atualizado!');
-    buscarFerramental();
-  }
-
-  function excluirFerramental(sv) {
-    if(confirm('Deseja realmente excluir este ferramental?')) {
-      const index = dadosFerramentais.findIndex(f => f.sv === sv);
-      if(index >= 0) {
-        dadosFerramentais.splice(index,1);
-        alert('Ferramental excluído!');
-        buscarFerramental();
-      }
-    }
-  }
-
-  function gerarQRCode(sv) {
-    const f = dadosFerramentais.find(f => f.sv === sv);
-    if(!f) return alert('Ferramental não encontrado!');
-    
-    // Criar modal
-    let modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.top = 0;
-    modal.style.left = 0;
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
-    modal.style.display = 'flex';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
-    modal.style.flexDirection = 'column';
-    modal.style.zIndex = 9999;
-
-    let canvas = document.createElement('canvas');
-    modal.appendChild(canvas);
-
-    let btn = document.createElement('button');
-    btn.textContent = 'Fechar / Exportar PNG';
-    btn.className = 'neon-button';
-    btn.style.marginTop = '20px';
-    modal.appendChild(btn);
-
-    btn.onclick = () => {
-      // Exportar PNG
-      const link = document.createElement('a');
-      link.download = `${sv}_QRCode.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-      modal.remove();
-    };
-
-    document.body.appendChild(modal);
-
-    // Gerar QR code usando QRCode.js (ou você pode importar a biblioteca)
-    // Aqui vamos criar simples QR code com o logo centralizado
-    // Precisará da biblioteca QRCode.js https://github.com/davidshimjs/qrcodejs
-    const qr = new QRCode(canvas, {
-      text: `SV: ${f.sv}\nCliente: ${f.cliente}\nData Registro: ${f.dataRegistro}`,
-      width: 250,
-      height: 250,
-      colorDark : "#00eaff",
-      colorLight : "#0a0f1a",
-      correctLevel : QRCode.CorrectLevel.H
+    tr.querySelector(".editar").addEventListener("click", ()=>{
+      const tdCliente = tr.cells[1];
+      const tdData = tr.cells[3];
+      tdCliente.contentEditable = true;
+      tdData.contentEditable = true;
+      tdCliente.focus();
+      tdData.focus();
+      alert("Edite os campos Cliente e Data e pressione Enter para salvar");
     });
 
-    // Para logo central, você precisaria sobrepor imagem depois de gerar QR
-    const imgLogo = new Image();
-    imgLogo.src = 'logosovel1337.png';
-    imgLogo.onload = () => {
-      const ctx = canvas.getContext('2d');
-      const size = canvas.width * 0.25;
-      ctx.drawImage(imgLogo, (canvas.width-size)/2, (canvas.height-size)/2, size, size);
-    }
-  }
+    tr.querySelector(".excluir").addEventListener("click", ()=>{
+      if(confirm("Deseja realmente excluir este ferramental?")){
+        tr.remove();
+      }
+    });
+
+    tr.querySelector(".gerarQR").addEventListener("click", ()=>{
+      alert("Aqui será gerado o QR Code com logo Sovel em PNG"); // Substituir com geração real
+    });
+  });
+}
+
+document.getElementById("btnBuscar").addEventListener("click", ()=>{
+  const termo = document.getElementById("busca").value.toLowerCase();
+  const filtrado = dadosExemplo.filter(f=>f.sv.toLowerCase().includes(termo) || f.cliente.toLowerCase().includes(termo));
+  renderTabela(filtrado);
+});
 </script>
-
-<!-- QRCode.js Biblioteca (necessário) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 </body>
 </html>
-
