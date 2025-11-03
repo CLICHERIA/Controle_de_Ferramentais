@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Autenticação</title>
+<title>Sistema de Gestão - Login</title>
 
 <!-- ====================== -->
-<!-- Estilo Futurista - Grupo Sovel -->
+<!-- Estilo Neon Futurista -->
 <!-- ====================== -->
 <style>
 body {
@@ -14,79 +14,115 @@ body {
     margin: 0; padding: 0;
     color: #ffffff;
     font-family: 'Segoe UI', sans-serif;
-    display: flex; justify-content: center; align-items: center;
-    height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
 }
-input, button {
-    width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 5px; font-size: 1rem;
+
+h1 { color: #00eaff; text-shadow: 0 0 20px #00eaff; margin-top: 40px; text-align:center; }
+
+.logo-container {
+    display: inline-block;
+    background: transparent;
+    padding: 0;
+    margin: 20px;
+    filter: drop-shadow(0 0 8px #00eaff);
 }
-input { border: 1px solid #00eaff; background: #0d1b2a; color: #00eaff; }
+
+img.logo { display: block; margin: 0 auto; }
+
+form {
+    display: flex; flex-direction: column; align-items: center;
+    background: #0d1b2a;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #00eaff33;
+    margin-top: 20px;
+}
+
+input {
+    padding: 12px;
+    margin: 10px 0;
+    width: 250px;
+    border-radius: 10px;
+    border: 1px solid #00eaff;
+    background-color: #0a0f1a;
+    color: #00eaff;
+}
+
 input::placeholder { color: #66d9ff; }
+
 button {
-    background-color: #0d1b2a; color: #00eaff; font-weight: bold; border: none;
-    box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff; cursor: pointer;
+    padding: 12px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #0d1b2a;
+    color: #00eaff;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
     transition: 0.3s ease-in-out;
 }
+
 button:hover {
-    box-shadow: 0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff;
     color: #00ffff;
+    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
 }
-.login-box {
-    background-color: #0d1b2a; padding: 2rem; border-radius: 15px; text-align: center;
-    box-shadow: 0 0 20px #00eaff44;
-}
-h1 { color: #00eaff; text-shadow: 0 0 10px #00eaff; margin-bottom: 1.5rem; }
-p { color: #66d9ff; font-size: 14px; }
-a { color: #00eaff; text-decoration: none; }
-a:hover { text-decoration: underline; }
+
+.error { color: #ff5555; margin-top: 10px; }
 </style>
 
-</head>
-<body>
-
-<div class="login-box">
-  <h1>Autenticação</h1>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="senha" placeholder="Senha">
-  <button id="btnLogin">Entrar</button>
-  <p>Não tem conta? <a href="#" id="btnCadastrar">Cadastrar</a></p>
-</div>
-
+<!-- ====================== -->
+<!-- Firebase SDK -->
+<!-- ====================== -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+  // Importando módulos Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 
-// 🚨 Substitua pelas suas chaves do Firebase
-const firebaseConfig = {
+  const firebaseConfig = {
   apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-document.getElementById("btnLogin").addEventListener("click", () => {
+  window.login = function(e) {
+    e.preventDefault();
     const email = document.getElementById("email").value;
     const senha = document.getElementById("senha").value;
+    const erro = document.getElementById("erro");
 
     signInWithEmailAndPassword(auth, email, senha)
-    .then(() => { window.location.href = "../menu.html"; })
-    .catch(err => alert("Erro no login: " + err.message));
-});
-
-document.getElementById("btnCadastrar").addEventListener("click", () => {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
-
-    createUserWithEmailAndPassword(auth, email, senha)
-    .then(() => alert("Conta criada! Faça login."))
-    .catch(err => alert("Erro ao cadastrar: " + err.message));
-});
+      .then((userCredential) => {
+        // Login bem-sucedido → redirecionar para docs/index.html
+        window.location.href = "docs/index.html";
+      })
+      .catch((error) => {
+        erro.textContent = "Erro no login: " + error.message;
+      });
+  };
 </script>
+</head>
+
+<body>
+
+<div class="logo-container">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel" width="200" class="logo">
+</div>
+
+<h1>⚙️ Sistema de Gestão de Ferramentais ⚙️</h1>
+
+<form onsubmit="login(event)">
+    <input type="email" id="email" placeholder="E-mail" required>
+    <input type="password" id="senha" placeholder="Senha" required>
+    <button type="submit">Entrar</button>
+    <div id="erro" class="error"></div>
+</form>
 
 </body>
 </html>
