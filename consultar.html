@@ -1,115 +1,158 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consultar Ferramenta</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar Ferramental</title>
 
-<style>
-body {
-    background-color: #0a0f1a;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-    margin:0; padding:0;
-}
+  <!-- ====================== -->
+  <!-- Estilo futurista do README -->
+  <!-- ====================== -->
+  <style>
+    body {
+      background-color: #0a0f1a;
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 40px;
+    }
 
-h1 { text-align:center; color:#00eaff; text-shadow:0 0 20px #00eaff; margin-top:20px; }
+    .form-box {
+      background: #0d1b2a;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00eaff55;
+      width: 450px;
+      text-align: center;
+    }
 
-.container {
-    display:flex; flex-direction:column; align-items:center;
-    margin:30px auto;
-    width:90%;
-    max-width:600px;
-}
+    .logo-container {
+      display: inline-block;
+      background: transparent;
+      padding: 0;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 8px #00eaff);
+    }
 
-input {
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:10px;
-    border:1px solid #00eaff;
-    background-color:#0a0f1a;
-    color:#00eaff;
-}
+    .logo-container img {
+      width: 180px;
+      display: block;
+      margin: 0 auto;
+    }
 
-input::placeholder { color:#66d9ff; }
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: 1px solid #00eaff44;
+      background-color: #0a0f1a;
+      color: #00eaff;
+      font-size: 1rem;
+    }
 
-button {
-    padding:12px 20px;
-    margin-top:10px;
-    border:none;
-    border-radius:10px;
-    background-color:#0d1b2a;
-    color:#00eaff;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff;
-    transition:0.3s ease-in-out;
-}
+    input::placeholder {
+      color: #00eaff88;
+    }
 
-button:hover {
-    color:#00ffff;
-    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff;
-}
+    label {
+      display: block;
+      text-align: left;
+      color: #00eaff;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
 
-.resultado {
-    margin-top:20px;
-    background:#0d1b2a;
-    padding:20px;
-    border-radius:10px;
-    width:100%;
-    box-shadow:0 0 10px #00eaff33;
-}
-</style>
+    .neon-button {
+      display: inline-block;
+      padding: 12px 25px;
+      color: #00eaff;
+      font-weight: bold;
+      border-radius: 10px;
+      background-color: #0d1b2a;
+      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 40px #00eaff55;
+      cursor: pointer;
+      transition: 0.3s ease-in-out;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .neon-button:hover {
+      color: #00ffff;
+      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff, 0 0 50px #00eaff77;
+    }
+
+    .resultado-box {
+      margin-top: 20px;
+      text-align: left;
+      background-color: #0d1b2a;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00eaff44;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Consultar Ferramenta</h1>
+<div class="form-box">
+  <div class="logo-container">
+    <img src="../logosovel1337.png" alt="Logo Grupo Sovel">
+  </div>
 
-<div class="container">
-    <input type="text" id="codigo" placeholder="Digite o Código da Ferramenta">
-    <button id="btnBuscar">Buscar</button>
-    <div id="resultado" class="resultado"></div>
+  <h2>Consultar Ferramental</h2>
+
+  <form id="formConsultar">
+    <label for="sv">SV</label>
+    <input type="text" id="sv" placeholder="Ex: A123">
+
+    <label for="cliente">Cliente</label>
+    <input type="text" id="cliente" placeholder="Nome do cliente">
+
+    <button type="submit" class="neon-button">Pesquisar</button>
+  </form>
+
+  <div id="resultado" class="resultado-box" style="display:none;">
+    <h3>Resultado da Pesquisa:</h3>
+    <p id="detalhes"></p>
+  </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+<script>
+  document.getElementById('formConsultar').addEventListener('submit', function(e){
+    e.preventDefault();
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
+    const sv = document.getElementById('sv').value;
+    const cliente = document.getElementById('cliente').value;
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    // Aqui você pode adicionar a lógica para consultar o Firebase ou outro backend
+    // Por enquanto, apenas exibindo dados simulados
+    const resultado = {
+      tipo: "Faca",
+      sv: sv || "Não informado",
+      cliente: cliente || "Não informado",
+      dataFabricacao: "2025-10-01",
+      dataRegistro: "2025-11-03",
+      responsavel: "Samueldson Ferreira"
+    };
 
-const btnBuscar = document.getElementById("btnBuscar");
-const resultado = document.getElementById("resultado");
+    const detalhes = `
+      Tipo: ${resultado.tipo}<br>
+      SV: ${resultado.sv}<br>
+      Cliente: ${resultado.cliente}<br>
+      Data de Fabricação: ${resultado.dataFabricacao}<br>
+      Data de Registro: ${resultado.dataRegistro}<br>
+      Responsável: ${resultado.responsavel}
+    `;
 
-btnBuscar.addEventListener("click", async () => {
-    const codigo = document.getElementById("codigo").value;
-    resultado.innerHTML = "Buscando...";
-    try {
-        const q = query(collection(db, "ferramentas"), where("codigo", "==", codigo));
-        const querySnapshot = await getDocs(q);
-        if(querySnapshot.empty){
-            resultado.innerHTML = "<strong>Nenhuma ferramenta encontrada.</strong>";
-        } else {
-            resultado.innerHTML = "";
-            querySnapshot.forEach(doc => {
-                const data = doc.data();
-                resultado.innerHTML += `<p><strong>Nome:</strong> ${data.nome}<br><strong>Código:</strong> ${data.codigo}<br><strong>Descrição:</strong> ${data.descricao}</p><hr>`;
-            });
-        }
-    } catch(err){
-        resultado.innerHTML = "Erro ao consultar: " + err.message;
-    }
-});
+    document.getElementById('detalhes').innerHTML = detalhes;
+    document.getElementById('resultado').style.display = 'block';
+  });
 </script>
 
 </body>
