@@ -11,23 +11,48 @@ body {
     color: #ffffff;
     font-family: 'Segoe UI', sans-serif;
     margin:0; padding:0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .logo-container {
-    display: inline-block;
-    padding: 20px;
-    margin: 20px auto;
-    text-align:center;
-    filter: drop-shadow(0 0 8px #00eaff);
+    margin-top: 40px; /* espaço do topo */
+    text-align: center;
+    filter: drop-shadow(0 0 10px #00eaff);
+    animation: logoPulse 2s infinite alternate;
 }
 
-img.logo { display:block; margin:0 auto; }
+img.logo {
+    width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
 
-h1 { text-align:center; color:#00eaff; text-shadow:0 0 20px #00eaff; }
+@keyframes logoPulse {
+    0% {
+        filter: drop-shadow(0 0 10px #00eaff);
+    }
+    50% {
+        filter: drop-shadow(0 0 25px #00eaff), drop-shadow(0 0 40px #00eaff55);
+    }
+    100% {
+        filter: drop-shadow(0 0 10px #00eaff);
+    }
+}
+
+h1 {
+    text-align:center;
+    color:#00eaff;
+    text-shadow:0 0 20px #00eaff;
+    margin: 20px 0 40px 0;
+}
 
 .container {
-    display:flex; flex-direction:column; align-items:center;
-    margin-top:30px;
+    display:flex; 
+    flex-direction:column; 
+    align-items:center;
 }
 
 .neon-button {
@@ -59,7 +84,7 @@ h1 { text-align:center; color:#00eaff; text-shadow:0 0 20px #00eaff; }
 <body>
 
 <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" width="200" class="logo">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
 </div>
 
 <h1>Menu Principal</h1>
