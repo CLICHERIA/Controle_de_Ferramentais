@@ -6,7 +6,6 @@
 <title>Menu Futurista</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
   body {
     margin: 0;
     height: 100vh;
@@ -71,18 +70,14 @@
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // Redireciona para login se não estiver logado
   onAuthStateChanged(auth, user => {
-    if(!user){
-      alert("Você precisa estar logado!");
-      window.location.href = "index.html";
-    }
+    if(!user) window.location.href = "workflows/index.html";
   });
 
   document.getElementById("btnRegistrar").addEventListener("click", () => {
@@ -95,7 +90,7 @@
 
   document.getElementById("btnSair").addEventListener("click", async () => {
     await signOut(auth);
-    window.location.href = "index.html";
+    window.location.href = "workflows/index.html";
   });
 </script>
 
