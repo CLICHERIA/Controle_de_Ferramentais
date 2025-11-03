@@ -4,156 +4,127 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consultar Ferramental</title>
-
-  <!-- ====================== -->
-  <!-- Estilo futurista do README -->
-  <!-- ====================== -->
   <style>
     body {
       background-color: #0a0f1a;
-      margin: 0;
-      padding: 0;
       color: #ffffff;
       font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo-container {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding-top: 40px;
+      align-items: center;
+      margin-top: 20px;
     }
-
-    .form-box {
-      background: #0d1b2a;
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00eaff55;
-      width: 450px;
-      text-align: center;
-    }
-
-    .logo-container {
-      display: inline-block;
-      background: transparent;
-      padding: 0;
-      margin-bottom: 20px;
+    img.logo {
+      width: 200px;
       filter: drop-shadow(0 0 8px #00eaff);
     }
-
-    .logo-container img {
-      width: 180px;
-      display: block;
-      margin: 0 auto;
-    }
-
-    input {
-      width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      border: 1px solid #00eaff44;
-      background-color: #0a0f1a;
+    h1 {
       color: #00eaff;
-      font-size: 1rem;
+      text-shadow: 0 0 20px #00eaff;
+      text-align: center;
+      margin: 20px 0;
     }
-
-    input::placeholder {
-      color: #00eaff88;
+    form {
+      background: #0d1b2a;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00eaff33;
+      max-width: 500px;
+      width: 90%;
     }
-
     label {
       display: block;
-      text-align: left;
+      margin-top: 15px;
       color: #00eaff;
-      margin-bottom: 5px;
       font-weight: bold;
     }
-
-    .neon-button {
-      display: inline-block;
-      padding: 12px 25px;
-      color: #00eaff;
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #00eaff;
+      background: #0a0f1a;
+      color: #ffffff;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
       font-weight: bold;
+      font-size: 16px;
+      border: none;
       border-radius: 10px;
       background-color: #0d1b2a;
-      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 40px #00eaff55;
+      color: #00eaff;
+      box-shadow:
+        0 0 5px #00eaff,
+        0 0 10px #00eaff,
+        0 0 20px #00eaff,
+        0 0 40px #00eaff55;
       cursor: pointer;
       transition: 0.3s ease-in-out;
-      text-decoration: none;
-      font-size: 16px;
-      margin-top: 10px;
+      animation: neonPulse 1.5s infinite alternate;
     }
-
-    .neon-button:hover {
+    button:hover {
       color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff, 0 0 50px #00eaff77;
+      box-shadow:
+        0 0 10px #00eaff,
+        0 0 20px #00eaff,
+        0 0 30px #00eaff,
+        0 0 50px #00eaff77;
     }
-
-    .resultado-box {
-      margin-top: 20px;
-      text-align: left;
-      background-color: #0d1b2a;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px #00eaff44;
+    @keyframes neonPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 5px #00eaff,
+          0 0 10px #00eaff,
+          0 0 20px #00eaff;
+      }
+      50% {
+        box-shadow:
+          0 0 15px #00eaff,
+          0 0 30px #00eaff,
+          0 0 45px #00eaff77;
+      }
     }
+    a {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      color: #00eaff;
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
-<div class="logo-container" style="text-align:center; margin-top:20px;">
-  <img src="../logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="200" class="logo" />
-</div>
+  <!-- Logo centralizada -->
+  <div class="logo-container">
+    <img src="../logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" class="logo">
+  </div>
 
-
-  <h2>Consultar Ferramental</h2>
+  <h1>Consultar Ferramental</h1>
 
   <form id="formConsultar">
-    <label for="sv">SV</label>
-    <input type="text" id="sv" placeholder="Ex: A123">
+    <label for="sv">SV ou Código</label>
+    <input type="text" id="sv" placeholder="Digite SV ou Código">
 
     <label for="cliente">Cliente</label>
-    <input type="text" id="cliente" placeholder="Nome do cliente">
+    <input type="text" id="cliente" placeholder="Digite o cliente">
 
-    <button type="submit" class="neon-button">Pesquisar</button>
+    <button type="submit">Consultar</button>
   </form>
 
-  <div id="resultado" class="resultado-box" style="display:none;">
-    <h3>Resultado da Pesquisa:</h3>
-    <p id="detalhes"></p>
-  </div>
-</div>
-
-<script>
-  document.getElementById('formConsultar').addEventListener('submit', function(e){
-    e.preventDefault();
-
-    const sv = document.getElementById('sv').value;
-    const cliente = document.getElementById('cliente').value;
-
-    // Aqui você pode adicionar a lógica para consultar o Firebase ou outro backend
-    // Por enquanto, apenas exibindo dados simulados
-    const resultado = {
-      tipo: "Faca",
-      sv: sv || "Não informado",
-      cliente: cliente || "Não informado",
-      dataFabricacao: "2025-10-01",
-      dataRegistro: "2025-11-03",
-      responsavel: "Samueldson Ferreira"
-    };
-
-    const detalhes = `
-      Tipo: ${resultado.tipo}<br>
-      SV: ${resultado.sv}<br>
-      Cliente: ${resultado.cliente}<br>
-      Data de Fabricação: ${resultado.dataFabricacao}<br>
-      Data de Registro: ${resultado.dataRegistro}<br>
-      Responsável: ${resultado.responsavel}
-    `;
-
-    document.getElementById('detalhes').innerHTML = detalhes;
-    document.getElementById('resultado').style.display = 'block';
-  });
-</script>
+  <a href="menu.html">← Voltar ao Menu</a>
 
 </body>
 </html>
