@@ -317,17 +317,18 @@ function renderLista(ferramentais) {
       const qrcodeDiv = document.getElementById("qrcode");
       const downloadQR = document.getElementById("downloadQR");
 
-      const qrData = `Código: ${dados.codigo}\nNome: ${dados.nome}\nTipo: ${dados.tipo}\nStatus: ${dados.status}\nResponsável: ${dados.responsavel}\nRegistro: ${dados.registro}`;
-      qrcodeDiv.innerHTML = "";
-      new QRCode(qrcodeDiv, { text: qrData, width: 250, height: 250 });
-
       qrModal.style.display = "flex";
+      qrcodeDiv.innerHTML = "";
+
+      const qrData = `Código: ${dados.codigo}\nNome: ${dados.nome}\nTipo: ${dados.tipo}\nStatus: ${dados.status}\nResponsável: ${dados.responsavel}\nRegistro: ${dados.registro}`;
+      new QRCode(qrcodeDiv, { text: qrData, width: 250, height: 250, correctLevel: QRCode.CorrectLevel.H });
 
       downloadQR.onclick = () => {
-        const img = qrcodeDiv.querySelector("img");
+        const img = qrcodeDiv.querySelector("img") || qrcodeDiv.querySelector("canvas");
         if (img) {
           const link = document.createElement("a");
-          link.href = img.src;
+          if (img.tagName === "IMG") link.href = img.src;
+          else if (img.tagName === "CANVAS") link.href = img.toDataURL("image/png");
           link.download = `${dados.codigo}_QRCode.png`;
           link.click();
         }
