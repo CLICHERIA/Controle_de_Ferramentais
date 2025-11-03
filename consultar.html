@@ -1,226 +1,99 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultar Ferramentais</title>
-  <style>
-    body {
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    .logo-container {
-      display: block;
-      margin: 20px auto;
-      filter: drop-shadow(0 0 8px #00eaff);
-    }
-    img.logo {
-      width: 150px;
-    }
-    input, select {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      margin: 5px;
-      width: 200px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 8px;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      background-color: #0d1b2a;
-      color: #00eaff;
-      box-shadow: 0 0 10px #00eaff;
-      transition: 0.3s;
-    }
-    button:hover {
-      box-shadow: 0 0 20px #00eaff;
-      color: #00ffff;
-    }
-    table {
-      width: 90%;
-      margin: 20px auto;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #00eaff44;
-    }
-    th {
-      background-color: #0d1b2a;
-    }
-    td {
-      background-color: #0a0f1a;
-    }
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background-color: #0a0f1a;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #00eaff44;
-      text-align: center;
-      position: relative;
-    }
-    .close {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #00eaff;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultar Ferramental</title>
+
+<!-- ====================== -->
+<!-- Estilo Futurista -->
+<!-- ====================== -->
+<style>
+  body { background-color: #0a0f1a; margin:0; padding:0; color:#ffffff; font-family:'Segoe UI',sans-serif; }
+  html, body { width:100%; height:100%; }
+  a { color:#00eaff; text-decoration:none; }
+  .logo-container { display:block; text-align:center; margin-top:20px; filter:drop-shadow(0 0 8px #00eaff); }
+  img.logo { max-width:200px; }
+  .centralizado { max-width:800px; margin:50px auto 0 auto; text-align:center; }
+  input { width:80%; padding:10px; margin:10px 0; border-radius:10px; border:none; background:#0d1b2a; color:#00eaff; box-shadow:0 0 10px #00eaff22; }
+  button.neon-button { display:inline-block; padding:10px 25px; color:#00eaff; font-weight:bold; border-radius:10px; background-color:#0d1b2a; box-shadow:0 0 10px #00eaff55; margin:5px; cursor:pointer; transition:0.3s; }
+  button.neon-button:hover { color:#00ffff; box-shadow:0 0 20px #00eaff77; }
+  table { width:100%; border-collapse: collapse; margin-top:20px; }
+  th, td { border:1px solid #00eaff44; padding:8px; text-align:center; }
+  th { background-color:#0d1b2a; color:#00eaff; }
+  #painelUsuario { position: fixed; top: 10px; right: 10px; background-color: #0d1b2a; color: #00eaff; padding: 10px 15px; border-radius: 10px; font-size: 14px; text-align: right; box-shadow: 0 0 10px #00eaff44; }
+</style>
 </head>
 <body>
 
+<!-- Painel do Usuário -->
+<div id="painelUsuario">
+  <div>Nome: <span id="usuarioNome"></span></div>
+  <div>Função: <span id="usuarioFuncao"></span></div>
+  <div>Login: <span id="usuarioHoraLogin"></span></div>
+  <div>Tempo Online: <span id="tempoOnline">00:00:00</span></div>
+</div>
+
+<!-- Logo Centralizada -->
 <div class="logo-container">
-  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
+  <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
 </div>
 
-<h1>Consultar Ferramentais</h1>
+<div class="centralizado">
+  <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">🔍 Consultar Ferramental</h2>
+  <input type="text" id="buscarSV" placeholder="Digite SV ou Cliente">
+  <button class="neon-button" onclick="buscarFerramental()">Buscar</button>
 
-<input type="text" id="busca" placeholder="Buscar por SV ou Cliente">
-<button onclick="buscarFerramentais()">Buscar</button>
-<button onclick="window.location.href='menu.html'">Menu Principal</button>
-
-<table id="tabelaFerramentais">
-  <thead>
-    <tr>
-      <th>Tipo</th>
-      <th>SV</th>
-      <th>Cliente</th>
-      <th>Data Registro</th>
-      <th>Responsável</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Ferramentais populados via JS -->
-  </tbody>
-</table>
-
-<!-- Modal QR Code -->
-<div id="modalQR" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="fecharModal()">×</span>
-    <canvas id="canvasModalQR"></canvas>
-    <br>
-    <button onclick="baixarQR()">Exportar PNG</button>
-  </div>
+  <table id="tabelaFerramentais" style="display:none;">
+    <thead>
+      <tr>
+        <th>SV</th>
+        <th>Cliente</th>
+        <th>Data Registro</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <script>
-  // Dados de exemplo, substituir por banco real
-  let dadosFerramentais = [
-    {tipo: 'Faca', sv:'F001', cliente:'Cliente A', dataFabricacao:'2025-01-01', dataRegistro:'2025-10-01', responsavel:'João'},
-    {tipo: 'Clichê', sv:'C001', cliente:'Cliente B', dataFabricacao:'2025-02-01', dataRegistro:'2025-10-02', responsavel:'Maria'}
+  function atualizarPainelUsuario() {
+    const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+    if (!usuario) return;
+    document.getElementById('usuarioNome').textContent = usuario.nome;
+    document.getElementById('usuarioFuncao').textContent = usuario.funcao;
+    const horaLogin = new Date(usuario.horaLogin);
+    document.getElementById('usuarioHoraLogin').textContent = horaLogin.toLocaleString();
+    setInterval(() => {
+      const agora = new Date();
+      const diff = Math.floor((agora - horaLogin)/1000);
+      const horas = String(Math.floor(diff/3600)).padStart(2,'0');
+      const minutos = String(Math.floor((diff%3600)/60)).padStart(2,'0');
+      const segundos = String(diff%60).padStart(2,'0');
+      document.getElementById('tempoOnline').textContent = `${horas}:${minutos}:${segundos}`;
+    }, 1000);
+  }
+  atualizarPainelUsuario();
+
+  // Simulação de dados
+  const dadosFerramentais = [
+    {sv:'F123', cliente:'Cliente A', dataRegistro:'2025-11-03'},
+    {sv:'C456', cliente:'Cliente B', dataRegistro:'2025-11-03'}
   ];
 
-  function popularTabela(filtro='') {
+  function buscarFerramental(){
+    const query = document.getElementById('buscarSV').value.toLowerCase();
     const tbody = document.querySelector('#tabelaFerramentais tbody');
     tbody.innerHTML = '';
-    dadosFerramentais
-      .filter(item => item.sv.includes(filtro) || item.cliente.toLowerCase().includes(filtro.toLowerCase()))
-      .forEach(item => {
+    const resultados = dadosFerramentais.filter(f => f.sv.toLowerCase().includes(query) || f.cliente.toLowerCase().includes(query));
+    if(resultados.length>0){
+      document.getElementById('tabelaFerramentais').style.display='table';
+      resultados.forEach(f => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${item.tipo}</td>
-          <td>${item.sv}</td>
-          <td>${item.cliente}</td>
-          <td>${item.dataRegistro}</td>
-          <td>${item.responsavel}</td>
+          <td>${f.sv}</td>
+          <td>${f.cliente}</td>
+          <td>${f.dataRegistro}</td>
           <td>
-            <button onclick="editarFerramental('${item.sv}')">Editar</button>
-            <button onclick="excluirFerramental('${item.sv}')">Excluir</button>
-            <button onclick="gerarQRCodeModal('${item.sv}')">Gerar QR Code</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-  }
-
-  function buscarFerramentais() {
-    const filtro = document.getElementById('busca').value;
-    popularTabela(filtro);
-  }
-
-  function editarFerramental(sv) {
-    const item = dadosFerramentais.find(f => f.sv === sv);
-    if(!item) return;
-    const novoCliente = prompt('Editar Cliente:', item.cliente);
-    if(novoCliente) item.cliente = novoCliente;
-    const novaData = prompt('Editar Data de Registro:', item.dataRegistro);
-    if(novaData) item.dataRegistro = novaData;
-    popularTabela();
-  }
-
-  function excluirFerramental(sv) {
-    if(confirm('Deseja realmente excluir este ferramental?')) {
-      dadosFerramentais = dadosFerramentais.filter(f => f.sv !== sv);
-      popularTabela();
-    }
-  }
-
-  function gerarQRCodeModal(sv) {
-    const item = dadosFerramentais.find(f => f.sv === sv);
-    if(!item) return;
-
-    const modal = document.getElementById('modalQR');
-    const canvas = document.getElementById('canvasModalQR');
-    modal.style.display = 'flex';
-    canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-
-    const qrTexto = `SV: ${item.sv}\nTipo: ${item.tipo}\nCliente: ${item.cliente}\nData de Fabricação: ${item.dataFabricacao || 'Não informada'}\nData de Registro: ${item.dataRegistro}\nResponsável: ${item.responsavel}`;
-
-    QRCode.toCanvas(canvas, qrTexto, { width: 250, margin: 2 }, function (error) {
-      if(error) console.error(error);
-      else {
-        const ctx = canvas.getContext('2d');
-        const logo = new Image();
-        logo.src = 'logosovel1337.png';
-        logo.onload = function() {
-          const logoSize = canvas.width * 0.25;
-          const x = (canvas.width - logoSize)/2;
-          const y = (canvas.height - logoSize)/2;
-          ctx.drawImage(logo, x, y, logoSize, logoSize);
-        };
-      }
-    });
-  }
-
-  function fecharModal() {
-    document.getElementById('modalQR').style.display = 'none';
-  }
-
-  function baixarQR() {
-    const canvas = document.getElementById('canvasModalQR');
-    const link = document.createElement('a');
-    link.download = 'qr_ferramental.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }
-
-  // Inicializa tabela
-  popularTabela();
-</script>
-
-</body>
-</html>
+            <button class="neon-button" onclick="editarFerramental('${f.sv
