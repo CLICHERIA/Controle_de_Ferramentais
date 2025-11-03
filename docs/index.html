@@ -312,23 +312,15 @@ form.addEventListener("submit", async (e) => {
       editId = null;
       document.getElementById("submitBtn").textContent = "Registrar Ferramental";
     } else {
-      await addDoc(collection(db, "ferramentais"), {
-  tipo,
-  codigo,
-  nome,
-  registro,
-  status,
-  responsavel,
-  ultimaManutencao: null,
-  criadoEm: new Date().toISOString()
-});
-
+      await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString(), ultimaManutencao: null });
       formMessage.textContent = "✅ Ferramental registrado com sucesso!";
     }
     formMessage.className = "message success";
     formMessage.style.display = "block";
     form.reset();
-    listarFerramentais();
+
+    // Não mostrar a lista automaticamente
+    listaDiv.style.display = "none";
   } catch (err) {
     console.error(err);
     formMessage.textContent = "❌ Ocorreu um erro ao registrar.";
@@ -389,12 +381,16 @@ function renderLista(ferramentais) {
         <button class="delete-btn">Excluir</button>
       </div>
     `;
+
+    // Excluir ferramental
     item.querySelector(".delete-btn").addEventListener("click", async () => {
       if(confirm("Deseja excluir este ferramental?")){
         await deleteDoc(doc(db, "ferramentais", dados.id));
         listarFerramentais();
       }
     });
+
+    // Editar ferramental
     item.querySelector(".edit-btn").addEventListener("click", () => {
       document.getElementById("tipo").value = dados.tipo;
       document.getElementById("codigo").value = dados.codigo;
@@ -403,11 +399,12 @@ function renderLista(ferramentais) {
       document.getElementById("status").value = dados.status;
       document.getElementById("responsavel").value = dados.responsavel;
       form.style.display = "flex";
-      listaDiv.style.display = "none";
+      listaDiv.style.display = "none"; // lista continua oculta até o usuário clicar em Consultar
       editId = dados.id;
       document.getElementById("submitBtn").textContent = "Salvar Alterações";
       formMessage.style.display = "none";
     });
+
     listaUl.appendChild(item);
   });
 }
@@ -415,4 +412,3 @@ function renderLista(ferramentais) {
 
 </body>
 </html>
-
