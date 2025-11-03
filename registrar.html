@@ -3,40 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrar Ferramental</title>
+  <title>Consultar Ferramental</title>
   <style>
     body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 2rem; background: #f5f5f5; }
     h1 { margin-bottom: 1rem; }
-    form { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 400px; }
-    input, select { padding: 0.8rem; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc; }
-    button { padding: 1rem; font-weight: bold; border-radius: 5px; border: none; cursor: pointer; }
-    .registrar { background: #28a745; color: #fff; }
-    .voltar { background: #007BFF; color: #fff; margin-top: 1rem; }
-    button:hover { opacity: 0.9; }
+    table { width: 100%; max-width: 600px; border-collapse: collapse; }
+    th, td { padding: 0.8rem; border: 1px solid #ccc; text-align: left; }
+    th { background: #007BFF; color: #fff; }
+    tr:nth-child(even) { background: #e9ecef; }
+    .voltar { margin-top: 1rem; padding: 1rem; background: #007BFF; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    .voltar:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
 
-<h1>Registrar Ferramental</h1>
+<h1>Consultar Ferramental</h1>
 
-<form id="formFerramental">
-  <input type="text" id="nome" placeholder="Nome do Ferramental" required>
-  <input type="text" id="codigo" placeholder="Código do Ferramental" required>
-  <select id="status" required>
-    <option value="">Selecione o Status</option>
-    <option value="Disponível">Disponível</option>
-    <option value="Em Uso">Em Uso</option>
-    <option value="Manutenção">Manutenção</option>
-  </select>
-  <button class="registrar" type="submit">Registrar</button>
-</form>
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Código</th>
+      <th>Status</th>
+      <th>Criado Em</th>
+    </tr>
+  </thead>
+  <tbody id="tabelaFerramentais"></tbody>
+</table>
 
 <button class="voltar" onclick="location.href='menu.html'">Voltar ao Menu</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
@@ -53,21 +53,21 @@
 
   onAuthStateChanged(auth, user => { if (!user) window.location.href = "index.html"; });
 
-  const form = document.getElementById("formFerramental");
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
-    const nome = document.getElementById("nome").value;
-    const codigo = document.getElementById("codigo").value;
-    const status = document.getElementById("status").value;
+  const tabela = document.getElementById("tabelaFerramentais");
 
-    try {
-      await addDoc(collection(db, "ferramentais"), { nome, codigo, status, criadoEm: new Date() });
-      alert("Ferramental registrado com sucesso!");
-      form.reset();
-    } catch (err) {
-      alert("Erro: " + err.message);
-    }
-  });
+  async function carregarFerramentais() {
+    tabela.innerHTML = "";
+    const querySnapshot = await getDocs(collection(db, "ferramentais"));
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const criado = data.criadoEm instanceof Timestamp ? data.criadoEm.toDate().toLocaleString() : "";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${data.nome}</td><td>${data.codigo}</td><td>${data.status}</td><td>${criado}</td>`;
+      tabela.appendChild(tr);
+    });
+  }
+
+  carregarFerramentais();
 </script>
 
 </body>
