@@ -19,190 +19,92 @@
     padding: 20px;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+  header { text-align: center; margin-bottom: 20px; }
+  header h1 { font-size: 2.2rem; color: #00aaff; text-shadow: 0 0 10px #00aaff; }
+  header p { color: #aaa; font-size: 1rem; margin-top: 5px; }
 
-  header h1 {
-    font-size: 2.2rem;
-    color: #00aaff;
-    text-shadow: 0 0 10px #00aaff;
-  }
-
-  header p {
-    color: #aaa;
-    font-size: 1rem;
-    margin-top: 5px;
-  }
-
-  .menu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-
+  .menu { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 20px; }
   .menu button {
-    background: #0b2239;
-    color: #00c3ff;
-    border: 2px solid #00c3ff;
-    border-radius: 10px;
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    background: #0b2239; color: #00c3ff; border: 2px solid #00c3ff; border-radius: 10px;
+    padding: 12px 25px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
   }
-
-  .menu button:hover {
-    background: #00c3ff;
-    color: #0a0f1a;
-    transform: scale(1.05);
-  }
+  .menu button:hover { background: #00c3ff; color: #0a0f1a; transform: scale(1.05); }
 
   form {
-    display: none; /* inicialmente escondido */
-    flex-direction: column;
-    gap: 12px;
-    background: rgba(0, 195, 255, 0.05);
-    padding: 20px 30px;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 195, 255, 0.2);
-    width: 100%;
-    max-width: 450px;
-    margin-bottom: 20px;
-    position: relative;
+    display: none; flex-direction: column; gap: 12px;
+    background: rgba(0, 195, 255, 0.05); padding: 20px 30px; border-radius: 10px;
+    border: 1px solid rgba(0, 195, 255, 0.2); width: 100%; max-width: 450px; margin-bottom: 20px; position: relative;
   }
 
   .message {
-    position: absolute;
-    top: -30px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-weight: 600;
-    color: #fff;
-    padding: 5px 0;
-    border-radius: 5px;
-    display: none;
+    position: absolute; top: -30px; left: 0; width: 100%; text-align: center;
+    font-weight: 600; color: #fff; padding: 5px 0; border-radius: 5px; display: none;
   }
-
   .message.success { background: #28a745; }
   .message.error { background: #dc3545; }
 
   form input, form select {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #00c3ff55;
-    background: #0b2239;
-    color: #e0e0e0;
-    font-size: 1rem;
+    padding: 10px; border-radius: 6px; border: 1px solid #00c3ff55;
+    background: #0b2239; color: #e0e0e0; font-size: 1rem;
   }
-
-  form input.invalid, form select.invalid {
-    border-color: #ff4444;
-  }
+  form input.invalid, form select.invalid { border-color: #ff4444; }
 
   form button {
-    background: #0b2239;
-    color: #00c3ff;
-    border: 2px solid #00c3ff;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    background: #0b2239; color: #00c3ff; border: 2px solid #00c3ff; border-radius: 10px;
+    padding: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
   }
-
-  form button:hover {
-    background: #00c3ff;
-    color: #0a0f1a;
-    transform: scale(1.05);
-  }
+  form button:hover { background: #00c3ff; color: #0a0f1a; transform: scale(1.05); }
 
   #listaFerramentais {
-    margin-top: 20px;
-    background: rgba(0, 195, 255, 0.05);
-    border: 1px solid rgba(0, 195, 255, 0.2);
-    border-radius: 10px;
-    padding: 20px 30px;
-    width: 100%;
-    max-width: 500px;
-    display: none;
+    margin-top: 20px; background: rgba(0, 195, 255, 0.05); border: 1px solid rgba(0, 195, 255, 0.2);
+    border-radius: 10px; padding: 20px 30px; width: 100%; max-width: 550px; display: none;
   }
-
   #listaFerramentais h2 {
-    color: #00c3ff;
-    text-align: center;
-    margin-bottom: 15px;
-    text-shadow: 0 0 10px #00c3ff;
+    color: #00c3ff; text-align: center; margin-bottom: 15px; text-shadow: 0 0 10px #00c3ff;
   }
-
   #searchInput {
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #00c3ff55;
-    background: #0b2239;
-    color: #e0e0e0;
-    margin-bottom: 10px;
-    font-size: 1rem;
+    width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #00c3ff55;
+    background: #0b2239; color: #e0e0e0; margin-bottom: 10px; font-size: 1rem;
   }
-
-  #listaFerramentais ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
+  #listaFerramentais ul { list-style: none; padding: 0; margin: 0; }
   #listaFerramentais li {
-    padding: 8px 10px;
-    border-bottom: 1px solid rgba(0, 195, 255, 0.2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 6px;
-    margin-bottom: 5px;
+    padding: 10px; border-bottom: 1px solid rgba(0, 195, 255, 0.2);
+    display: flex; justify-content: space-between; align-items: center; border-radius: 6px;
+    margin-bottom: 8px; flex-wrap: wrap; background: rgba(0,0,0,0.2);
   }
-
-  .status {
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: #0a0f1a;
-  }
-
-  .EmUso { background: #00c3ff; }
-  .Manutencao { background: #ffcc00; }
-  .Danificado { background: #ff4444; }
-  .Trocar { background: #ff8800; }
+  .status { font-weight: 600; padding: 2px 6px; border-radius: 4px; color: #0a0f1a; }
+  .EmUso { background: #00c3ff; } .Manutencao { background: #ffcc00; }
+  .Danificado { background: #ff4444; } .Trocar { background: #ff8800; }
 
   #listaFerramentais button {
-    margin-left: 10px;
-    padding: 4px 8px;
-    font-size: 0.85rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
+    margin-left: 5px; margin-top: 5px; padding: 6px 10px; font-size: 0.9rem;
+    border-radius: 6px; border: none; cursor: pointer; font-weight: 600; transition: transform 0.2s;
   }
-
+  #listaFerramentais button:hover { transform: scale(1.05); }
   .edit-btn { background: #ffaa00; color: #0a0f1a; }
   .delete-btn { background: #ff4444; color: #fff; }
+  .qr-btn { background: #00c3ff; color: #0a0f1a; }
 
-  footer {
-    text-align: center;
-    font-size: 0.9rem;
-    color: #888;
-    margin-top: 30px;
+  footer { text-align: center; font-size: 0.9rem; color: #888; margin-top: 30px; }
+
+  #qrModal {
+    display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:1000;
+  }
+  #qrModal div {
+    background:#0b2239; padding:30px; border-radius:12px; text-align:center; position:relative;
+    box-shadow: 0 0 30px #00c3ff66;
+  }
+  #qrModal span {
+    position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px; color:#ff4444;
+  }
+  #qrModal h3 { color:#00c3ff; margin-bottom:20px; }
+  #downloadQR {
+    margin-top:20px; background:#00c3ff; color:#0a0f1a; border:none;
+    padding:12px 20px; border-radius:8px; font-weight:600; cursor:pointer;
   }
 
-  @media (max-width: 600px) {
-    header h1 { font-size: 1.6rem; }
-  }
+  @media (max-width: 600px) { header h1 { font-size: 1.6rem; } }
 </style>
 </head>
 <body>
@@ -215,8 +117,6 @@
 <div class="menu">
   <button id="btnRegistrar">📝 Registrar Ferramental</button>
   <button id="btnListar">🔍 Consultar Ferramentais</button>
-  <button onclick="alert('Gerador de QR Code em breve')">📱 Gerar QR Code</button>
-  <button onclick="alert('Área administrativa em construção')">⚙️ Administração</button>
 </div>
 
 <form id="formFerramental">
@@ -246,6 +146,16 @@
   <p>&copy; 2025 Grupo Sovel da Amazônia</p>
 </footer>
 
+<div id="qrModal">
+  <div>
+    <span id="closeQR">&times;</span>
+    <h3>QR Code do Ferramental</h3>
+    <div id="qrcode"></div>
+    <button id="downloadQR">Baixar QR Code</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
@@ -292,7 +202,7 @@ form.addEventListener("submit", async (e) => {
   const codigo = document.getElementById("codigo").value.trim();
   const nome = document.getElementById("nome").value.trim();
   const registroInput = document.getElementById("registro").value;
-  const registro = registroInput ? registroInput : new Date().toISOString();
+  const registro = registroInput ? registroInput : new Date().toISOString().split('T')[0];
   const status = document.getElementById("status").value || "Disponível";
   const responsavel = document.getElementById("responsavel").value || "Não atribuído";
 
@@ -312,14 +222,12 @@ form.addEventListener("submit", async (e) => {
       editId = null;
       document.getElementById("submitBtn").textContent = "Registrar Ferramental";
     } else {
-      await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString(), ultimaManutencao: null });
+      await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString() });
       formMessage.textContent = "✅ Ferramental registrado com sucesso!";
     }
     formMessage.className = "message success";
     formMessage.style.display = "block";
     form.reset();
-
-    // Não mostrar a lista automaticamente
     listaDiv.style.display = "none";
   } catch (err) {
     console.error(err);
@@ -379,10 +287,10 @@ function renderLista(ferramentais) {
       <div>
         <button class="edit-btn">Editar</button>
         <button class="delete-btn">Excluir</button>
+        <button class="qr-btn">QR Code</button>
       </div>
     `;
 
-    // Excluir ferramental
     item.querySelector(".delete-btn").addEventListener("click", async () => {
       if(confirm("Deseja excluir este ferramental?")){
         await deleteDoc(doc(db, "ferramentais", dados.id));
@@ -390,7 +298,6 @@ function renderLista(ferramentais) {
       }
     });
 
-    // Editar ferramental
     item.querySelector(".edit-btn").addEventListener("click", () => {
       document.getElementById("tipo").value = dados.tipo;
       document.getElementById("codigo").value = dados.codigo;
@@ -399,15 +306,41 @@ function renderLista(ferramentais) {
       document.getElementById("status").value = dados.status;
       document.getElementById("responsavel").value = dados.responsavel;
       form.style.display = "flex";
-      listaDiv.style.display = "none"; // lista continua oculta até o usuário clicar em Consultar
+      listaDiv.style.display = "none";
       editId = dados.id;
       document.getElementById("submitBtn").textContent = "Salvar Alterações";
       formMessage.style.display = "none";
     });
 
+    item.querySelector(".qr-btn").addEventListener("click", () => {
+      const qrModal = document.getElementById("qrModal");
+      const qrcodeDiv = document.getElementById("qrcode");
+      const downloadQR = document.getElementById("downloadQR");
+
+      const qrData = `Código: ${dados.codigo}\nNome: ${dados.nome}\nTipo: ${dados.tipo}\nStatus: ${dados.status}\nResponsável: ${dados.responsavel}\nRegistro: ${dados.registro}`;
+      qrcodeDiv.innerHTML = "";
+      new QRCode(qrcodeDiv, { text: qrData, width: 250, height: 250 });
+
+      qrModal.style.display = "flex";
+
+      downloadQR.onclick = () => {
+        const img = qrcodeDiv.querySelector("img");
+        if (img) {
+          const link = document.createElement("a");
+          link.href = img.src;
+          link.download = `${dados.codigo}_QRCode.png`;
+          link.click();
+        }
+      };
+    });
+
     listaUl.appendChild(item);
   });
 }
+
+// QR Modal Controls
+document.getElementById("closeQR").onclick = () => { document.getElementById("qrModal").style.display = "none"; };
+document.getElementById("qrModal").onclick = (e) => { if(e.target === document.getElementById("qrModal")) document.getElementById("qrModal").style.display = "none"; };
 </script>
 
 </body>
