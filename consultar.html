@@ -1,263 +1,232 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultar Ferramentais</title>
-
-  <!-- ====================== -->
-  <!-- Estilo Global Neon -->
-  <!-- ====================== -->
-  <style>
-    body {
-      background-color: #0a0f1a;
-      margin: 0;
-      padding: 0;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    .logo-container {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      filter: drop-shadow(0 0 8px #00eaff);
-    }
-
-    img.logo { max-width: 200px; height: auto; }
-
-    .neon-button {
-      display: inline-block;
-      padding: 10px 25px;
-      color: #00eaff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      border-radius: 10px;
-      background-color: #0d1b2a;
-      box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
-      transition: 0.3s;
-      margin: 2px;
-    }
-
-    .neon-button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
-    }
-
-    .centralizado {
-      text-align: center;
-      max-width: 1200px;
-      margin: 20px auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 12px;
-      border: 1px solid #00eaff44;
-      text-align: left;
-    }
-
-    th {
-      color: #00eaff;
-    }
-
-    td {
-      color: #c0dfff;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background-color: #0a0f1a;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 30px #00eaff55;
-    }
-
-    #qrCanvas {
-      margin-top: 15px;
-    }
-  </style>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-  <!-- QR Code -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+<meta charset="UTF-8">
+<title>Consultar Ferramentais</title>
+<!-- ====================== -->
+<!-- Estilo Global Neon -->
+<!-- ====================== -->
+<style>
+  body {
+    background-color: #0a0f1a;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  a {
+    color: #00eaff;
+    text-decoration: none;
+  }
+  .logo-container {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    filter: drop-shadow(0 0 8px #00eaff);
+  }
+  img.logo {
+    display: inline-block;
+    max-width: 200px;
+  }
+  .neon-button {
+    display: inline-block;
+    padding: 10px 25px;
+    color: #00eaff;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 8px;
+    background-color: #0d1b2a;
+    box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff;
+    transition: 0.3s;
+    margin: 5px;
+  }
+  .neon-button:hover {
+    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff;
+  }
+  .centralizado {
+    max-width: 1000px;
+    margin: 20px auto;
+    text-align: center;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #00eaff44;
+    padding: 10px;
+    text-align: center;
+  }
+  th {
+    background-color: #0d1b2a;
+    color: #00eaff;
+  }
+  td {
+    background-color: #0a0f1a;
+    color: #c0dfff;
+  }
+  /* Modal QR Code */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    padding-top: 100px;
+    left:0;top:0;width:100%;height:100%;
+    overflow:auto;
+    background-color: rgba(0,0,0,0.9);
+  }
+  .modal-content {
+    margin: auto;
+    display: block;
+    text-align: center;
+  }
+  .close {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    color: #00eaff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
 
-  <!-- Logo -->
-  <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
+<!-- Logo -->
+<div class="logo-container">
+  <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
+</div>
+
+<!-- Botão Menu -->
+<div class="centralizado">
+  <a href="menu.html" class="neon-button">🔙 Menu Principal</a>
+</div>
+
+<!-- Tabela -->
+<div class="centralizado">
+  <h2 style="color:#00bfff;">📋 Ferramentais Cadastrados</h2>
+  <table id="ferramentaisTable">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>SV</th>
+        <th>Cliente</th>
+        <th>Data Fab.</th>
+        <th>Data Registro</th>
+        <th>Responsável</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dados via JS -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal QR -->
+<div id="qrModal" class="modal">
+  <span class="close" onclick="closeQR()">&times;</span>
+  <div class="modal-content">
+    <canvas id="qrCanvas"></canvas>
+    <br>
+    <a id="downloadQR" class="neon-button" download="qrcode.png">⬇️ Baixar QR Code</a>
   </div>
+</div>
 
-  <div class="centralizado">
-    <h1 style="color:#00eaff; text-shadow:0 0 15px #00eaff;">Consultar Ferramentais</h1>
+<!-- Firebase e QRCode.js -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
 
-    <!-- Campo de busca por SV -->
-    <input type="text" id="campoBusca" placeholder="Digite o SV para buscar..." style="padding:8px; border-radius:5px; width:200px;">
-    <button class="neon-button" onclick="buscarFerramentais()">Buscar</button>
-    <button class="neon-button" onclick="window.location.href='menu.html'">Voltar ao Menu</button>
+<script>
+  // Config Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    <!-- Tabela de resultados -->
-    <table id="tabelaResultados">
-      <thead>
-        <tr>
-          <th>Tipo</th>
-          <th>SV</th>
-          <th>Cliente</th>
-          <th>Data Fabricação</th>
-          <th>Data Registro</th>
-          <th>Responsável</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  // Buscar dados
+  const tableBody = document.querySelector("#ferramentaisTable tbody");
 
-  <!-- Modal QR Code -->
-  <div id="modalQR" class="modal">
-    <div class="modal-content">
-      <h2 style="color:#00eaff;">QR Code do Ferramental</h2>
-      <div id="qrCanvas"></div>
-      <br>
-      <button class="neon-button" onclick="baixarQR()">Baixar PNG</button>
-      <button class="neon-button" onclick="fecharModal()">Fechar</button>
-    </div>
-  </div>
-
-  <script>
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_AUTH_DOMAIN",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_BUCKET",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // Buscar Ferramentais
-    function buscarFerramentais() {
-      const sv = document.getElementById("campoBusca").value.trim();
-      const tabela = document.querySelector("#tabelaResultados tbody");
-      tabela.innerHTML = "";
-
-      let query = db.collection("ferramentais");
-      if (sv) query = query.where("SV", "==", sv);
-
-      query.get().then(snapshot => {
-        if (snapshot.empty) {
-          tabela.innerHTML = "<tr><td colspan='7' style='text-align:center;'>Nenhum ferramental encontrado</td></tr>";
-          return;
-        }
-
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const row = document.createElement("tr");
-
-          row.innerHTML = `
-            <td>${data.tipo || ''}</td>
-            <td>${data.SV || ''}</td>
-            <td>${data.cliente || ''}</td>
-            <td>${data.dataFabricacao || ''}</td>
-            <td>${data.dataRegistro || ''}</td>
-            <td>${data.responsavel || ''}</td>
-            <td>
-              <button class="neon-button" onclick='editarFerramental("${doc.id}", ${JSON.stringify(data)})'>Editar</button>
-              <button class="neon-button" onclick='excluirFerramental("${doc.id}")'>Excluir</button>
-              <button class="neon-button" onclick='gerarQR(${JSON.stringify(data)})'>Gerar QR</button>
-            </td>
-          `;
-          tabela.appendChild(row);
-        });
+  db.collection("ferramentais").get().then(snapshot => {
+    if (snapshot.empty) {
+      tableBody.innerHTML = '<tr><td colspan="7">Nenhum ferramental cadastrado</td></tr>';
+    } else {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${data.tipo || ''}</td>
+          <td>${data.SV || ''}</td>
+          <td>${data.cliente || ''}</td>
+          <td>${data.dataFabricacao || ''}</td>
+          <td>${data.dataRegistro || ''}</td>
+          <td>${data.responsavel || ''}</td>
+          <td>
+            <button class="neon-button" onclick="editarFerramental('${doc.id}')">✏️ Editar</button>
+            <button class="neon-button" onclick="excluirFerramental('${doc.id}')">🗑️ Excluir</button>
+            <button class="neon-button" onclick="gerarQR('${doc.id}')">🔳 QR Code</button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
       });
     }
+  }).catch(error => {
+    tableBody.innerHTML = `<tr><td colspan="7">Erro ao buscar dados: ${error}</td></tr>`;
+  });
 
-    function editarFerramental(id, data) {
-      const cliente = prompt("Novo Cliente:", data.cliente);
-      const dataRegistro = prompt("Nova Data de Registro (YYYY-MM-DD):", data.dataRegistro);
-      if (cliente !== null && dataRegistro !== null) {
-        db.collection("ferramentais").doc(id).update({
-          cliente: cliente,
-          dataRegistro: dataRegistro
-        }).then(() => {
-          alert("Ferramental atualizado!");
-          buscarFerramentais();
+  // Editar Ferramental
+  function editarFerramental(id) {
+    const newCliente = prompt("Novo Cliente:");
+    const newDataRegistro = prompt("Nova Data de Registro (YYYY-MM-DD):");
+    if (newCliente && newDataRegistro) {
+      db.collection("ferramentais").doc(id).update({
+        cliente: newCliente,
+        dataRegistro: newDataRegistro
+      }).then(()=>{ alert("Atualizado com sucesso!"); location.reload(); })
+      .catch(err=>alert(err));
+    }
+  }
+
+  // Excluir Ferramental
+  function excluirFerramental(id){
+    if(confirm("Deseja realmente excluir este ferramental?")){
+      db.collection("ferramentais").doc(id).delete()
+      .then(()=>location.reload())
+      .catch(err=>alert(err));
+    }
+  }
+
+  // QR Code
+  function gerarQR(id){
+    db.collection("ferramentais").doc(id).get().then(doc=>{
+      if(doc.exists){
+        const data = doc.data();
+        const qr = new QRious({
+          element: document.getElementById('qrCanvas'),
+          value: `Tipo: ${data.tipo}\nSV: ${data.SV}\nCliente: ${data.cliente}\nData Fab.: ${data.dataFabricacao}\nData Registro: ${data.dataRegistro}\nResponsável: ${data.responsavel}`,
+          size: 300,
+          level: 'H'
         });
+        // Link download
+        const canvas = document.getElementById('qrCanvas');
+        document.getElementById('downloadQR').href = canvas.toDataURL("image/png");
+        document.getElementById('qrModal').style.display = 'block';
       }
-    }
+    });
+  }
 
-    function excluirFerramental(id) {
-      if (confirm("Deseja realmente excluir este ferramental?")) {
-        db.collection("ferramentais").doc(id).delete().then(() => {
-          alert("Ferramental excluído!");
-          buscarFerramentais();
-        });
-      }
-    }
-
-    let qrInstance = null;
-    function gerarQR(data) {
-      const modal = document.getElementById("modalQR");
-      const container = document.getElementById("qrCanvas");
-      container.innerHTML = "";
-
-      // Gerar QR com todos os dados
-      qrInstance = new QRCode(container, {
-        text: JSON.stringify(data),
-        width: 250,
-        height: 250,
-        colorDark : "#00eaff",
-        colorLight : "#0a0f1a",
-        correctLevel : QRCode.CorrectLevel.H
-      });
-
-      modal.style.display = "flex";
-    }
-
-    function fecharModal() {
-      document.getElementById("modalQR").style.display = "none";
-    }
-
-    function baixarQR() {
-      const qrImg = document.querySelector("#qrCanvas img");
-      if (!qrImg) return alert("QR não gerado ainda!");
-      const link = document.createElement("a");
-      link.href = qrImg.src;
-      link.download = "qr_ferramental.png";
-      link.click();
-    }
-
-    window.onclick = function(event) {
-      const modal = document.getElementById("modalQR");
-      if (event.target == modal) modal.style.display = "none";
-    }
-  </script>
-
+  function closeQR(){
+    document.getElementById('qrModal').style.display = 'none';
+  }
+</script>
 </body>
 </html>
