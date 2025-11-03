@@ -192,10 +192,10 @@
 
   try {
     await addDoc(collection(db, "ferramentais"), {
+      tipo: tipo || "",
       codigo,
       nome,
-      descricao: descricao || "",
-      setor: setor || "",
+      registro: registro || "",
       status: status || "Disponível",
       responsavel: responsavel || "Não atribuído",
       ultimaManutencao: null,
@@ -207,6 +207,7 @@
     alert("❌ Erro ao registrar ferramental.");
   }
 }
+
 
     // 🔍 Função para listar ferramentais
     async function listarFerramentais() {
@@ -238,4 +239,5 @@
 
 </body>
 </html>
+
 
