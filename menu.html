@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Menu Interativo — Grupo Sovel</title>
+  <title>Menu — Gestão de Ferramentais</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -14,16 +14,11 @@
       --text-muted: #99a3ad;
       --accent-primary: #1e88e5;
       --accent-secondary: #0ea5a4;
-      --accent-hover: #0fb6c6;
       --border-radius: 12px;
       --transition: all 0.3s ease;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg-primary);
@@ -34,7 +29,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      overflow-x: hidden;
     }
 
     header {
@@ -58,62 +52,46 @@
     main {
       flex: 1;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 2rem;
-      padding: 2rem;
-      max-width: 1000px;
-    }
-
-    .card {
-      background: var(--bg-secondary);
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      width: 270px;
-      height: 180px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-      transition: var(--transition);
-      cursor: pointer;
-      position: relative;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
+      padding: 2rem;
+    }
+
+    .btn {
       background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      opacity: 0;
+      border: none;
+      color: #021018;
+      font-weight: 600;
+      padding: 1rem 2.5rem;
       border-radius: var(--border-radius);
-      transition: opacity 0.3s ease;
-      z-index: 0;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      width: 280px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
 
-    .card:hover::before {
-      opacity: 0.08;
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-    }
-
-    .card h2 {
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-      z-index: 1;
-      position: relative;
-    }
-
-    .card p {
+    .logout-btn {
+      margin-top: 3rem;
+      background: transparent;
       color: var(--text-muted);
-      font-size: 0.95rem;
-      z-index: 1;
-      position: relative;
+      border: 1px solid var(--text-muted);
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
     }
 
     footer {
@@ -124,86 +102,37 @@
       width: 100%;
       background-color: #0b121e;
     }
-
-    .logout-btn {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border: none;
-      color: #021018;
-      font-weight: 600;
-      padding: 0.8rem 1.8rem;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      transition: var(--transition);
-      margin-top: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    }
-
-    .logout-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-    }
-
-    @media (max-width: 768px) {
-      .card {
-        width: 90%;
-      }
-    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Menu Interativo</h1>
-    <p>Bem-vindo ao sistema de Gestão de Ferramentais — Grupo Sovel</p>
+    <h1>Menu Principal</h1>
+    <p>Gestão de Ferramentais — Grupo Sovel</p>
   </header>
 
   <main>
-    <div class="card" onclick="alert('Em breve!')">
-      <h2>Controle de Ferramentas</h2>
-      <p>Gerencie o cadastro e status de ferramentais.</p>
-    </div>
+    <button class="btn" onclick="window.location.href='registrar.html'">Registrar Ferramental</button>
+    <button class="btn" onclick="window.location.href='consultar.html'">Consultar Ferramental</button>
 
-    <div class="card" onclick="alert('Em breve!')">
-      <h2>Relatórios</h2>
-      <p>Visualize métricas e desempenho de uso.</p>
-    </div>
-
-    <div class="card" onclick="alert('Em breve!')">
-      <h2>Usuários</h2>
-      <p>Controle de acesso e permissões do sistema.</p>
-    </div>
-
-    <div class="card" onclick="alert('Em breve!')">
-      <h2>Configurações</h2>
-      <p>Personalize preferências e parâmetros.</p>
-    </div>
-
-    <button class="logout-btn" id="logoutBtn">Sair</button>
+    <button class="btn logout-btn" id="logoutBtn">Sair</button>
   </main>
 
-  <footer>
-    © 2025 Grupo Sovel da Amazônia
-  </footer>
+  <footer>© 2025 Grupo Sovel da Amazônia</footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "SEU_PROJETO.firebaseapp.com",
+      projectId: "SEU_PROJETO_ID",
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const logoutBtn = document.getElementById('logoutBtn');
-    logoutBtn.addEventListener('click', async () => {
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "index.html";
     });
