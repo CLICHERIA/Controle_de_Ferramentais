@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Autenticação</title>
   <style>
     body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; background: #f5f5f5; }
@@ -20,8 +20,8 @@
 
 <div class="login-box">
   <h1>Autenticação</h1>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="senha" placeholder="Senha">
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="senha" placeholder="Senha" />
   <button id="btnLogin">Entrar</button>
   <p>Não tem conta? <a href="#" id="btnCadastrar">Cadastrar</a></p>
 </div>
@@ -32,11 +32,11 @@
 
   const firebaseConfig = {
     apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+    authDomain: "dacsovel-53481.firebaseapp.com",
+    projectId: "dacsovel-53481",
+    storageBucket: "dacsovel-53481.firebasestorage.app",
+    messagingSenderId: "37867522513",
+    appId: "1:37867522513:web:336d687e3fc8408bd138f0",
   };
 
   const app = initializeApp(firebaseConfig);
@@ -47,7 +47,7 @@
     const senha = document.getElementById("senha").value;
 
     signInWithEmailAndPassword(auth, email, senha)
-      .then(() => { window.location.href = "menu.html"; })
+      .then(() => { window.location.href = "../menu.html"; }) // CORRIGIDO: subir um nível
       .catch(err => alert("Erro no login: " + err.message));
   });
 
