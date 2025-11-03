@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultar Ferramental</title>
+  <title>Registrar Ferramental</title>
 
   <!-- ====================== -->
-  <!-- Estilo Neon -->
+  <!-- Estilo Global Neon -->
   <!-- ====================== -->
   <style>
     body {
@@ -28,7 +28,7 @@
 
     .centralizado {
       text-align: center;
-      max-width: 900px;
+      max-width: 600px;
       margin: 20px auto;
     }
 
@@ -46,7 +46,7 @@
 
     .neon-button {
       display: inline-block;
-      padding: 10px 20px;
+      padding: 10px 25px;
       color: #00eaff;
       text-decoration: none;
       font-weight: bold;
@@ -56,61 +56,11 @@
       box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
       transition: 0.3s;
       margin: 5px;
-      cursor: pointer;
     }
 
     .neon-button:hover {
       color: #00ffff;
       box-shadow: 0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      color: #00eaff;
-    }
-
-    th, td {
-      padding: 10px;
-      border: 1px solid #00eaff44;
-      text-align: center;
-    }
-
-    th { background-color: #0d1b2a; }
-
-    td { background-color: #101d2c; }
-
-    /* Modal QR Code */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      padding-top: 100px;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.9);
-    }
-
-    .modal-content {
-      margin: auto;
-      display: block;
-      max-width: 400px;
-      text-align: center;
-      color: #00eaff;
-    }
-
-    .close {
-      position: absolute;
-      top: 50px;
-      right: 100px;
-      color: #00eaff;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
     }
 
   </style>
@@ -120,8 +70,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <!-- QR Code Library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -131,153 +79,81 @@
   </div>
 
   <div class="centralizado">
-    <h1 style="color:#00eaff; text-shadow:0 0 15px #00eaff;">Consultar Ferramental</h1>
+    <h1 style="color:#00eaff; text-shadow:0 0 15px #00eaff;">Registrar Ferramental</h1>
 
-    <button class="neon-button" onclick="window.location.href='menu.html'">Menu Principal</button>
+    <form id="formRegistrar">
+      <label for="tipo">Tipo de Ferramental:</label>
+      <select id="tipo" required>
+        <option value="">Selecione</option>
+        <option value="Faca">Faca</option>
+        <option value="Clichê">Clichê</option>
+      </select>
 
-    <table id="tabelaFerramental">
-      <thead>
-        <tr>
-          <th>Tipo</th>
-          <th>SV</th>
-          <th>Cliente</th>
-          <th>Data Fabricação</th>
-          <th>Data Registro</th>
-          <th>Responsável</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+      <label for="sv">SV (letra + número):</label>
+      <input type="text" id="sv" required placeholder="Ex: A123">
 
-  <!-- Modal QR Code -->
-  <div id="modalQR" class="modal">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <canvas id="qrCanvas" class="modal-content"></canvas>
-    <br>
-    <button class="neon-button" onclick="baixarQRCode()">Exportar PNG</button>
+      <label for="cliente">Cliente:</label>
+      <input type="text" id="cliente" required>
+
+      <label for="dataFabricacao">Data de Fabricação (opcional):</label>
+      <input type="date" id="dataFabricacao">
+
+      <label for="dataRegistro">Data de Registro:</label>
+      <input type="date" id="dataRegistro" required>
+
+      <label for="responsavel">Responsável pelo Registro:</label>
+      <input type="text" id="responsavel" required>
+
+      <br>
+      <button type="submit" class="neon-button">Registrar</button>
+      <button type="button" class="neon-button" onclick="window.location.href='menu.html'">Menu Principal</button>
+    </form>
   </div>
 
   <script>
     // Firebase Config
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_AUTH_DOMAIN",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_BUCKET",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
-    };
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const tabela = document.querySelector('#tabelaFerramental tbody');
-    const modal = document.getElementById("modalQR");
-    const canvasQR = document.getElementById("qrCanvas");
+    const form = document.getElementById('formRegistrar');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    function carregarFerramentais(){
-      tabela.innerHTML = '';
-      db.collection("ferramentais").get().then((snapshot) => {
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const tr = document.createElement('tr');
+      const tipo = document.getElementById('tipo').value;
+      const sv = document.getElementById('sv').value.trim();
+      const cliente = document.getElementById('cliente').value.trim();
+      const dataFabricacao = document.getElementById('dataFabricacao').value;
+      const dataRegistro = document.getElementById('dataRegistro').value;
+      const responsavel = document.getElementById('responsavel').value.trim();
 
-          tr.innerHTML = `
-            <td>${data.tipo}</td>
-            <td>${data.SV}</td>
-            <td><input type="text" value="${data.cliente}" id="cliente_${doc.id}"></td>
-            <td>${data.dataFabricacao || ''}</td>
-            <td><input type="date" value="${data.dataRegistro}" id="registro_${doc.id}"></td>
-            <td>${data.responsavel}</td>
-            <td>
-              <button class="neon-button" onclick="editarFerramental('${doc.id}')">Editar</button>
-              <button class="neon-button" onclick="excluirFerramental('${doc.id}')">Excluir</button>
-              <button class="neon-button" onclick="gerarQRCode('${doc.id}')">QR Code</button>
-            </td>
-          `;
-          tabela.appendChild(tr);
-        });
-      });
-    }
+      if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+      }
 
-    function editarFerramental(id){
-      const cliente = document.getElementById(`cliente_${id}`).value.trim();
-      const dataRegistro = document.getElementById(`registro_${id}`).value;
-
-      db.collection("ferramentais").doc(id).update({
+      db.collection("ferramentais").add({
+        tipo: tipo,
+        SV: sv,
         cliente: cliente,
-        dataRegistro: dataRegistro
+        dataFabricacao: dataFabricacao,
+        dataRegistro: dataRegistro,
+        responsavel: responsavel
       }).then(() => {
-        alert("Ferramental atualizado com sucesso!");
-      }).catch(err => {
-        console.error(err);
-        alert("Erro ao atualizar.");
+        alert("Ferramental registrado com sucesso!");
+        form.reset();
+      }).catch((error) => {
+        console.error("Erro ao registrar:", error);
+        alert("Ocorreu um erro ao registrar.");
       });
-    }
-
-    function excluirFerramental(id){
-      if(confirm("Deseja realmente excluir este ferramental?")){
-        db.collection("ferramentais").doc(id).delete().then(() => {
-          alert("Ferramental excluído.");
-          carregarFerramentais();
-        }).catch(err => {
-          console.error(err);
-          alert("Erro ao excluir.");
-        });
-      }
-    }
-
-    async function gerarQRCode(id){
-      const docRef = db.collection("ferramentais").doc(id);
-      const docSnap = await docRef.get();
-      if(!docSnap.exists) return;
-
-      const data = docSnap.data();
-      const texto = `
-Tipo: ${data.tipo}
-SV: ${data.SV}
-Cliente: ${data.cliente}
-Data Fabricação: ${data.dataFabricacao || ''}
-Data Registro: ${data.dataRegistro}
-Responsável: ${data.responsavel}
-      `;
-
-      // QR Code
-      await QRCode.toCanvas(canvasQR, texto, {
-        width: 300,
-        margin: 2,
-        color: {dark: "#000000", light: "#ffffff"}
-      });
-
-      // Inserir logo no centro
-      const ctx = canvasQR.getContext("2d");
-      const img = new Image();
-      img.src = "logosovel1337.png";
-      img.onload = function(){
-        const logoSize = 60;
-        ctx.drawImage(img, (canvasQR.width-logoSize)/2, (canvasQR.height-logoSize)/2, logoSize, logoSize);
-      }
-
-      modal.style.display = "block";
-    }
-
-    function closeModal(){
-      modal.style.display = "none";
-    }
-
-    function baixarQRCode(){
-      const link = document.createElement('a');
-      link.download = 'qrcode.png';
-      link.href = canvasQR.toDataURL();
-      link.click();
-    }
-
-    window.onclick = function(event) {
-      if (event.target == modal) closeModal();
-    }
-
-    carregarFerramentais();
+    });
   </script>
 
 </body>
