@@ -3,55 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Autenticação</title>
+<title>Autenticação Futurista</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
   body {
     margin: 0;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    height: 100vh;
     font-family: 'Orbitron', sans-serif;
-    color: #fff;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #00f0ff;
   }
 
   .login-box {
     background: rgba(0,0,0,0.85);
-    padding: 2rem;
+    padding: 2.5rem;
     border-radius: 12px;
-    box-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff inset;
+    box-shadow: 0 0 20px #00f0ff, 0 0 40px #ff00ff inset;
     width: 320px;
     text-align: center;
   }
 
   h1 {
     margin-bottom: 2rem;
-    color: #00f0ff;
-    text-shadow: 0 0 10px #00f0ff;
+    text-shadow: 0 0 10px #00f0ff, 0 0 20px #ff00ff;
   }
 
   input {
     width: 100%;
     padding: 0.8rem;
     margin-bottom: 1rem;
-    border: 1px solid #00f0ff;
     border-radius: 6px;
-    background: rgba(0,0,0,0.6);
-    color: #fff;
-    font-size: 1rem;
-  }
-
-  input::placeholder {
+    border: 1px solid #00f0ff;
+    background: rgba(0,0,0,0.3);
     color: #00f0ff;
-    opacity: 0.7;
+    font-size: 1rem;
   }
 
   button {
     width: 100%;
     padding: 1rem;
+    margin-top: 0.5rem;
     border: none;
     border-radius: 6px;
     background: linear-gradient(90deg, #00f0ff, #ff00ff);
@@ -72,13 +67,12 @@
   }
 
   a {
-    color: #ff00ff;
+    color: #00f0ff;
     text-decoration: none;
   }
 
   a:hover {
     text-decoration: underline;
-    text-shadow: 0 0 5px #ff00ff;
   }
 </style>
 </head>
@@ -97,12 +91,12 @@
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "dacsovel-53481.firebaseapp.com",
-    projectId: "dacsovel-53481",
-    storageBucket: "dacsovel-53481.firebasestorage.app",
-    messagingSenderId: "37867522513",
-    appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
   };
 
   const app = initializeApp(firebaseConfig);
