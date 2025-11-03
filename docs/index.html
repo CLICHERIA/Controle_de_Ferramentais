@@ -1,137 +1,181 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Autenticação</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Sistema de Gestão de Ferramentais</title>
 
-  <!-- Estilo Futurista -->
-  <style>
-    body {
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
+<!-- ====================== -->
+<!-- Estilo Futurista -->
+<!-- ====================== -->
+<style>
+  body {
+    background-color: #0a0f1a;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 0 8px #00eaff);
-    }
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
 
-    .logo {
-      width: 200px;
-    }
+  a {
+    color: #00eaff;
+    text-decoration: none;
+  }
 
-    .login-box {
-      background: #0d1b2a;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow:
-        0 0 10px #00eaff,
-        0 0 20px #00eaff44;
-      width: 300px;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+  .logo-container {
+    display: block;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    filter: drop-shadow(0 0 8px #00eaff);
+  }
 
-    h1 {
-      text-align: center;
-      color: #00eaff;
-      text-shadow: 0 0 10px #00eaff;
-      margin: 0 0 1rem 0;
-    }
+  img.logo {
+    max-width: 200px;
+  }
 
-    input {
-      width: 100%;
-      padding: 0.8rem;
-      border-radius: 5px;
-      border: 1px solid #00eaff55;
-      background-color: #0a0f1a;
-      color: #ffffff;
-    }
+  .login-box {
+    background-color: #0d1b2a;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px #00eaff55;
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+  }
 
-    button {
-      width: 100%;
-      padding: 1rem;
-      background-color: #0d1b2a;
-      color: #00eaff;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+  .login-box input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    background-color: #0a0f1a;
+    color: #00eaff;
+    box-shadow: 0 0 5px #00eaff55 inset;
+  }
+
+  .neon-button {
+    display: inline-block;
+    padding: 12px 25px;
+    margin-top: 15px;
+    color: #00eaff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 10px;
+    background-color: #0d1b2a;
+    box-shadow:
+      0 0 5px #00eaff,
+      0 0 10px #00eaff,
+      0 0 20px #00eaff,
+      0 0 40px #00eaff55;
+    transition: 0.3s ease-in-out;
+    animation: neonPulse 1.5s infinite alternate;
+    border: none;
+    cursor: pointer;
+  }
+
+  .neon-button:hover {
+    color: #00ffff;
+    box-shadow:
+      0 0 10px #00eaff,
+      0 0 20px #00eaff,
+      0 0 30px #00eaff,
+      0 0 50px #00eaff77;
+  }
+
+  @keyframes neonPulse {
+    0%, 100% {
       box-shadow:
         0 0 5px #00eaff,
         0 0 10px #00eaff,
-        0 0 20px #00eaff,
-        0 0 40px #00eaff55;
-      transition: 0.3s ease-in-out;
+        0 0 20px #00eaff;
     }
-
-    button:hover {
-      color: #00ffff;
+    50% {
       box-shadow:
-        0 0 10px #00eaff,
-        0 0 20px #00eaff,
+        0 0 15px #00eaff,
         0 0 30px #00eaff,
-        0 0 50px #00eaff77;
+        0 0 45px #00eaff77;
     }
-  </style>
-</head>
-<body>
+  }
 
-  <!-- Logo -->
-  <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
-  </div>
+  .top-right-info {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    text-align: right;
+    color: #00eaff;
+    font-size: 14px;
+  }
+</style>
 
-  <!-- Login Box -->
-  <div class="login-box">
-    <h1>Login</h1>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="senha" placeholder="Senha">
-    <button id="btnLogin">Entrar</button>
-  </div>
+<!-- Firebase SDKs -->
+<script type="module">
+  // Importa o Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 
-  <!-- Firebase Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  // Config do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
 };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  window.login = function() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
 
-    document.getElementById("btnLogin").addEventListener("click", () => {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
+    if (!email || !senha) {
+      alert("Preencha todos os campos!");
+      return;
+    }
 
-      signInWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-          // Redireciona para menu.html na raiz
-          window.location.href = "menu.html";
-        })
-        .catch(err => alert("Erro no login: " + err.message));
-    });
-  </script>
+    signInWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        // Salva usuário no sessionStorage
+        sessionStorage.setItem("usuario", email);
+
+        // Redireciona para menu na raiz do projeto
+        window.location.href = "/SGF/menu.html";
+      })
+      .catch(err => {
+        alert("Erro no login: " + err.message);
+      });
+  }
+</script>
+
+</head>
+<body>
+
+  <!-- Top Right Info Placeholder -->
+  <div class="top-right-info">
+    <!-- Será preenchido após login, se necessário -->
+  </div>
+
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="../logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" class="logo">
+  </div>
+
+  <!-- Caixa de Login -->
+  <div class="login-box">
+    <h2 style="color:#00eaff; margin-bottom:20px;">Login</h2>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="senha" placeholder="Senha"><br>
+    <button class="neon-button" onclick="login()">Entrar</button>
+  </div>
 
 </body>
 </html>
-  
