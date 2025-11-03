@@ -5,16 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Sistema de Gestão de Ferramentais - Grupo Sovel da Amazônia" />
   <title>Gestão de Ferramentais | Grupo Sovel da Amazônia</title>
-  <style>
-    /* --- Reset e Box-Sizing --- */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
 
-    /* --- Corpo e Fundo --- */
+  <style>
+    /* --- Estilos Gerais --- */
     body {
+      margin: 0;
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       background: radial-gradient(circle at top, #0a0f1a 0%, #020409 100%);
       color: #e0e0e0;
@@ -24,10 +19,8 @@
       justify-content: center;
       min-height: 100vh;
       overflow-x: hidden;
-      padding-bottom: 60px; /* Espaço para o footer fixo */
     }
 
-    /* --- Cabeçalho --- */
     header {
       text-align: center;
       margin-bottom: 40px;
@@ -35,11 +28,10 @@
     }
 
     header h1 {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       color: #00aaff;
       letter-spacing: 1px;
-      text-shadow: 0 0 15px #00aaff, 0 0 30px #00eaff;
-      animation: neonPulse 2s infinite alternate;
+      text-shadow: 0 0 10px #00aaff;
     }
 
     header p {
@@ -61,36 +53,73 @@
       background: #0b2239;
       color: #00c3ff;
       border: 2px solid #00c3ff;
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 15px 30px;
       font-size: 1.1rem;
       font-weight: 600;
       letter-spacing: 0.5px;
       cursor: pointer;
-      text-transform: uppercase;
-      box-shadow: 0 0 15px rgba(0, 195, 255, 0.2);
       transition: all 0.3s ease;
-      animation: neonPulseBtn 2s infinite alternate;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(0, 195, 255, 0.2);
     }
 
     .menu button:hover {
       background: #00c3ff;
       color: #0a0f1a;
-      box-shadow: 0 0 25px #00c3ff, 0 0 50px #00eaff;
+      box-shadow: 0 0 25px #00c3ff;
       transform: scale(1.05);
     }
 
-    /* --- Rodapé Fixo --- */
+    /* --- Área de Resultados --- */
+    #listaFerramentais {
+      margin-top: 40px;
+      background: rgba(0, 195, 255, 0.05);
+      border: 1px solid rgba(0, 195, 255, 0.2);
+      border-radius: 10px;
+      padding: 20px 30px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
+      display: none;
+    }
+
+    #listaFerramentais h2 {
+      color: #00c3ff;
+      text-align: center;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #00c3ff;
+    }
+
+    #listaFerramentais ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #listaFerramentais li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 195, 255, 0.2);
+    }
+
+    /* --- Rodapé --- */
     footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+      position: absolute;
+      bottom: 15px;
       text-align: center;
       font-size: 0.9rem;
       color: #888;
-      background: #020409;
-      padding: 10px 0;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+    }
+
+    footer a {
+      color: #00aaff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: #00eaff;
     }
 
     /* --- Animações --- */
@@ -99,26 +128,10 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes neonPulse {
-      from { text-shadow: 0 0 10px #00aaff, 0 0 20px #00eaff; }
-      to { text-shadow: 0 0 20px #00aaff, 0 0 40px #00eaff; }
-    }
-
-    @keyframes neonPulseBtn {
-      from { box-shadow: 0 0 10px #00c3ff, 0 0 20px #00eaff; }
-      to { box-shadow: 0 0 20px #00c3ff, 0 0 40px #00eaff; }
-    }
-
     /* --- Responsividade --- */
     @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.8rem;
-      }
-      .menu button {
-        width: 80%;
-        padding: 12px 20px;
-        font-size: 1rem;
-      }
+      header h1 { font-size: 1.6rem; }
+      .menu button { width: 80%; }
     }
   </style>
 </head>
@@ -130,77 +143,87 @@
   </header>
 
   <div class="menu">
-    <button onclick="alert('Página de Registro em desenvolvimento')">📝 Registrar Ferramental</button>
-    <button onclick="alert('Consulta em desenvolvimento')">🔍 Consultar Ferramentais</button>
+    <button id="btnRegistrar">📝 Registrar Ferramental</button>
+    <button id="btnListar">🔍 Consultar Ferramentais</button>
     <button onclick="alert('Gerador de QR Code em breve')">📱 Gerar QR Code</button>
     <button onclick="alert('Área administrativa em construção')">⚙️ Administração</button>
   </div>
 
+  <div id="listaFerramentais">
+    <h2>📋 Lista de Ferramentais</h2>
+    <ul id="lista"></ul>
+  </div>
+
   <footer>
+    <p>&copy; 2025 Grupo Sovel da Amazônia</p>
+  </footer>
 
-    <!-- Firebase SDK -->
-<script type="module">
-  // Importa os pacotes diretamente do CDN
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <!-- ======================= -->
+  <!-- 🔥 Conexão com Firestore -->
+  <!-- ======================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // Configuração do seu app Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
-  };
+    // ⚙️ SUA CONFIGURAÇÃO DO FIREBASE (substitua pelos seus dados reais)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+    authDomain: "dacsovel-53481.firebaseapp.com",
+    projectId: "dacsovel-53481",
+    storageBucket: "dacsovel-53481.firebasestorage.app",
+    messagingSenderId: "37867522513",
+    appId: "1:37867522513:web:336d687e3fc8408bd138f0"
+    };
 
-  // Inicializa o Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    // Inicialização
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  console.log("🔥 Firebase conectado com sucesso!");
-</script>
-
-<button id="teste">💾 Testar Banco de Dados</button>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Botão de teste
-  document.getElementById("teste").addEventListener("click", async () => {
-    try {
-      await addDoc(collection(db, "ferramentais"), {
-        nome: "Molde de Injeção A32",
-        status: "Em uso",
-        dataRegistro: new Date()
-      });
-      alert("✅ Documento adicionado ao Firestore!");
-    } catch (e) {
-      console.error("Erro ao adicionar:", e);
+    // 📝 Função para registrar novo ferramental
+    async function registrarFerramental() {
+      const nome = prompt("Nome do ferramental:");
+      const codigo = prompt("Código do ferramental:");
+      if (!nome || !codigo) return alert("Preencha todos os campos!");
+      try {
+        await addDoc(collection(db, "ferramentais"), {
+          nome,
+          codigo,
+          criadoEm: new Date().toISOString()
+        });
+        alert("✅ Ferramental registrado com sucesso!");
+      } catch (e) {
+        console.error("Erro ao registrar:", e);
+        alert("❌ Erro ao registrar ferramental.");
+      }
     }
 
-    // Lê documentos existentes
-    const querySnapshot = await getDocs(collection(db, "ferramentais"));
-    querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} =>`, doc.data());
-    });
-  });
-</script>
+    // 🔍 Função para listar ferramentais
+    async function listarFerramentais() {
+      const listaDiv = document.getElementById("listaFerramentais");
+      const listaUl = document.getElementById("lista");
+      listaUl.innerHTML = "";
+      try {
+        const querySnapshot = await getDocs(collection(db, "ferramentais"));
+        if (querySnapshot.empty) {
+          listaUl.innerHTML = "<li>Nenhum ferramental cadastrado.</li>";
+        } else {
+          querySnapshot.forEach((doc) => {
+            const dados = doc.data();
+            const item = document.createElement("li");
+            item.textContent = `${dados.codigo} — ${dados.nome}`;
+            listaUl.appendChild(item);
+          });
+        }
+        listaDiv.style.display = "block";
+      } catch (e) {
+        console.error("Erro ao listar:", e);
+      }
+    }
 
-    
-    <p>&copy; © 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria
+    // 🎯 Eventos dos botões
+    document.getElementById("btnRegistrar").addEventListener("click", registrarFerramental);
+    document.getElementById("btnListar").addEventListener("click", listarFerramentais);
+  </script>
 
-
+</body>
+</html>
