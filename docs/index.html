@@ -8,7 +8,7 @@
   
   <!-- Tipografia Moderna -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
     :root {
       --bg-primary: #0a0f1a;
@@ -25,16 +25,16 @@
       --border-radius: 12px;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     html, body {
       height: 100%;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
       -webkit-font-smoothing: antialiased;
@@ -47,14 +47,11 @@
       overflow-x: hidden;
     }
 
-    /* Background animado sutil */
+    /* Background animado */
     body::before {
       content: '';
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: radial-gradient(circle at 20% 80%, rgba(30,136,229,0.1) 0%, transparent 50%),
                   radial-gradient(circle at 80% 20%, rgba(14,166,164,0.1) 0%, transparent 50%);
       z-index: -1;
@@ -141,19 +138,14 @@
       margin-bottom: 1rem;
       color: var(--text-muted);
       font-size: 0.875rem;
-      font-weight: 400;
-      width: 100%;
     }
 
     /* Modal */
     .modal {
       display: none;
       position: fixed;
+      inset: 0;
       z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
       background-color: rgba(0, 0, 0, 0.85);
       justify-content: center;
       align-items: center;
@@ -187,16 +179,23 @@
       letter-spacing: -0.025em;
     }
 
+    label {
+      display: block;
+      text-align: left;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+      color: var(--text-muted);
+    }
+
     .modal-content input {
       width: 100%;
       padding: 0.875rem 1rem;
-      margin: 0.75rem 0;
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       background-color: rgba(8, 22, 27, 0.8);
       color: var(--text-primary);
       font-size: 1rem;
-      font-weight: 400;
       transition: var(--transition);
       outline: none;
     }
@@ -207,12 +206,8 @@
       background-color: rgba(8, 22, 27, 1);
     }
 
-    .modal-content input::placeholder {
-      color: var(--text-muted);
-    }
-
     .modal-content button {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       padding: 0.875rem 1.5rem;
       border: none;
       border-radius: 10px;
@@ -287,7 +282,9 @@
     }
 
     @media (max-width: 480px) {
-      padding: 1rem;
+      body {
+        padding: 1rem;
+      }
       header {
         margin-top: 2rem;
       }
@@ -307,7 +304,9 @@
   </header>
 
   <main>
-    <button class="btn-acessar" id="abrirModal">Acessar Menu Interativo</button>
+    <button class="btn-acessar" id="abrirModal" aria-haspopup="dialog" aria-controls="loginModal">
+      Acessar Menu Interativo
+    </button>
   </main>
 
   <footer>
@@ -315,12 +314,17 @@
   </footer>
 
   <!-- Modal de Login -->
-  <div id="loginModal" class="modal">
+  <div id="loginModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
     <div class="modal-content">
-      <span class="close" id="fecharModal">&times;</span>
+      <button class="close" id="fecharModal" aria-label="Fechar modal">&times;</button>
       <h2 id="modalTitulo">Login Corporativo</h2>
-      <input type="email" id="email" placeholder="E-mail corporativo" required />
-      <input type="password" id="senha" placeholder="Senha" required />
+
+      <label for="email">E-mail corporativo</label>
+      <input type="email" id="email" placeholder="seu.email@sovel.com.br" required />
+
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" placeholder="••••••••" required />
+
       <button id="entrarBtn">Entrar</button>
       <span class="alt-link" id="alternarModo">Não tem conta? Criar conta</span>
     </div>
@@ -328,13 +332,8 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-    } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-    // 🔧 CONFIGURAÇÃO FIREBASE — Substitua pelos dados do seu projeto
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "SEU_PROJETO.firebaseapp.com",
@@ -344,7 +343,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // === Controle do Modal ===
     const modal = document.getElementById("loginModal");
     const btn = document.getElementById("abrirModal");
     const close = document.getElementById("fecharModal");
@@ -354,13 +352,10 @@
 
     let modoCadastro = false;
 
-    btn.onclick = () => (modal.style.display = "flex");
-    close.onclick = () => (modal.style.display = "none");
-    window.onclick = (e) => {
-      if (e.target === modal) modal.style.display = "none";
-    };
+    btn.onclick = () => modal.style.display = "flex";
+    close.onclick = () => modal.style.display = "none";
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
-    // Alternar entre Login e Cadastro
     alternar.addEventListener("click", () => {
       modoCadastro = !modoCadastro;
       titulo.textContent = modoCadastro ? "Criar Conta" : "Login Corporativo";
@@ -370,10 +365,9 @@
         : "Não tem conta? Criar conta";
     });
 
-    // Entrar ou Criar Conta
     entrar.addEventListener("click", async () => {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
 
       if (!email || !senha) return alert("Preencha e-mail e senha.");
 
