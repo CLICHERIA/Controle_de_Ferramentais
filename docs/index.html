@@ -1,27 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Autenticação</title>
-  <style>
-    body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; background: #f5f5f5; }
-    .login-box { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
-    h1 { text-align: center; margin-bottom: 1.5rem; }
-    input { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem; }
-    button { width: 100%; padding: 1rem; background: #007BFF; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-    button:hover { background: #0056b3; }
-    p { text-align: center; margin-top: 1rem; }
-    a { color: #007BFF; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autenticação</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    font-family: 'Orbitron', sans-serif;
+    color: #fff;
+  }
+
+  .login-box {
+    background: rgba(0,0,0,0.85);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff inset;
+    width: 320px;
+    text-align: center;
+  }
+
+  h1 {
+    margin-bottom: 2rem;
+    color: #00f0ff;
+    text-shadow: 0 0 10px #00f0ff;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #00f0ff;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 1rem;
+  }
+
+  input::placeholder {
+    color: #00f0ff;
+    opacity: 0.7;
+  }
+
+  button {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #00f0ff, #ff00ff);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    box-shadow: 0 0 20px #ff00ff, 0 0 40px #00f0ff;
+  }
+
+  p {
+    margin-top: 1rem;
+  }
+
+  a {
+    color: #ff00ff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 5px #ff00ff;
+  }
+</style>
 </head>
 <body>
 
 <div class="login-box">
   <h1>Autenticação</h1>
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="senha" placeholder="Senha" />
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="senha" placeholder="Senha">
   <button id="btnLogin">Entrar</button>
   <p>Não tem conta? <a href="#" id="btnCadastrar">Cadastrar</a></p>
 </div>
@@ -31,7 +97,7 @@
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+    apiKey: "SUA_API_KEY",
     authDomain: "dacsovel-53481.firebaseapp.com",
     projectId: "dacsovel-53481",
     storageBucket: "dacsovel-53481.firebasestorage.app",
@@ -47,7 +113,7 @@
     const senha = document.getElementById("senha").value;
 
     signInWithEmailAndPassword(auth, email, senha)
-      .then(() => { window.location.href = "../menu.html"; }) // CORRIGIDO: subir um nível
+      .then(() => { window.location.href = "../menu.html"; })
       .catch(err => alert("Erro no login: " + err.message));
   });
 
