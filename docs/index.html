@@ -180,22 +180,33 @@
     const db = getFirestore(app);
 
     // 📝 Função para registrar novo ferramental
-    async function registrarFerramental() {
-      const nome = prompt("Nome do ferramental:");
-      const codigo = prompt("Código do ferramental:");
-      if (!nome || !codigo) return alert("Preencha todos os campos!");
-      try {
-        await addDoc(collection(db, "ferramentais"), {
-          nome,
-          codigo,
-          criadoEm: new Date().toISOString()
-        });
-        alert("✅ Ferramental registrado com sucesso!");
-      } catch (e) {
-        console.error("Erro ao registrar:", e);
-        alert("❌ Erro ao registrar ferramental.");
-      }
-    }
+   async function registrarFerramental() {
+  const tipo = prompt("Faca ou Clichê?:");
+  const codigo = prompt("SV?:");
+  const nome = prompt("Nome do Cliente?:");
+  const registro = prompt("Data de Registro?:");
+  const status = prompt("Status (Em uso?, danificado?, manutenção?, trocar?):");
+  const responsavel = prompt("Responsável pelo registro?:");
+
+  if (!codigo || !nome) return alert("Código e nome são obrigatórios!");
+
+  try {
+    await addDoc(collection(db, "ferramentais"), {
+      codigo,
+      nome,
+      descricao: descricao || "",
+      setor: setor || "",
+      status: status || "Disponível",
+      responsavel: responsavel || "Não atribuído",
+      ultimaManutencao: null,
+      criadoEm: new Date().toISOString()
+    });
+    alert("✅ Ferramental registrado com sucesso!");
+  } catch (e) {
+    console.error("Erro ao registrar:", e);
+    alert("❌ Erro ao registrar ferramental.");
+  }
+}
 
     // 🔍 Função para listar ferramentais
     async function listarFerramentais() {
@@ -227,3 +238,4 @@
 
 </body>
 </html>
+
