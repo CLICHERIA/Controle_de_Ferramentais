@@ -1,58 +1,43 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulta de Ferramentais</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        input, button {
-            padding: 8px;
-            margin: 5px 0;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { padding: 8px; margin: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
+    <h1>Consulta de Ferramentais</h1>
+    <input type="text" id="busca" placeholder="Digite SV ou Cliente">
+    <button id="btnBuscar">Buscar</button>
 
-<h2>Consultar Ferramentais</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>SV</th>
+                <th>Cliente</th>
+                <th>Data Fabricação</th>
+                <th>Data Registro</th>
+                <th>Responsável</th>
+            </tr>
+        </thead>
+        <tbody id="tabela"></tbody>
+    </table>
 
-<input type="text" id="busca" placeholder="Digite SV ou Cliente">
-<button id="btnBuscar">Buscar</button>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
 
-<table>
-    <thead>
-        <tr>
-            <th>Tipo</th>
-            <th>SV</th>
-            <th>Cliente</th>
-            <th>Data de Fabricação</th>
-            <th>Data de Registro</th>
-            <th>Responsável</th>
-        </tr>
-    </thead>
-    <tbody id="tabela">
-        <!-- Resultados aparecerão aqui -->
-    </tbody>
-</table>
-
-<!-- Firebase -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
@@ -60,70 +45,53 @@ const firebaseConfig = {
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const dbRef = ref(db, "ferramentais");
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const ferramentaisCol = collection(db, "ferramentais");
 
-const tabela = document.getElementById("tabela");
+        const tabela = document.getElementById("tabela");
 
-function exibirFerramentais(dados) {
-    tabela.innerHTML = ""; // limpa a tabela
-    for (let k in dados) {
-        const item = dados[k];
-        const tr = document.createElement("tr");
-
-        const tipo = item.tipo || "";
-        const sv = item.sv || "";
-        const cliente = item.cliente || "";
-        const dataFabricacao = item.dataFabricacao || "";
-        const dataRegistro = item.dataRegistro || "";
-        const responsavel = item.responsavel || "";
-
-        tr.innerHTML = `
-            <td>${tipo}</td>
-            <td>${sv}</td>
-            <td>${cliente}</td>
-            <td>${dataFabricacao}</td>
-            <td>${dataRegistro}</td>
-            <td>${responsavel}</td>
-        `;
-        tabela.appendChild(tr);
-    }
-}
-
-document.getElementById('btnBuscar').onclick = () => {
-    const termo = document.getElementById('busca').value.toLowerCase();
-
-    get(dbRef).then(snapshot => {
-        if (snapshot.exists()) {
-            const dados = snapshot.val();
-            const filtrados = {};
-
-            for (let k in dados) {
-                const sv = dados[k].sv ? dados[k].sv.toLowerCase() : "";
-                const cliente = dados[k].cliente ? dados[k].cliente.toLowerCase() : "";
-
-                if (sv.includes(termo) || cliente.includes(termo)) {
-                    filtrados[k] = dados[k];
-                }
-            }
-
-            if (Object.keys(filtrados).length === 0) {
-                alert("Nenhum ferramental encontrado");
-                tabela.innerHTML = "";
-            } else {
-                exibirFerramentais(filtrados);
-            }
-        } else {
-            alert("Nenhum dado cadastrado");
+        function exibirFerramentais(dados) {
             tabela.innerHTML = "";
+            dados.forEach(doc => {
+                const item = doc.data();
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${item.tipo || ""}</td>
+                    <td>${item.sv || ""}</td>
+                    <td>${item.cliente || ""}</td>
+                    <td>${item.dataFabricacao || ""}</td>
+                    <td>${item.dataRegistro || ""}</td>
+                    <td>${item.responsavel || ""}</td>
+                `;
+                tabela.appendChild(tr);
+            });
         }
-    }).catch(err => {
-        console.error("Erro ao buscar dados:", err);
-        alert("Erro ao buscar dados");
-    });
-};
-</script>
 
+        document.getElementById('btnBuscar').onclick = async () => {
+            const termo = document.getElementById('busca').value.toLowerCase();
+
+            try {
+                const snapshot = await getDocs(ferramentaisCol);
+                const filtrados = snapshot.docs.filter(doc => {
+                    const data = doc.data();
+                    const sv = data.sv ? data.sv.toLowerCase() : "";
+                    const cliente = data.cliente ? data.cliente.toLowerCase() : "";
+                    return sv.includes(termo) || cliente.includes(termo);
+                });
+
+                if (filtrados.length === 0) {
+                    alert("Nenhum ferramental encontrado");
+                    tabela.innerHTML = "";
+                } else {
+                    exibirFerramentais(filtrados);
+                }
+
+            } catch (err) {
+                console.error("Erro ao buscar dados:", err);
+                alert("Erro ao buscar dados");
+            }
+        };
+    </script>
 </body>
 </html>
