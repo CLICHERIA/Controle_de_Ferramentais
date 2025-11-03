@@ -1,4 +1,112 @@
-radius);
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestão de Ferramentais — Grupo Sovel</title>
+  <meta name="description" content="Página de acesso ao sistema de gestão de ferramentais do Grupo Sovel." />
+  
+  <!-- Tipografia Moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-secondary: #0e1620;
+      --bg-modal: linear-gradient(135deg, #071827, #0a2630);
+      --text-primary: #e6eef6;
+      --text-muted: #99a3ad;
+      --accent-primary: #1e88e5;
+      --accent-secondary: #0ea5a4;
+      --accent-hover: #0fb6c6;
+      --shadow-light: rgba(30, 136, 229, 0.1);
+      --shadow-medium: rgba(30, 136, 229, 0.2);
+      --shadow-strong: rgba(30, 136, 229, 0.4);
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      height: 100%;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    /* Background animado sutil */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 80%, rgba(30, 136, 229, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(14, 166, 164, 0.1) 0%, transparent 50%);
+      z-index: -1;
+      animation: backgroundShift 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes backgroundShift {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    header {
+      text-align: center;
+      margin-top: 4rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      font-size: 1.125rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .btn-acessar {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #021018;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      border-radius: var(--border-radius);
       cursor: pointer;
       box-shadow: 0 10px 25px var(--shadow-medium);
       transition: var(--transition);
@@ -205,538 +313,87 @@ radius);
   <footer>
     © 2025 Grupo Sovel da Amazônia
   </footer>
-  <div class="brand">
-        <div class="logo">SV</div>
-        <div>
-          <h1>Gestão de Ferramentais</h1>
-          <p>Grupo Sovel — Departamento de Amostras e Clicheria</p>
-        </div>
-      </div>
 
-      <div id="topControls" style="display:flex;gap:10px;align-items:center">
-        <!-- Will be updated by JS after auth -->
-        <button id="btnAccess" class="btn primary">Acessar Menu Interativo</button>
-        <div id="userControls" style="display:none;align-items:center;gap:8px">
-          <span id="userEmail" class="small"></span>
-          <button id="btnLogout" class="btn">Sair</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- HERO (public) -->
-    <div id="hero" class="hero">
-      <div class="hero-left">
-        <h2>Sistema de Gestão de Ferramentais</h2>
-        <p>Faça login para acessar o painel de registro e consulta de ferramentais. O acesso é protegido — apenas usuários autenticados podem manipular registros ou exportar relatórios.</p>
-      </div>
-      <div class="cta">
-        <button id="heroAccess" class="btn primary">Acessar Menu Interativo</button>
-      </div>
-    </div>
-
-    <!-- DASHBOARD (private) -->
-    <div id="dashboard" class="dashboard">
-      <div class="container">
-        <div class="panel">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div>
-              <strong style="color:var(--accent)">Ferramentais</strong>
-              <div class="small">Pesquisar, editar, excluir e gerar QR</div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <button id="btnExportExcel" class="btn" title="Exportar Excel">📊 Excel</button>
-              <button id="btnExportPDF" class="btn" title="Exportar PDF">📄 PDF</button>
-            </div>
-          </div>
-
-          <div class="search">
-            <input id="searchInput" placeholder="Pesquisar por código, nome ou tipo..." />
-            <button id="btnRefresh" class="btn">⟳</button>
-          </div>
-
-          <div id="lista" class="grid">
-            <!-- cards injected here -->
-          </div>
-        </div>
-
-        <aside class="side">
-          <div class="card-panel">
-            <h3 style="margin:0;color:var(--accent)">Registrar / Editar</h3>
-            <p class="small" style="margin-top:8px">Preencha os campos e clique em Salvar. Registro e Consulta só disponíveis após login.</p>
-
-            <form id="formFerramental" style="margin-top:12px">
-              <div>
-                <label for="tipo">Tipo</label>
-                <input id="tipo" type="text" placeholder="Faca ou Clichê" />
-              </div>
-              <div style="margin-top:8px">
-                <label for="codigo">Código SV *</label>
-                <input id="codigo" type="text" placeholder="Ex: SV-1234" required />
-              </div>
-              <div style="margin-top:8px">
-                <label for="nome">Nome do Cliente *</label>
-                <input id="nome" type="text" placeholder="Nome do cliente / pedido" required />
-              </div>
-              <div style="display:flex;gap:8px;margin-top:8px">
-                <div style="flex:1">
-                  <label for="registro">Data de registro</label>
-                  <input id="registro" type="date" />
-                </div>
-                <div style="flex:1">
-                  <label for="status">Status</label>
-                  <select id="status">
-                    <option value="">Selecionar</option>
-                    <option value="Em uso">Em uso</option>
-                    <option value="Manutenção">Manutenção</option>
-                    <option value="Danificado">Danificado</option>
-                    <option value="Trocar">Trocar</option>
-                  </select>
-                </div>
-              </div>
-              <div style="margin-top:8px">
-                <label for="responsavel">Responsável</label>
-                <input id="responsavel" type="text" placeholder="Nome do responsável" />
-              </div>
-
-              <div class="actions">
-                <button id="submitBtn" type="submit" class="btn primary">Salvar</button>
-                <button id="resetBtn" type="button" class="btn">Limpar</button>
-              </div>
-
-              <div id="formMessage" style="margin-top:10px;display:none;padding:8px;border-radius:8px;font-weight:700"></div>
-            </form>
-          </div>
-
-          <div class="card-panel" style="margin-top:12px">
-            <h4 style="margin:0 0 8px 0;color:var(--accent)">Ajuda Rápida</h4>
-            <ul style="color:var(--muted);line-height:1.5;margin:0;padding-left:18px">
-              <li>Cadastre com Código SV (obrigatório).</li>
-              <li>Use "Consultar" para recarregar a lista.</li>
-              <li>Gere QR Code por item e baixe em PNG.</li>
-            </ul>
-          </div>
-        </aside>
-      </div>
-    </div>
-
-    <footer>
-      <p>&copy; 2025 Grupo Sovel da Amazônia</p>
-    </footer>
-  </div>
-
-  <!-- QR Modal (hidden) -->
-  <div id="qrModal" style="display:none" class="modal-backdrop" aria-hidden="true">
-    <div class="modal">
-      <button id="modalCloseBtn" class="modal-close">&times;</button>
-      <h3>QR Code do Ferramental</h3>
-      <canvas id="qrcodeCanvas" width="250" height="250" style="border-radius:8px;background:#fff;margin-top:12px"></canvas>
-      <div style="margin-top:12px;text-align:center">
-        <button id="downloadQR" class="btn primary">⬇️ Baixar QR Code</button>
-      </div>
+  <!-- Modal de Login -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="fecharModal">&times;</span>
+      <h2 id="modalTitulo">Login Corporativo</h2>
+      <input type="email" id="email" placeholder="E-mail corporativo" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button id="entrarBtn">Entrar</button>
+      <span class="alt-link" id="alternarModo">Não tem conta? Criar conta</span>
     </div>
   </div>
 
-  <!-- AUTH Modal (modal login) -->
-  <div id="authModal" style="display:none" class="modal-backdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h3>Acessar Menu Interativo</h3>
-      <p style="color:var(--muted);margin-top:6px">Entre com seu e-mail e senha. Se não tiver conta, registre-se.</p>
-      <input id="authEmail" placeholder="Email" type="text" />
-      <input id="authPass" placeholder="Senha" type="password" />
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button id="btnSignin" class="btn primary">Entrar</button>
-        <button id="btnSignup" class="btn">Registrar</button>
-        <button id="btnCloseAuth" class="btn">Cancelar</button>
-      </div>
-      <div id="authMsg" style="margin-top:10px;display:none;padding:8px;border-radius:8px;font-weight:700"></div>
-    </div>
-  </div>
-
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
-  <!-- Firebase modular -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+    } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-    // ===== CONFIG - substitua se necessário =====
+    // 🔧 CONFIGURAÇÃO FIREBASE — Substitua pelos dados do seu projeto
     const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-      authDomain: "dacsovel-53481.firebaseapp.com",
-      projectId: "dacsovel-53481",
-      storageBucket: "dacsovel-53481.firebasestorage.app",
-      messagingSenderId: "37867522513",
-      appId: "1:37867522513:web:336d687e3fc8408bd138f0"
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "SEU_PROJETO.firebaseapp.com",
+      projectId: "SEU_PROJETO_ID",
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    // DOM refs
-    const btnAccess = document.getElementById("btnAccess");
-    const heroAccess = document.getElementById("heroAccess");
-    const authModal = document.getElementById("authModal");
-    const btnCloseAuth = document.getElementById("btnCloseAuth");
-    const btnSignin = document.getElementById("btnSignin");
-    const btnSignup = document.getElementById("btnSignup");
-    const authEmail = document.getElementById("authEmail");
-    const authPass = document.getElementById("authPass");
-    const authMsg = document.getElementById("authMsg");
+    // === Controle do Modal ===
+    const modal = document.getElementById("loginModal");
+    const btn = document.getElementById("abrirModal");
+    const close = document.getElementById("fecharModal");
+    const entrar = document.getElementById("entrarBtn");
+    const alternar = document.getElementById("alternarModo");
+    const titulo = document.getElementById("modalTitulo");
 
-    const dashboard = document.getElementById("dashboard");
-    const hero = document.getElementById("hero");
-    const topControls = document.getElementById("topControls");
-    const userControls = document.getElementById("userControls");
-    const userEmailEl = document.getElementById("userEmail");
-    const btnLogout = document.getElementById("btnLogout");
+    let modoCadastro = false;
 
-    const form = document.getElementById("formFerramental");
-    const tipoEl = document.getElementById("tipo");
-    const codigoEl = document.getElementById("codigo");
-    const nomeEl = document.getElementById("nome");
-    const registroEl = document.getElementById("registro");
-    const statusEl = document.getElementById("status");
-    const responsavelEl = document.getElementById("responsavel");
-    const submitBtn = document.getElementById("submitBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const formMessage = document.getElementById("formMessage");
+    btn.onclick = () => (modal.style.display = "flex");
+    close.onclick = () => (modal.style.display = "none");
+    window.onclick = (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    };
 
-    const listaEl = document.getElementById("lista");
-    const searchInput = document.getElementById("searchInput");
-    const btnRefresh = document.getElementById("btnRefresh");
-    const btnExportExcel = document.getElementById("btnExportExcel");
-    const btnExportPDF = document.getElementById("btnExportPDF");
-
-    // QR modal
-    const qrModal = document.getElementById("qrModal");
-    const modalCloseBtn = document.getElementById("modalCloseBtn");
-    const qrcodeCanvas = document.getElementById("qrcodeCanvas");
-    const downloadQR = document.getElementById("downloadQR");
-    let qrInstance = null;
-
-    // state
-    let allFerramentais = [];
-    let editId = null;
-
-    // ------- Helpers -------
-    function showAuthMsg(text, ok=true){
-      authMsg.style.display = "block";
-      authMsg.textContent = text;
-      authMsg.style.background = ok ? "linear-gradient(90deg,#073b34,#095e4f)" : "linear-gradient(90deg,#3b0a0a,#6b1212)";
-      authMsg.style.color = ok ? "#bfffe4" : "#ffdcdc";
-      setTimeout(()=> authMsg.style.display = "none", 3500);
-    }
-    function showFormMsg(text, ok=true){
-      formMessage.style.display = "block";
-      formMessage.textContent = text;
-      formMessage.style.background = ok ? "linear-gradient(90deg,#073b34,#095e4f)" : "linear-gradient(90deg,#3b0a0a,#6b1212)";
-      formMessage.style.color = ok ? "#bfffe4" : "#ffdcdc";
-      setTimeout(()=> formMessage.style.display = "none", 3500);
-    }
-    function clearForm(){
-      form.reset();
-      editId = null;
-      submitBtn.textContent = "Salvar";
-    }
-    function formatDateShort(d){
-      if(!d) return "";
-      const date = new Date(d);
-      if(isNaN(date)) return d;
-      return date.toLocaleDateString();
-    }
-    function escapeHtml(s){ if(!s) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-    // ------- AUTH FLOW (modal) -------
-    function openAuth(){
-      authModal.style.display = "flex";
-      authModal.setAttribute("aria-hidden","false");
-      authEmail.focus();
-    }
-    function closeAuth(){
-      authModal.style.display = "none";
-      authModal.setAttribute("aria-hidden","true");
-      authEmail.value = ""; authPass.value = "";
-    }
-
-    btnAccess.addEventListener("click", openAuth);
-    heroAccess.addEventListener("click", openAuth);
-    btnCloseAuth.addEventListener("click", closeAuth);
-
-    btnSignup.addEventListener("click", async () => {
-      const email = authEmail.value.trim();
-      const pass = authPass.value;
-      if(!email || !pass){ showAuthMsg("Preencha email e senha.", false); return; }
-      try{
-        await createUserWithEmailAndPassword(auth, email, pass);
-        showAuthMsg("Conta criada. Você está logado.", true);
-        closeAuth();
-      } catch(err){
-        console.error("signup", err);
-        showAuthMsg("Erro ao registrar: " + (err.message || err.code), false);
-      }
+    // Alternar entre Login e Cadastro
+    alternar.addEventListener("click", () => {
+      modoCadastro = !modoCadastro;
+      titulo.textContent = modoCadastro ? "Criar Conta" : "Login Corporativo";
+      entrar.textContent = modoCadastro ? "Cadastrar" : "Entrar";
+      alternar.textContent = modoCadastro
+        ? "Já tem conta? Fazer login"
+        : "Não tem conta? Criar conta";
     });
 
-    btnSignin.addEventListener("click", async () => {
-      const email = authEmail.value.trim();
-      const pass = authPass.value;
-      if(!email || !pass){ showAuthMsg("Preencha email e senha.", false); return; }
-      try{
-        await signInWithEmailAndPassword(auth, email, pass);
-        showAuthMsg("Login realizado.", true);
-        closeAuth();
-      } catch(err){
-        console.error("signin", err);
-        showAuthMsg("Erro ao entrar: " + (err.message || err.code), false);
-      }
-    });
+    // Entrar ou Criar Conta
+    entrar.addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
 
-    btnLogout.addEventListener("click", async () => {
-      await signOut(auth);
-    });
+      if (!email || !senha) return alert("Preencha e-mail e senha.");
 
-    // observe auth state
-    onAuthStateChanged(auth, (user) => {
-      if(user){
-        // show dashboard, hide hero
-        hero.style.display = "none";
-        dashboard.style.display = "block";
-        userControls.style.display = "flex";
-        userEmailEl.textContent = user.email || user.displayName || "Usuário";
-        document.getElementById("btnAccess").style.display = "none";
-        // load data
-        listarFerramentais();
-      } else {
-        // hide dashboard, show hero (public)
-        hero.style.display = "flex";
-        dashboard.style.display = "none";
-        userControls.style.display = "none";
-        document.getElementById("btnAccess").style.display = "inline-block";
-        // clear listings
-        listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Faça login para consultar e gerenciar ferramentais.</div>`;
-        allFerramentais = [];
-        clearForm();
-      }
-    });
-
-    // ------- CRUD (Firestore) -------
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const tipo = tipoEl.value.trim() || "";
-      const codigo = codigoEl.value.trim();
-      const nome = nomeEl.value.trim();
-      const registro = registroEl.value || new Date().toISOString().split("T")[0];
-      const status = statusEl.value || "Disponível";
-      const responsavel = responsavelEl.value.trim() || "Não atribuído";
-
-      if(!codigo || !nome){
-        if(!codigo) codigoEl.style.borderColor = "tomato";
-        if(!nome) nomeEl.style.borderColor = "tomato";
-        showFormMsg("Preencha Código e Nome.", false);
-        return;
-      }
-      try{
-        if(editId){
-          await updateDoc(doc(db, "ferramentais", editId), { tipo, codigo, nome, registro, status, responsavel });
-          showFormMsg("Ferramental atualizado.", true);
-          editId = null; submitBtn.textContent = "Salvar";
+      try {
+        if (modoCadastro) {
+          await createUserWithEmailAndPassword(auth, email, senha);
+          alert("Conta criada com sucesso! Agora faça login.");
+          modoCadastro = false;
+          titulo.textContent = "Login Corporativo";
+          entrar.textContent = "Entrar";
+          alternar.textContent = "Não tem conta? Criar conta";
         } else {
-          await addDoc(collection(db, "ferramentais"), { tipo, codigo, nome, registro, status, responsavel, criadoEm: new Date().toISOString() });
-          showFormMsg("Ferramental registrado.", true);
+          await signInWithEmailAndPassword(auth, email, senha);
+          alert("Login realizado com sucesso!");
+          window.location.href = "menu.html";
         }
-        clearForm();
-      } catch(err){
-        console.error("save", err);
-        showFormMsg("Erro ao salvar.", false);
+      } catch (error) {
+        alert("Erro: " + error.message);
       }
     });
-
-    // listar
-    async function listarFerramentais(){
-      listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Carregando...</div>`;
-      allFerramentais = [];
-      try{
-        const snapshot = await getDocs(collection(db, "ferramentais"));
-        if(snapshot.empty){
-          listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum ferramental cadastrado.</div>`;
-          return;
-        }
-        snapshot.forEach(docItem => { const d = docItem.data(); d.id = docItem.id; allFerramentais.push(d); });
-        renderLista(allFerramentais);
-      } catch(err){
-        console.error("listar", err);
-        listaEl.innerHTML = `<div style="color:#ffb3b3; padding:18px">Erro ao carregar lista.</div>`;
-      }
-    }
-
-    function renderLista(items){
-      listaEl.innerHTML = "";
-      if(!items || items.length === 0){
-        listaEl.innerHTML = `<div style="color:var(--muted); padding:18px; text-align:center">Nenhum resultado encontrado.</div>`;
-        return;
-      }
-      items.forEach(item => {
-        const el = document.createElement("div");
-        el.className = "card";
-        let badgeClass = "s-emuso";
-        switch((item.status||"").toLowerCase()){
-          case "em uso": badgeClass = "s-emuso"; break;
-          case "manutenção": badgeClass = "s-manut"; break;
-          case "danificado": badgeClass = "s-dan"; break;
-          case "trocar": badgeClass = "s-trocar"; break;
-        }
-        el.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:flex-start">
-            <div>
-              <div class="code">${escapeHtml(item.codigo||"")}</div>
-              <div class="meta">${escapeHtml(item.nome||"")}</div>
-            </div>
-            <div style="text-align:right">
-              <div class="badge ${badgeClass}">${escapeHtml(item.status||"")}</div>
-              <div class="meta" style="margin-top:6px">${escapeHtml(item.tipo||"—")}</div>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-            <div style="color:var(--muted);font-size:0.9rem">
-              <div>Resp: <strong style="color:#cfeffd">${escapeHtml(item.responsavel||"—")}</strong></div>
-              <div style="margin-top:6px">Registro: <span style="color:#aee8ff">${formatDateShort(item.registro)}</span></div>
-            </div>
-            <div class="card-actions">
-              <button class="icon-btn edit">✏️</button>
-              <button class="icon-btn del">🗑️</button>
-              <button class="icon-btn qr">🔳</button>
-            </div>
-          </div>
-        `;
-        // attach events
-        const btnEdit = el.querySelector(".edit");
-        const btnDel = el.querySelector(".del");
-        const btnQr = el.querySelector(".qr");
-
-        btnEdit.addEventListener("click", () => {
-          tipoEl.value = item.tipo || "";
-          codigoEl.value = item.codigo || "";
-          nomeEl.value = item.nome || "";
-          registroEl.value = item.registro || "";
-          statusEl.value = item.status || "";
-          responsavelEl.value = item.responsavel || "";
-          editId = item.id;
-          submitBtn.textContent = "Salvar alterações";
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-
-        btnDel.addEventListener("click", async () => {
-          if(!confirm(`Excluir ${item.codigo} — ${item.nome}?`)) return;
-          try{
-            await deleteDoc(doc(db, "ferramentais", item.id));
-            listarFerramentais();
-          } catch(err){ console.error(err); alert("Erro ao excluir."); }
-        });
-
-        btnQr.addEventListener("click", () => gerarQR(item));
-
-        listaEl.appendChild(el);
-      });
-    }
-
-    // search
-    searchInput.addEventListener("input", () => {
-      const q = searchInput.value.trim().toLowerCase();
-      if(!q) return renderLista(allFerramentais);
-      const filtered = allFerramentais.filter(i =>
-        (i.codigo||"").toLowerCase().includes(q) ||
-        (i.nome||"").toLowerCase().includes(q) ||
-        (i.tipo||"").toLowerCase().includes(q)
-      );
-      renderLista(filtered);
-    });
-    btnRefresh.addEventListener("click", listarFerramentais);
-
-    // QR modal + download
-    function gerarQR(item){
-      const txt = `Código: ${item.codigo||""}\nNome: ${item.nome||""}\nTipo: ${item.tipo||""}\nStatus: ${item.status||""}\nResponsável: ${item.responsavel||""}\nRegistro: ${item.registro||""}`;
-      qrInstance = new QRious({ element: qrcodeCanvas, value: txt, size: 250, level: 'H', background: '#ffffff', foreground: '#000000' });
-      qrModal.style.display = "flex";
-      qrModal.setAttribute("aria-hidden","false");
-      downloadQR.onclick = () => {
-        try {
-          const dataUrl = qrcodeCanvas.toDataURL("image/png");
-          const link = document.createElement("a");
-          const safeName = (item.codigo||"ferramental").replace(/[^a-z0-9_\-]/ig,"_");
-          link.href = dataUrl;
-          link.download = `${safeName}_QR.png`;
-          link.click();
-        } catch(err){ console.error(err); alert("Erro ao baixar QR."); }
-      };
-    }
-    function closeQR(){
-      qrModal.style.display = "none";
-      qrModal.setAttribute("aria-hidden","true");
-      const ctx = qrcodeCanvas.getContext("2d");
-      ctx.clearRect(0,0,qrcodeCanvas.width,qrcodeCanvas.height);
-      qrInstance = null;
-    }
-    modalCloseBtn.addEventListener("click", closeQR);
-    qrModal.addEventListener("click", (ev) => { if(ev.target === qrModal) closeQR(); });
-    document.addEventListener("keydown", (ev) => { if(ev.key === "Escape") { closeQR(); closeAuth(); } });
-
-    // export Excel (SheetJS)
-    btnExportExcel.addEventListener("click", () => {
-      if(!allFerramentais || allFerramentais.length === 0){ alert("Nenhum registro para exportar."); return; }
-      const data = allFerramentais.map(i => ({
-        Código: i.codigo||"",
-        Nome: i.nome||"",
-        Tipo: i.tipo||"",
-        Status: i.status||"",
-        Responsável: i.responsavel||"",
-        Registro: i.registro||"",
-        CriadoEm: i.criadoEm||""
-      }));
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Ferramentais");
-      XLSX.writeFile(wb, `ferramentais_${new Date().toISOString().slice(0,10)}.xlsx`);
-    });
-
-    // export PDF (jsPDF + autoTable)
-    btnExportPDF.addEventListener("click", async () => {
-      if(!allFerramentais || allFerramentais.length === 0){ alert("Nenhum registro para exportar."); return; }
-      const { jsPDF } = window.jspdf;
-      const docpdf = new jsPDF();
-      docpdf.setFontSize(14);
-      docpdf.text("Relatório de Ferramentais — Grupo Sovel", 14, 18);
-      docpdf.setFontSize(10);
-      docpdf.text(`Gerado em: ${new Date().toLocaleString()}`, 14, 26);
-      const body = allFerramentais.map(i => [i.codigo||"", i.nome||"", i.tipo||"", i.status||"", i.responsavel||"", i.registro||""]);
-      docpdf.autoTable({
-        startY: 34,
-        head: [['Código','Nome','Tipo','Status','Responsável','Registro']],
-        body,
-        styles: { fontSize: 9, cellPadding: 3 },
-        headStyles: { fillColor: [30,136,229], textColor: 255 },
-        theme: 'grid'
-      });
-      docpdf.save(`relatorio_ferramentais_${new Date().toISOString().slice(0,10)}.pdf`);
-    });
-
-    // hide exports until auth
-    onAuthStateChanged(auth, (user) => {
-      if(user){
-        document.getElementById("btnExportExcel").style.display = "inline-block";
-        document.getElementById("btnExportPDF").style.display = "inline-block";
-      } else {
-        document.getElementById("btnExportExcel").style.display = "none";
-        document.getElementById("btnExportPDF").style.display = "none";
-      }
-    });
-
-    // End of script
   </script>
 </body>
 </html>
-
