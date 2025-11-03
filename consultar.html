@@ -1,115 +1,208 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultar - SGF</title>
-  <style>
-    body {
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultar - SGF</title>
+<style>
+  body {
+    background-color: #0a0f1a;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
 
-    .logo-container {
-      margin: 40px auto;
-      filter: drop-shadow(0 0 8px #00eaff);
-      display: inline-block;
-    }
+  .logo-container {
+    margin: 40px auto;
+    filter: drop-shadow(0 0 8px #00eaff);
+    display: inline-block;
+  }
 
-    img.logo {
-      width: 200px;
-    }
+  img.logo {
+    width: 200px;
+  }
 
-    input[type="text"] {
-      padding: 8px;
-      width: 300px;
-      border-radius: 8px;
-      border: none;
-      margin-right: 10px;
-    }
+  input[type="text"], input[type="date"] {
+    padding: 8px;
+    width: 200px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 10px;
+  }
 
-    .neon-button {
-      padding: 12px;
-      font-weight: bold;
-      color: #00eaff;
-      background-color: #0d1b2a;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-      transition: 0.3s ease-in-out;
-      margin: 5px;
-    }
+  .neon-button {
+    padding: 10px;
+    font-weight: bold;
+    color: #00eaff;
+    background-color: #0d1b2a;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
+    transition: 0.3s ease-in-out;
+    margin: 3px;
+  }
 
-    .neon-button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-    }
+  .neon-button:hover {
+    color: #00ffff;
+    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
+  }
 
-    table {
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 80%;
-    }
+  table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 90%;
+  }
 
-    th, td {
-      border: 1px solid #00eaff44;
-      padding: 10px;
-    }
-  </style>
+  th, td {
+    border: 1px solid #00eaff44;
+    padding: 10px;
+  }
+
+  /* Modal QR */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+  }
+
+  .modal-content {
+    background-color: #0d1b2a;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    text-align: center;
+    border-radius: 15px;
+  }
+
+  .close {
+    color: #00eaff;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover { color: #00ffff; }
+</style>
 </head>
 <body>
 
-  <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
+<div class="logo-container">
+  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
+</div>
+
+<h2 style="color:#00eaff;">Consultar Ferramental</h2>
+
+<input type="text" id="buscarSV" placeholder="Digite o SV">
+<button class="neon-button" onclick="buscar()">Buscar</button>
+<a href="menu.html" class="neon-button">Menu Principal</a>
+
+<table id="resultado" style="display:none;">
+  <thead>
+    <tr>
+      <th>SV</th>
+      <th>Cliente</th>
+      <th>Data Registro</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- Modal QR -->
+<div id="qrModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('qrModal').style.display='none'">&times;</span>
+    <h3>QR Code</h3>
+    <canvas id="qrCanvas"></canvas><br>
+    <button class="neon-button" onclick="baixarQR()">Baixar PNG</button>
   </div>
+</div>
 
-  <h2 style="color:#00eaff;">Consultar Ferramental</h2>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
-  <input type="text" id="buscarSV" placeholder="Digite o SV">
-  <button class="neon-button" onclick="buscar()">Buscar</button>
-  <a href="menu.html" class="neon-button">Menu Principal</a>
+<script>
+  // Simulando dados
+  let dados = [
+    {sv:"SV001", cliente:"Cliente A", dataRegistro:"2025-11-03"},
+    {sv:"SV002", cliente:"Cliente B", dataRegistro:"2025-11-02"}
+  ];
 
-  <table id="resultado" style="display:none;">
-    <thead>
-      <tr>
-        <th>SV</th>
-        <th>Cliente</th>
-        <th>Data Registro</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Resultados aparecerão aqui -->
-    </tbody>
-  </table>
-
-  <script>
-    function buscar() {
-      const sv = document.getElementById("buscarSV").value;
-      if(!sv) return alert("Digite o SV!");
-
-      // Exemplo: resultado simulado
-      const tabela = document.getElementById("resultado");
-      tabela.style.display = "table";
-      tabela.querySelector("tbody").innerHTML = `
-        <tr>
-          <td>${sv}</td>
-          <td>Cliente Exemplo</td>
-          <td>2025-11-03</td>
-          <td>
-            <button class="neon-button">Editar</button>
-            <button class="neon-button">Excluir</button>
-            <button class="neon-button">Gerar QR</button>
-          </td>
-        </tr>
+  function buscar() {
+    const sv = document.getElementById("buscarSV").value.trim();
+    if(!sv) return alert("Digite o SV!");
+    const tbody = document.getElementById("resultado").querySelector("tbody");
+    tbody.innerHTML = '';
+    const resultado = dados.filter(d => d.sv.includes(sv));
+    if(resultado.length===0) return alert("Nenhum resultado encontrado.");
+    resultado.forEach((item,index)=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.sv}</td>
+        <td><input type="text" value="${item.cliente}" id="cliente_${index}"></td>
+        <td><input type="date" value="${item.dataRegistro}" id="data_${index}"></td>
+        <td>
+          <button class="neon-button" onclick="editar(${index})">Editar</button>
+          <button class="neon-button" onclick="excluir(${index})">Excluir</button>
+          <button class="neon-button" onclick="gerarQR('${item.sv}')">Gerar QR</button>
+        </td>
       `;
+      tbody.appendChild(tr);
+    });
+    document.getElementById("resultado").style.display = "table";
+  }
+
+  function editar(index){
+    const cliente = document.getElementById(`cliente_${index}`).value;
+    const data = document.getElementById(`data_${index}`).value;
+    if(!cliente || !data) return alert("Preencha Cliente e Data!");
+    dados[index].cliente = cliente;
+    dados[index].dataRegistro = data;
+    alert("Registro atualizado com sucesso!");
+  }
+
+  function excluir(index){
+    if(confirm("Deseja realmente excluir este ferramental?")){
+      dados.splice(index,1);
+      buscar(); // atualizar tabela
     }
-  </script>
+  }
+
+  function gerarQR(sv){
+    const canvas = document.getElementById("qrCanvas");
+    const logo = new Image();
+    logo.src = 'logosovel1337.png';
+    logo.onload = ()=>{
+      QRCode.toCanvas(canvas, sv, {errorCorrectionLevel:'H', width:250}, function (error) {
+        if(error) console.error(error);
+        // Inserir logo ao centro
+        const ctx = canvas.getContext('2d');
+        const logoSize = 60;
+        ctx.drawImage(logo,(canvas.width-logoSize)/2,(canvas.height-logoSize)/2,logoSize,logoSize);
+      });
+    };
+    document.getElementById("qrModal").style.display='block';
+  }
+
+  function baixarQR(){
+    const canvas = document.getElementById("qrCanvas");
+    const link = document.createElement('a');
+    link.download = 'qr_code.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  }
+</script>
 
 </body>
 </html>
