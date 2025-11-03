@@ -7,7 +7,6 @@
   <title>Gestão de Ferramentais | Grupo Sovel da Amazônia</title>
 
   <style>
-    /* --- Estilos Gerais --- */
     body {
       margin: 0;
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
@@ -16,14 +15,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       min-height: 100vh;
+      padding: 20px;
       overflow-x: hidden;
     }
 
     header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
       animation: fadeIn 1.5s ease;
     }
 
@@ -37,48 +37,58 @@
     header p {
       color: #aaa;
       font-size: 1rem;
-      margin-top: 10px;
+      margin-top: 5px;
     }
 
-    /* --- Container de Botões --- */
-    .menu {
+    form {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      animation: fadeIn 2s ease;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(0, 195, 255, 0.05);
+      padding: 20px 30px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 195, 255, 0.2);
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
+      margin-bottom: 30px;
     }
 
-    .menu button {
+    form input, form select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #00c3ff55;
+      background: #0b2239;
+      color: #e0e0e0;
+      font-size: 1rem;
+    }
+
+    form button {
       background: #0b2239;
       color: #00c3ff;
       border: 2px solid #00c3ff;
       border-radius: 10px;
-      padding: 15px 30px;
+      padding: 12px;
       font-size: 1.1rem;
       font-weight: 600;
-      letter-spacing: 0.5px;
       cursor: pointer;
       transition: all 0.3s ease;
-      text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(0, 195, 255, 0.2);
     }
 
-    .menu button:hover {
+    form button:hover {
       background: #00c3ff;
       color: #0a0f1a;
-      box-shadow: 0 0 25px #00c3ff;
       transform: scale(1.05);
     }
 
-    /* --- Área de Resultados --- */
+    /* Lista e cores por status */
     #listaFerramentais {
-      margin-top: 40px;
+      margin-top: 20px;
       background: rgba(0, 195, 255, 0.05);
       border: 1px solid rgba(0, 195, 255, 0.2);
       border-radius: 10px;
       padding: 20px 30px;
-      width: 80%;
+      width: 100%;
       max-width: 500px;
       box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
       display: none;
@@ -98,41 +108,53 @@
     }
 
     #listaFerramentais li {
-      padding: 8px 0;
+      padding: 8px 10px;
       border-bottom: 1px solid rgba(0, 195, 255, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 6px;
+      margin-bottom: 5px;
     }
 
-    /* --- Rodapé --- */
+    #listaFerramentais li .dados {
+      flex: 1;
+    }
+
+    #listaFerramentais li .status {
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0a0f1a;
+    }
+
+    .status.EmUso { background: #00c3ff; }       /* Azul */
+    .status.Manutencao { background: #ffcc00; } /* Amarelo */
+    .status.Danificado { background: #ff4444; } /* Vermelho */
+    .status.Trocar { background: #ff8800; }     /* Laranja */
+
+    #listaFerramentais button {
+      margin-left: 10px;
+      padding: 4px 8px;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    #listaFerramentais .edit-btn { background: #ffaa00; color: #0a0f1a; }
+    #listaFerramentais .delete-btn { background: #ff4444; color: #fff; }
+
     footer {
-      position: absolute;
-      bottom: 15px;
       text-align: center;
       font-size: 0.9rem;
       color: #888;
+      margin-top: 30px;
     }
 
-    footer a {
-      color: #00aaff;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-      color: #00eaff;
-    }
-
-    /* --- Animações --- */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* --- Responsividade --- */
-    @media (max-width: 600px) {
-      header h1 { font-size: 1.6rem; }
-      .menu button { width: 80%; }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) { header h1 { font-size: 1.6rem; } }
   </style>
 </head>
 <body>
@@ -142,11 +164,48 @@
     <p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
   </header>
 
-  <div class="menu">
-    <button id="btnRegistrar">📝 Registrar Ferramental</button>
-    <button id="btnListar">🔍 Consultar Ferramentais</button>
-    <button onclick="alert('Gerador de QR Code em breve')">📱 Gerar QR Code</button>
-    <button onclick="alert('Área administrativa em construção')">⚙️ Administração</button>
+  <form id="formFerramental">
+    <input type="text" id="tipo" placeholder="Faca ou Clichê" required />
+    <input type="text" id="codigo" placeholder="Código SV" required />
+    <input type="text" id="nome" placeholder="Nome do Cliente" required />
+    <input type="date" id="registro" placeholder="Data de Registro" required />
+    <select id="status" required>
+      <option value="">Status</option>
+      <option value="Em uso">Em uso</option>
+      <option value="Danificado">Danificado</option>
+      <option value="Manutenção">Manutenção</option>
+      <option value="Trocar">Trocar</option>
+    </select>
+    <input type="text" id="responsavel" placeholder="Responsável pelo registro" />
+    <button type="submit" id="submitBtn">Registrar Ferramental</button>
+  </form>
+
+  <!-- Filtro e Pesquisa -->
+  <div id="filtroFerramentais" style="margin-bottom:15px; width:100%; max-width:500px; display:none; gap:8px; flex-direction:column;">
+    <input type="text" id="busca" placeholder="🔍 Buscar por código, cliente ou status" style="
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #00c3ff55;
+      background: #0b2239;
+      color: #e0e0e0;
+      font-size: 1rem;
+    " />
+    <select id="filtroStatus" style="
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #00c3ff55;
+      background: #0b2239;
+      color: #e0e0e0;
+      font-size: 1rem;
+    ">
+      <option value="">Todos os Status</option>
+      <option value="Em uso">Em uso</option>
+      <option value="Danificado">Danificado</option>
+      <option value="Manutenção">Manutenção</option>
+      <option value="Trocar">Trocar</option>
+    </select>
   </div>
 
   <div id="listaFerramentais">
@@ -158,86 +217,140 @@
     <p>&copy; 2025 Grupo Sovel da Amazônia</p>
   </footer>
 
-  <!-- ======================= -->
-  <!-- 🔥 Conexão com Firestore -->
-  <!-- ======================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // ⚙️ SUA CONFIGURAÇÃO DO FIREBASE (substitua pelos seus dados reais)
     const firebaseConfig = {
       apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-    authDomain: "dacsovel-53481.firebaseapp.com",
-    projectId: "dacsovel-53481",
-    storageBucket: "dacsovel-53481.firebasestorage.app",
-    messagingSenderId: "37867522513",
-    appId: "1:37867522513:web:336d687e3fc8408bd138f0"
+      authDomain: "dacsovel-53481.firebaseapp.com",
+      projectId: "dacsovel-53481",
+      storageBucket: "dacsovel-53481.firebasestorage.app",
+      messagingSenderId: "37867522513",
+      appId: "1:37867522513:web:336d687e3fc8408bd138f0"
     };
 
-    // Inicialização
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 📝 Função para registrar novo ferramental
-   async function registrarFerramental() {
-  const tipo = prompt("Faca ou Clichê?:");
-  const codigo = prompt("SV?:");
-  const nome = prompt("Nome do Cliente?:");
-  const registro = prompt("Data de Registro?:");
-  const status = prompt("Status (Em uso?, danificado?, manutenção?, trocar?):");
-  const responsavel = prompt("Responsável pelo registro?:");
+    const form = document.getElementById("formFerramental");
+    const submitBtn = document.getElementById("submitBtn");
+    const buscaInput = document.getElementById("busca");
+    const filtroStatus = document.getElementById("filtroStatus");
+    const filtroDiv = document.getElementById("filtroFerramentais");
+    let editId = null;
 
-  if (!codigo || !nome) return alert("Código e nome são obrigatórios!");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const tipo = document.getElementById("tipo").value;
+      const codigo = document.getElementById("codigo").value;
+      const nome = document.getElementById("nome").value;
+      const registro = document.getElementById("registro").value;
+      const status = document.getElementById("status").value;
+      const responsavel = document.getElementById("responsavel").value;
 
-  try {
-    await addDoc(collection(db, "ferramentais"), {
-      tipo: tipo || "",
-      codigo,
-      nome,
-      registro: registro || "",
-      status: status || "Disponível",
-      responsavel: responsavel || "Não atribuído",
-      ultimaManutencao: null,
-      criadoEm: new Date().toISOString()
+      if (!codigo || !nome) return alert("Código e nome são obrigatórios!");
+
+      try {
+        if (editId) {
+          await updateDoc(doc(db, "ferramentais", editId), { tipo, codigo, nome, registro, status, responsavel });
+          alert("✅ Ferramental atualizado com sucesso!");
+          editId = null;
+          submitBtn.textContent = "Registrar Ferramental";
+        } else {
+          await addDoc(collection(db, "ferramentais"), {
+            tipo, codigo, nome, registro, status, responsavel,
+            ultimaManutencao: null,
+            criadoEm: new Date().toISOString()
+          });
+          alert("✅ Ferramental registrado com sucesso!");
+        }
+        form.reset();
+        listarFerramentais();
+      } catch (err) {
+        console.error("Erro:", err);
+        alert("❌ Ocorreu um erro.");
+      }
     });
-    alert("✅ Ferramental registrado com sucesso!");
-  } catch (e) {
-    console.error("Erro ao registrar:", e);
-    alert("❌ Erro ao registrar ferramental.");
-  }
-}
 
-
-    // 🔍 Função para listar ferramentais
     async function listarFerramentais() {
       const listaDiv = document.getElementById("listaFerramentais");
       const listaUl = document.getElementById("lista");
       listaUl.innerHTML = "";
+
       try {
-        const querySnapshot = await getDocs(collection(db, "ferramentais"));
-        if (querySnapshot.empty) {
+        const snapshot = await getDocs(collection(db, "ferramentais"));
+        if (snapshot.empty) {
           listaUl.innerHTML = "<li>Nenhum ferramental cadastrado.</li>";
         } else {
-          querySnapshot.forEach((doc) => {
-            const dados = doc.data();
+          filtroDiv.style.display = "flex";
+          const searchTerm = buscaInput.value.toLowerCase();
+          const statusTerm = filtroStatus.value;
+
+          snapshot.forEach((docItem) => {
+            const dados = docItem.data();
+            if (statusTerm && dados.status !== statusTerm) return;
+            const concatenado = `${dados.codigo} ${dados.nome} ${dados.status}`.toLowerCase();
+            if (!concatenado.includes(searchTerm)) return;
+
             const item = document.createElement("li");
-            item.textContent = `${dados.codigo} — ${dados.nome}`;
+
+            // Normaliza status para classe
+            let classeStatus = "";
+            switch (dados.status) {
+              case "Em uso": classeStatus = "EmUso"; break;
+              case "Manutenção": classeStatus = "Manutencao"; break;
+              case "Danificado": classeStatus = "Danificado"; break;
+              case "Trocar": classeStatus = "Trocar"; break;
+              default: classeStatus = ""; break;
+            }
+
+            item.innerHTML = `
+              <div class="dados">
+                <strong>${dados.codigo}</strong> — ${dados.nome}
+                <br>
+                <span class="status ${classeStatus}">${dados.status || "N/A"}</span>
+                <br><small>Tipo: ${dados.tipo || "N/A"} | Responsável: ${dados.responsavel || "N/A"} | Registro: ${dados.registro || "N/A"}</small>
+              </div>
+              <div>
+                <button class="edit-btn">Editar</button>
+                <button class="delete-btn">Excluir</button>
+              </div>
+            `;
+
+            item.querySelector(".delete-btn").addEventListener("click", async () => {
+              if (confirm(`Deseja realmente excluir ${dados.nome}?`)) {
+                await deleteDoc(doc(db, "ferramentais", docItem.id));
+                listarFerramentais();
+              }
+            });
+
+            item.querySelector(".edit-btn").addEventListener("click", () => {
+              document.getElementById("tipo").value = dados.tipo || "";
+              document.getElementById("codigo").value = dados.codigo;
+              document.getElementById("nome").value = dados.nome;
+              document.getElementById("registro").value = dados.registro || "";
+              document.getElementById("status").value = dados.status || "";
+              document.getElementById("responsavel").value = dados.responsavel || "";
+
+              editId = docItem.id;
+              submitBtn.textContent = "Salvar Alterações";
+            });
+
             listaUl.appendChild(item);
           });
         }
         listaDiv.style.display = "block";
-      } catch (e) {
-        console.error("Erro ao listar:", e);
+      } catch (err) {
+        console.error("Erro ao listar:", err);
       }
     }
 
-    // 🎯 Eventos dos botões
-    document.getElementById("btnRegistrar").addEventListener("click", registrarFerramental);
-    document.getElementById("btnListar").addEventListener("click", listarFerramentais);
+    buscaInput.addEventListener("input", listarFerramentais);
+    filtroStatus.addEventListener("change", listarFerramentais);
+
+    listarFerramentais();
   </script>
 
 </body>
 </html>
-
-
