@@ -1,167 +1,116 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrar Ferramental</title>
-  <style>
-    body {
-      background-color: #0a0f1a;
-      margin: 0;
-      padding: 0;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar Ferramental</title>
 
-    html, body {
-      width: 100%;
-      height: 100%;
-    }
-
-    a {
-      color: #00eaff;
-      text-decoration: none;
-    }
-
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 30px;
-      filter: drop-shadow(0 0 8px #00eaff);
-    }
-
-    img.logo {
-      display: block;
-      max-width: 200px;
-    }
-
-    .centralizado {
-      text-align: center;
-      max-width: 600px;
-      margin: 30px auto;
-    }
-
-    form {
-      background: #0d1b2a;
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px #00eaff44;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      margin-bottom: 5px;
-      color: #00eaff;
-      font-weight: bold;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #00eaff55;
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-size: 16px;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border: 1px solid #00ffff;
-      box-shadow: 0 0 10px #00eaff;
-    }
-
-    .botoes {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    button {
-      padding: 12px 25px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      background-color: #0d1b2a;
-      color: #00eaff;
-      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-      transition: 0.3s ease-in-out;
-    }
-
-    button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-    }
-
-  </style>
+<!-- ====================== -->
+<!-- Estilo Futurista -->
+<!-- ====================== -->
+<style>
+  body {
+    background-color: #0a0f1a;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  html, body { width: 100%; height: 100%; }
+  a { color: #00eaff; text-decoration: none; }
+  .logo-container { display: block; text-align: center; margin-top: 20px; filter: drop-shadow(0 0 8px #00eaff); }
+  img.logo { max-width: 200px; }
+  .centralizado { max-width: 600px; margin: 50px auto 0 auto; text-align: center; }
+  input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 10px; border: none; background: #0d1b2a; color: #00eaff; box-shadow: 0 0 10px #00eaff22; }
+  button.neon-button { display: inline-block; padding: 10px 25px; color: #00eaff; font-weight: bold; border-radius: 10px; background-color: #0d1b2a; box-shadow: 0 0 10px #00eaff55; margin: 10px; cursor: pointer; transition: 0.3s; }
+  button.neon-button:hover { color: #00ffff; box-shadow: 0 0 20px #00eaff77; }
+  #painelUsuario { position: fixed; top: 10px; right: 10px; background-color: #0d1b2a; color: #00eaff; padding: 10px 15px; border-radius: 10px; font-size: 14px; text-align: right; box-shadow: 0 0 10px #00eaff44; }
+</style>
 </head>
 <body>
 
-  <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" class="logo">
-  </div>
+<!-- ====================== -->
+<!-- Painel do Usuário -->
+<!-- ====================== -->
+<div id="painelUsuario">
+  <div>Nome: <span id="usuarioNome"></span></div>
+  <div>Função: <span id="usuarioFuncao"></span></div>
+  <div>Login: <span id="usuarioHoraLogin"></span></div>
+  <div>Tempo Online: <span id="tempoOnline">00:00:00</span></div>
+</div>
 
-  <div class="centralizado">
-    <h1 style="color:#00eaff; text-shadow:0 0 20px #00eaff;">Registrar Ferramental</h1>
+<!-- ====================== -->
+<!-- Logo Centralizada -->
+<!-- ====================== -->
+<div class="logo-container">
+  <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
+</div>
 
-    <form id="formRegistrar">
-      <div>
-        <label for="tipo">Tipo de Ferramental</label>
-        <select id="tipo" required>
-          <option value="">Selecione...</option>
-          <option value="faca">Faca</option>
-          <option value="cliche">Clichê</option>
-        </select>
-      </div>
+<!-- ====================== -->
+<!-- Formulário -->
+<!-- ====================== -->
+<div class="centralizado">
+  <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">📋 Registrar Ferramental</h2>
+  
+  <form id="formRegistrar">
+    <label>Tipo de Ferramental</label>
+    <select id="tipoFerramental" required>
+      <option value="">Selecione</option>
+      <option value="Faca">Faca</option>
+      <option value="Clichê">Clichê</option>
+    </select>
 
-      <div>
-        <label for="sv">SV</label>
-        <input type="text" id="sv" placeholder="Ex: A123" required>
-      </div>
+    <label>SV (Código)</label>
+    <input type="text" id="svFerramental" placeholder="Ex: F123" required>
 
-      <div>
-        <label for="cliente">Cliente</label>
-        <input type="text" id="cliente" placeholder="Nome do cliente" required>
-      </div>
+    <label>Cliente</label>
+    <input type="text" id="clienteFerramental" placeholder="Nome do Cliente" required>
 
-      <div>
-        <label for="dataFabricacao">Data de Fabricação</label>
-        <input type="date" id="dataFabricacao">
-      </div>
+    <label>Data de Fabricação</label>
+    <input type="date" id="dataFabricacao">
 
-      <div>
-        <label for="dataRegistro">Data de Registro no Sistema</label>
-        <input type="date" id="dataRegistro" required>
-      </div>
+    <label>Data de Registro no Sistema</label>
+    <input type="date" id="dataRegistro" required>
 
-      <div>
-        <label for="responsavel">Responsável pelo Registro</label>
-        <input type="text" id="responsavel" placeholder="Nome do responsável" required>
-      </div>
+    <label>Responsável pelo Registro</label>
+    <input type="text" id="responsavelRegistro" required>
 
-      <div class="botoes">
-        <button type="submit">Registrar</button>
-        <button type="button" onclick="window.location.href='index.html'">Menu Principal</button>
-      </div>
-    </form>
-  </div>
+    <div style="margin-top:20px;">
+      <button type="submit" class="neon-button">Registrar</button>
+      <button type="button" onclick="window.location.href='menu.html'" class="neon-button">Voltar ao Menu</button>
+    </div>
+  </form>
+</div>
 
-  <script>
-    const form = document.getElementById('formRegistrar');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Ferramental registrado com sucesso!');
-      form.reset();
-    });
-  </script>
+<!-- ====================== -->
+<!-- Script Painel Usuário -->
+<!-- ====================== -->
+<script>
+  function atualizarPainelUsuario() {
+    const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+    if (!usuario) return;
+    document.getElementById('usuarioNome').textContent = usuario.nome;
+    document.getElementById('usuarioFuncao').textContent = usuario.funcao;
+    const horaLogin = new Date(usuario.horaLogin);
+    document.getElementById('usuarioHoraLogin').textContent = horaLogin.toLocaleString();
+    setInterval(() => {
+      const agora = new Date();
+      const diff = Math.floor((agora - horaLogin) / 1000);
+      const horas = String(Math.floor(diff / 3600)).padStart(2,'0');
+      const minutos = String(Math.floor((diff%3600)/60)).padStart(2,'0');
+      const segundos = String(diff%60).padStart(2,'0');
+      document.getElementById('tempoOnline').textContent = `${horas}:${minutos}:${segundos}`;
+    }, 1000);
+  }
+  atualizarPainelUsuario();
+
+  // Simulação do submit
+  document.getElementById('formRegistrar').addEventListener('submit', function(e){
+    e.preventDefault();
+    alert('Ferramental registrado com sucesso!');
+    this.reset();
+  });
+</script>
 
 </body>
 </html>
