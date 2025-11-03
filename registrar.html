@@ -1,160 +1,136 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrar Ferramental</title>
-
-  <!-- ====================== -->
-  <!-- Estilo Global Neon -->
-  <!-- ====================== -->
-  <style>
-    body {
-      background-color: #0a0f1a;
-      margin: 0;
-      padding: 0;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    .logo-container {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      filter: drop-shadow(0 0 8px #00eaff);
-    }
-
-    img.logo { max-width: 200px; height: auto; }
-
-    .centralizado {
-      text-align: center;
-      max-width: 600px;
-      margin: 20px auto;
-    }
-
-    input, select {
-      padding: 8px;
-      margin: 5px 0;
-      width: 100%;
-      border-radius: 5px;
-      border: 1px solid #00eaff44;
-      background-color: #0d1b2a;
-      color: #ffffff;
-    }
-
-    label { display: block; margin-top: 10px; color: #00eaff; }
-
-    .neon-button {
-      display: inline-block;
-      padding: 10px 25px;
-      color: #00eaff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      border-radius: 10px;
-      background-color: #0d1b2a;
-      box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
-      transition: 0.3s;
-      margin: 5px;
-    }
-
-    .neon-button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
-    }
-
-  </style>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
+<meta charset="UTF-8">
+<title>Registrar Ferramental</title>
+<style>
+  body {
+    background-color: #0a0f1a;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  .logo-container {
+    margin-top: 20px;
+    filter: drop-shadow(0 0 10px #00eaff);
+  }
+  img.logo {
+    max-width: 200px;
+  }
+  form {
+    display: inline-block;
+    margin-top: 30px;
+    text-align: left;
+    background-color: #0d1b2a;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #00eaff;
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  input, select {
+    width: 300px;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: none;
+  }
+  .neon-button {
+    display: inline-block;
+    padding: 10px 25px;
+    margin: 15px 5px 0 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #00eaff;
+    background-color: #0d1b2a;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .neon-button:hover {
+    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff;
+  }
+</style>
 </head>
 <body>
 
-  <!-- Logo -->
-  <div class="logo-container">
-    <img src="logosovel1337.png" alt="Logo Grupo Sovel" class="logo">
-  </div>
+<div class="logo-container">
+  <img src="logosovel1337.png" alt="Logo Sovel" class="logo">
+</div>
 
-  <div class="centralizado">
-    <h1 style="color:#00eaff; text-shadow:0 0 15px #00eaff;">Registrar Ferramental</h1>
+<h2>Registrar Ferramental</h2>
 
-    <form id="formRegistrar">
-      <label for="tipo">Tipo de Ferramental:</label>
-      <select id="tipo" required>
-        <option value="">Selecione</option>
-        <option value="Faca">Faca</option>
-        <option value="Clichê">Clichê</option>
-      </select>
+<form id="registroForm">
+  <label>Tipo de Ferramental:</label>
+  <select id="tipo" required>
+    <option value="">Selecione...</option>
+    <option value="Faca">Faca</option>
+    <option value="Clichê">Clichê</option>
+  </select>
 
-      <label for="sv">SV (letra + número):</label>
-      <input type="text" id="sv" required placeholder="Ex: A123">
+  <label>SV:</label>
+  <input type="text" id="sv" required placeholder="Ex: A123">
 
-      <label for="cliente">Cliente:</label>
-      <input type="text" id="cliente" required>
+  <label>Cliente:</label>
+  <input type="text" id="cliente" required>
 
-      <label for="dataFabricacao">Data de Fabricação (opcional):</label>
-      <input type="date" id="dataFabricacao">
+  <label>Data de Fabricação:</label>
+  <input type="date" id="dataFabricacao">
 
-      <label for="dataRegistro">Data de Registro:</label>
-      <input type="date" id="dataRegistro" required>
+  <label>Data de Registro:</label>
+  <input type="date" id="dataRegistro" required>
 
-      <label for="responsavel">Responsável pelo Registro:</label>
-      <input type="text" id="responsavel" required>
+  <label>Responsável pelo Registro:</label>
+  <input type="text" id="responsavel" required>
 
-      <br>
-      <button type="submit" class="neon-button">Registrar</button>
-      <button type="button" class="neon-button" onclick="window.location.href='menu.html'">Menu Principal</button>
-    </form>
-  </div>
+  <br>
+  <button type="submit" class="neon-button">Registrar</button>
+  <a href="menu.html" class="neon-button">🔙 Menu Principal</a>
+</form>
 
-  <script>
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
   authDomain: "dacsovel-53481.firebaseapp.com",
   projectId: "dacsovel-53481",
   storageBucket: "dacsovel-53481.firebasestorage.app",
   messagingSenderId: "37867522513",
   appId: "1:37867522513:web:336d687e3fc8408bd138f0",
 };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    const form = document.getElementById('formRegistrar');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+  const form = document.getElementById("registroForm");
+  form.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const tipo = document.getElementById("tipo").value;
+    const sv = document.getElementById("sv").value;
+    const cliente = document.getElementById("cliente").value;
+    const dataFabricacao = document.getElementById("dataFabricacao").value;
+    const dataRegistro = document.getElementById("dataRegistro").value;
+    const responsavel = document.getElementById("responsavel").value;
 
-      const tipo = document.getElementById('tipo').value;
-      const sv = document.getElementById('sv').value.trim();
-      const cliente = document.getElementById('cliente').value.trim();
-      const dataFabricacao = document.getElementById('dataFabricacao').value;
-      const dataRegistro = document.getElementById('dataRegistro').value;
-      const responsavel = document.getElementById('responsavel').value.trim();
-
-      if(!tipo || !sv || !cliente || !dataRegistro || !responsavel){
-        alert("Preencha todos os campos obrigatórios!");
-        return;
-      }
-
-      db.collection("ferramentais").add({
-        tipo: tipo,
-        SV: sv,
-        cliente: cliente,
-        dataFabricacao: dataFabricacao,
-        dataRegistro: dataRegistro,
-        responsavel: responsavel
-      }).then(() => {
-        alert("Ferramental registrado com sucesso!");
-        form.reset();
-      }).catch((error) => {
-        console.error("Erro ao registrar:", error);
-        alert("Ocorreu um erro ao registrar.");
-      });
-    });
-  </script>
-
+    db.collection("ferramentais").add({
+      tipo,
+      SV: sv,
+      cliente,
+      dataFabricacao,
+      dataRegistro,
+      responsavel
+    }).then(()=>{
+      alert("Ferramental registrado com sucesso!");
+      form.reset();
+    }).catch(err=>alert("Erro: "+err));
+  });
+</script>
 </body>
 </html>
