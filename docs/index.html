@@ -6,95 +6,181 @@
 <meta name="description" content="Sistema de Gestão de Ferramentais - Grupo Sovel da Amazônia">
 <title>Gestão de Ferramentais | Grupo Sovel da Amazônia</title>
 
-<!-- ====================== -->
-<!-- Estilos Profissionais -->
-<!-- ====================== -->
+<!-- CSS -->
 <style>
-  /* Reset e base */
-  * { box-sizing: border-box; margin:0; padding:0; }
-  body {
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    background: radial-gradient(circle at top, #0a0f1a 0%, #020409 100%);
-    color: #e0e0e0;
-    display: flex; flex-direction: column; align-items: center;
-    min-height: 100vh; padding: 20px;
+  /* Reset básico */
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;
+    background: linear-gradient(135deg,#0a0f1a,#020409);
+    color:#e0e0e0;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:20px;
+    transition:background 0.5s ease;
   }
 
-  header { text-align: center; margin-bottom: 20px; }
-  header h1 { font-size:2.2rem; color:#00aaff; text-shadow:0 0 10px #00aaff; }
-  header p { color:#aaa; font-size:1rem; margin-top:5px; }
+  header{text-align:center;margin-bottom:25px;}
+  header h1{font-size:2.5rem;color:#00c3ff;text-shadow:0 0 15px #00c3ff;}
+  header p{color:#aaa;font-size:1.1rem;margin-top:5px;}
 
-  /* Menu */
-  .menu { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin-bottom:20px; }
-  .menu button {
-    background:#0b2239; color:#00c3ff; border:2px solid #00c3ff; border-radius:12px;
-    padding:12px 22px; font-size:1.1rem; font-weight:600; cursor:pointer; transition:all 0.3s ease;
+  .menu{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    justify-content:center;
+    margin-bottom:25px;
   }
-  .menu button:hover { background:#00c3ff; color:#0a0f1a; transform:scale(1.05); }
+  .menu button{
+    background:#0b2239;
+    color:#00c3ff;
+    border:2px solid #00c3ff;
+    border-radius:15px;
+    padding:12px 25px;
+    font-size:1.1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 0 10px #00c3ff55;
+  }
+  .menu button:hover{
+    background:#00c3ff;color:#0a0f1a;
+    transform:scale(1.05);
+    box-shadow:0 0 20px #00c3ff88;
+  }
 
   /* Formulário */
-  form {
-    display:none; flex-direction:column; gap:12px;
-    background: rgba(0,195,255,0.05); padding:25px 30px; border-radius:12px;
-    border:1px solid rgba(0,195,255,0.2); width:100%; max-width:500px; margin-bottom:20px; position:relative;
+  form{
+    display:none;
+    flex-direction:column;
+    gap:12px;
+    background: rgba(0,195,255,0.05);
+    padding:25px 30px;
+    border-radius:15px;
+    border:1px solid rgba(0,195,255,0.2);
+    width:100%;
+    max-width:550px;
+    position:relative;
+    box-shadow:0 0 20px #00c3ff22;
   }
-  .message { position:absolute; top:-35px; left:0; width:100%; text-align:center;
-    font-weight:600; color:#fff; padding:5px 0; border-radius:6px; display:none; }
-  .message.success { background:#28a745; }
-  .message.error { background:#dc3545; }
-  form input, form select { padding:10px; border-radius:6px; border:1px solid #00c3ff55; background:#0b2239; color:#e0e0e0; font-size:1rem; }
-  form input.invalid, form select.invalid { border-color:#ff4444; }
-  form button {
-    background:#0b2239; color:#00c3ff; border:2px solid #00c3ff; border-radius:12px;
-    padding:12px; font-size:1.1rem; font-weight:600; cursor:pointer; transition:all 0.3s ease;
+  .message{
+    position:absolute;
+    top:-35px;
+    left:0;
+    width:100%;
+    text-align:center;
+    font-weight:600;
+    padding:5px 0;
+    border-radius:6px;
+    display:none;
   }
-  form button:hover { background:#00c3ff; color:#0a0f1a; transform:scale(1.05); }
+  .message.success{background:#28a745;}
+  .message.error{background:#dc3545;}
 
-  /* Lista Ferramentais */
-  #listaFerramentais {
-    margin-top:20px; display:none; width:100%; max-width:650px; display:flex; flex-direction:column; gap:15px;
+  form input,form select{
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #00c3ff55;
+    background:#0b2239;
+    color:#e0e0e0;
+    font-size:1rem;
+    transition:0.3s;
   }
-  #searchInput {
-    width:100%; padding:10px; border-radius:6px; border:1px solid #00c3ff55;
-    background:#0b2239; color:#e0e0e0; font-size:1rem;
-  }
-  .card {
-    background: rgba(0,195,255,0.05); border:1px solid rgba(0,195,255,0.2);
-    padding:15px 20px; border-radius:12px; display:flex; justify-content:space-between; align-items:flex-start;
-    gap:10px; flex-wrap:wrap; transition:all 0.2s ease; cursor:default;
-  }
-  .card:hover { box-shadow:0 0 15px #00c3ff44; transform:translateY(-2px); }
-  .card-info { flex:1; min-width:180px; }
-  .status { font-weight:600; padding:3px 7px; border-radius:4px; color:#0a0f1a; display:inline-block; margin-top:5px; }
-  .EmUso { background:#00c3ff; } .Manutencao { background:#ffcc00; } .Danificado { background:#ff4444; } .Trocar { background:#ff8800; }
+  form input.invalid, form select.invalid{border-color:#ff4444;}
 
-  .card-buttons { display:flex; gap:5px; flex-wrap:wrap; }
-  .card-buttons button { padding:6px 10px; font-size:0.9rem; border:none; border-radius:6px; font-weight:600; cursor:pointer; transition:all 0.2s ease; }
-  .card-buttons button:hover { transform:scale(1.05); }
-  .edit-btn { background:#ffaa00; color:#0a0f1a; }
-  .delete-btn { background:#ff4444; color:#fff; }
-  .qr-btn { background:#00c3ff; color:#0a0f1a; }
+  form button{
+    background:#0b2239;
+    color:#00c3ff;
+    border:2px solid #00c3ff;
+    border-radius:12px;
+    padding:12px;
+    font-size:1.1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+  }
+  form button:hover{
+    background:#00c3ff;color:#0a0f1a;transform:scale(1.05);
+  }
 
-  footer { text-align:center; font-size:0.9rem; color:#888; margin-top:30px; }
+  /* Lista de ferramental */
+  #listaFerramentais{display:none;width:100%;max-width:800px;flex-direction:column;gap:15px;}
+  #searchInput{
+    width:100%;padding:12px;border-radius:8px;border:1px solid #00c3ff55;
+    background:#0b2239;color:#e0e0e0;margin-bottom:15px;font-size:1rem;
+  }
+
+  .card{
+    background:#0b2239;
+    border-radius:15px;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    box-shadow:0 0 10px #00c3ff44;
+    transition:all 0.3s;
+    position:relative;
+  }
+  .card:hover{box-shadow:0 0 25px #00c3ff88;transform:translateY(-2px);}
+  .card-info{flex:1;min-width:180px;}
+  .status{
+    font-weight:600;
+    padding:4px 8px;
+    border-radius:6px;
+    display:inline-block;
+    margin-top:5px;
+    font-size:0.9rem;
+    color:#0a0f1a;
+  }
+  .EmUso{background:#00c3ff;}
+  .Manutencao{background:#ffcc00;}
+  .Danificado{background:#ff4444;}
+  .Trocar{background:#ff8800;}
+
+  .card-buttons{display:flex;gap:8px;flex-wrap:wrap;}
+  .card-buttons button{
+    padding:6px 10px;
+    font-size:0.9rem;
+    border:none;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.2s;
+  }
+  .edit-btn{background:#ffaa00;color:#0a0f1a;}
+  .delete-btn{background:#ff4444;color:#fff;}
+  .qr-btn{background:#00c3ff;color:#0a0f1a;}
+
+  footer{text-align:center;font-size:0.9rem;color:#888;margin-top:30px;}
 
   /* Modal QR */
-  #qrModal {
-    display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:1000;
+  #qrModal{
+    display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.85);justify-content:center;align-items:center;z-index:1000;
+    animation:fadeIn 0.3s ease forwards;
   }
-  #qrModal div { background:#0b2239; padding:30px; border-radius:14px; text-align:center; position:relative; box-shadow:0 0 30px #00c3ff66; }
-  #qrModal span { position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px; color:#ff4444; }
-  #qrModal h3 { color:#00c3ff; margin-bottom:20px; }
-  #downloadQR { margin-top:20px; background:#00c3ff; color:#0a0f1a; border:none; padding:12px 20px; border-radius:8px; font-weight:600; cursor:pointer; }
+  #qrModalContent{
+    background:#0b2239;padding:30px;border-radius:18px;text-align:center;
+    position:relative;box-shadow:0 0 30px #00c3ff66;
+  }
+  #qrModalContent span{
+    position:absolute;top:10px;right:15px;cursor:pointer;font-size:24px;color:#ff4444;
+  }
+  #qrModalContent h3{color:#00c3ff;margin-bottom:20px;}
+  #downloadQR{margin-top:20px;background:#00c3ff;color:#0a0f1a;border:none;padding:12px 22px;border-radius:12px;font-weight:600;cursor:pointer;}
 
-  @media (max-width:600px){ header h1 { font-size:1.6rem; } }
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  @media(max-width:650px){.card{flex-direction:column;align-items:flex-start;}}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🔧 Sistema de Gestão de Ferramentais</h1>
-  <p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
+<h1>🔧 Sistema de Gestão de Ferramentais</h1>
+<p>Departamento de Amostras e Clicheria - Grupo Sovel da Amazônia</p>
 </header>
 
 <div class="menu">
@@ -125,20 +211,21 @@
 </div>
 
 <footer>
-  <p>&copy; 2025 Grupo Sovel da Amazônia</p>
+<p>&copy; 2025 Grupo Sovel da Amazônia</p>
 </footer>
 
-<!-- Modal QR -->
 <div id="qrModal">
-  <div>
+  <div id="qrModalContent">
     <span id="closeQR">&times;</span>
     <h3>QR Code do Ferramental</h3>
-    <div id="qrcode"></div>
+    <canvas id="qrcodeCanvas"></canvas>
     <button id="downloadQR">Baixar QR Code</button>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Biblioteca QRious -->
+<script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
@@ -165,65 +252,70 @@ const searchInput = document.getElementById("searchInput");
 let editId = null;
 let allFerramentais = [];
 
-// ==========================
-// Funções de interface
-// ==========================
-btnRegistrar.addEventListener("click", () => { form.style.display="flex"; listaDiv.style.display="none"; formMessage.style.display="none"; });
-btnListar.addEventListener("click", () => { form.style.display="none"; listarFerramentais(); });
+// QR Modal
+const qrModal = document.getElementById("qrModal");
+const closeQR = document.getElementById("closeQR");
+const qrcodeCanvas = document.getElementById("qrcodeCanvas");
+const downloadQR = document.getElementById("downloadQR");
 
-// ==========================
-// CRUD Firebase
-// ==========================
-form.addEventListener("submit", async e => {
-  e.preventDefault();
-  formMessage.style.display="none";
-  form.querySelectorAll("input, select").forEach(el=>el.classList.remove("invalid"));
-  const tipo = document.getElementById("tipo").value||"";
-  const codigo = document.getElementById("codigo").value.trim();
-  const nome = document.getElementById("nome").value.trim();
-  const registroInput = document.getElementById("registro").value;
-  const registro = registroInput ? registroInput : new Date().toISOString().split('T')[0];
-  const status = document.getElementById("status").value || "Disponível";
-  const responsavel = document.getElementById("responsavel").value || "Não atribuído";
+function gerarQR(dados){
+  qrModal.style.display="flex";
+  const qrText=`Código: ${dados.codigo}\nNome: ${dados.nome}\nTipo: ${dados.tipo}\nStatus: ${dados.status}\nRegistro: ${dados.registro}`;
+  new QRious({element:qrcodeCanvas,value:qrText,size:250});
+}
+closeQR.addEventListener("click",()=>{qrModal.style.display="none";});
 
-  if(!codigo||!nome){ if(!codigo) document.getElementById("codigo").classList.add("invalid"); if(!nome) document.getElementById("nome").classList.add("invalid"); formMessage.textContent="Preencha os campos obrigatórios!"; formMessage.className="message error"; formMessage.style.display="block"; return; }
-
-  try{
-    if(editId){
-      await updateDoc(doc(db,"ferramentais",editId),{tipo,codigo,nome,registro,status,responsavel});
-      formMessage.textContent="✅ Ferramental atualizado com sucesso!"; editId=null;
-      document.getElementById("submitBtn").textContent="Registrar Ferramental";
-    }else{
-      await addDoc(collection(db,"ferramentais"),{tipo,codigo,nome,registro,status,responsavel,criadoEm:new Date().toISOString(),ultimaManutencao:null});
-      formMessage.textContent="✅ Ferramental registrado com sucesso!";
-    }
-    formMessage.className="message success"; formMessage.style.display="block"; form.reset();
-  }catch(err){ console.error(err); formMessage.textContent="❌ Ocorreu um erro ao registrar."; formMessage.className="message error"; formMessage.style.display="block"; }
+downloadQR.addEventListener("click",()=>{
+  const link=document.createElement("a");
+  link.href=qrcodeCanvas.toDataURL("image/png");
+  link.download="ferramental_qr.png";
+  link.click();
 });
 
-// ==========================
-// Listagem e pesquisa
-// ==========================
+// Eventos de formulário e listagem
+btnRegistrar.addEventListener("click",()=>{form.style.display="flex"; listaDiv.style.display="none"; formMessage.style.display="none";});
+btnListar.addEventListener("click",()=>{form.style.display="none"; listarFerramentais();});
+
+form.addEventListener("submit",async e=>{
+  e.preventDefault();
+  formMessage.style.display="none";
+  form.querySelectorAll("input,select").forEach(el=>el.classList.remove("invalid"));
+  const tipo=document.getElementById("tipo").value||"";
+  const codigo=document.getElementById("codigo").value.trim();
+  const nome=document.getElementById("nome").value.trim();
+  const registroInput=document.getElementById("registro").value;
+  const registro=registroInput?registroInput:new Date().toISOString().split("T")[0];
+  const status=document.getElementById("status").value||"Disponível";
+  const responsavel=document.getElementById("responsavel").value||"Não atribuído";
+
+  if(!codigo||!nome){if(!codigo) document.getElementById("codigo").classList.add("invalid"); if(!nome) document.getElementById("nome").classList.add("invalid"); formMessage.textContent="Preencha os campos obrigatórios!"; formMessage.className="message error"; formMessage.style.display="block"; return;}
+
+  try{
+    if(editId){await updateDoc(doc(db,"ferramentais",editId),{tipo,codigo,nome,registro,status,responsavel}); formMessage.textContent="✅ Ferramental atualizado!"; editId=null; document.getElementById("submitBtn").textContent="Registrar Ferramental";}
+    else{await addDoc(collection(db,"ferramentais"),{tipo,codigo,nome,registro,status,responsavel,criadoEm:new Date().toISOString()}); formMessage.textContent="✅ Ferramental registrado!";}
+    formMessage.className="message success"; formMessage.style.display="block"; form.reset();
+  }catch(err){console.error(err); formMessage.textContent="❌ Erro ao registrar."; formMessage.className="message error"; formMessage.style.display="block";}
+});
+
 searchInput.addEventListener("input",()=>{ const filtro=searchInput.value.toLowerCase(); renderLista(allFerramentais.filter(f=>f.codigo.toLowerCase().includes(filtro)||f.nome.toLowerCase().includes(filtro)||f.tipo.toLowerCase().includes(filtro))); });
 
 async function listarFerramentais(){
-  listaContainer.innerHTML=""; allFerramentais=[];
+  listaContainer.innerHTML="";
+  allFerramentais=[];
   try{
-    const snapshot = await getDocs(collection(db,"ferramentais"));
-    if(snapshot.empty){ listaContainer.innerHTML="<p>Nenhum ferramental cadastrado.</p>"; listaDiv.style.display="flex"; return; }
-    snapshot.forEach(docItem=>{ const dados=docItem.data(); dados.id=docItem.id; allFerramentais.push(dados); });
+    const snapshot=await getDocs(collection(db,"ferramentais"));
+    if(snapshot.empty){ listaContainer.innerHTML="<p>Nenhum ferramental cadastrado.</p>"; listaDiv.style.display="flex"; return;}
+    snapshot.forEach(docItem=>{const dados=docItem.data();dados.id=docItem.id;allFerramentais.push(dados);});
     renderLista(allFerramentais); listaDiv.style.display="flex";
-  }catch(err){ console.error(err); }
+  }catch(err){console.error(err);}
 }
 
 function renderLista(ferramentais){
   listaContainer.innerHTML="";
-  if(ferramentais.length===0){ listaContainer.innerHTML="<p>Nenhum resultado encontrado.</p>"; return; }
-
+  if(ferramentais.length===0){listaContainer.innerHTML="<p>Nenhum resultado encontrado.</p>";return;}
   ferramentais.forEach(dados=>{
     const card=document.createElement("div"); card.className="card";
-    let classeStatus="";
-    switch(dados.status){ case "Em uso": classeStatus="EmUso"; break; case "Manutenção": classeStatus="Manutencao"; break; case "Danificado": classeStatus="Danificado"; break; case "Trocar": classeStatus="Trocar"; break; }
+    let classeStatus=""; switch(dados.status){case "Em uso":classeStatus="EmUso";break;case "Manutenção":classeStatus="Manutencao";break;case "Danificado":classeStatus="Danificado";break;case "Trocar":classeStatus="Trocar";break;}
     card.innerHTML=`
       <div class="card-info">
         <strong>${dados.codigo}</strong> — ${dados.nome}<br>
@@ -236,45 +328,12 @@ function renderLista(ferramentais){
         <button class="qr-btn">QR Code</button>
       </div>
     `;
-    // Botões
-    card.querySelector(".delete-btn").addEventListener("click", async()=>{
-      if(confirm("Deseja excluir este ferramental?")){ await deleteDoc(doc(db,"ferramentais",dados.id)); listarFerramentais(); }
-    });
-    card.querySelector(".edit-btn").addEventListener("click",()=>{
-      document.getElementById("tipo").value=dados.tipo; document.getElementById("codigo").value=dados.codigo;
-      document.getElementById("nome").value=dados.nome; document.getElementById("registro").value=dados.registro;
-      document.getElementById("status").value=dados.status; document.getElementById("responsavel").value=dados.responsavel;
-      form.style.display="flex"; listaDiv.style.display="none"; editId=dados.id; document.getElementById("submitBtn").textContent="Salvar Alterações"; formMessage.style.display="none";
-    });
-    card.querySelector(".qr-btn").addEventListener("click",()=>{ gerarQR(dados); });
+    card.querySelector(".delete-btn").addEventListener("click",async()=>{if(confirm("Deseja excluir este ferramental?")){await deleteDoc(doc(db,"ferramentais",dados.id));listarFerramentais();}});
+    card.querySelector(".edit-btn").addEventListener("click",()=>{document.getElementById("tipo").value=dados.tipo;document.getElementById("codigo").value=dados.codigo;document.getElementById("nome").value=dados.nome;document.getElementById("registro").value=dados.registro;document.getElementById("status").value=dados.status;document.getElementById("responsavel").value=dados.responsavel;form.style.display="flex";listaDiv.style.display="none";editId=dados.id;document.getElementById("submitBtn").textContent="Salvar Alterações";formMessage.style.display="none";});
+    card.querySelector(".qr-btn").addEventListener("click",()=>{gerarQR(dados);});
     listaContainer.appendChild(card);
   });
 }
-
-// ==========================
-// QR Code Modal
-// ==========================
-const qrModal=document.getElementById("qrModal");
-const closeQR=document.getElementById("closeQR");
-const qrcodeContainer=document.getElementById("qrcode");
-const downloadQR=document.getElementById("downloadQR");
-let qrInstance=null;
-
-function gerarQR(dados){
-  qrModal.style.display="flex"; qrcodeContainer.innerHTML="";
-  const texto = `Código: ${dados.codigo}\nNome: ${dados.nome}\nTipo: ${dados.tipo}\nStatus: ${dados.status}\nRegistro: ${dados.registro}`;
-  qrInstance=new QRCode(qrcodeContainer,{text:texto,width:200,height:200,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
-}
-
-closeQR.addEventListener("click",()=>{ qrModal.style.display="none"; qrcodeContainer.innerHTML=""; });
-downloadQR.addEventListener("click",()=>{
-  if(qrInstance){
-    const img = qrcodeContainer.querySelector("img");
-    if(img){
-      const link=document.createElement("a"); link.href=img.src; link.download="ferramental_qr.png"; link.click();
-    }
-  }
-});
 </script>
 </body>
 </html>
