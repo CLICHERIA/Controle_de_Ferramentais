@@ -33,28 +33,28 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
         // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
+            authDomain: "dacsovel-53481.firebaseapp.com",
+            databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com", // URL do Realtime Database
+            projectId: "dacsovel-53481",
+            storageBucket: "dacsovel-53481.appspot.com",
+            messagingSenderId: "37867522513",
+            appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+        };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const ferramentaisCol = collection(db, "ferramentais");
+        const db = getDatabase(app);
+        const ferramentaisRef = ref(db, "ferramentais"); // Caminho no Realtime Database
 
         const tabela = document.getElementById("tabela");
 
         function exibirFerramentais(dados) {
             tabela.innerHTML = "";
-            dados.forEach(doc => {
-                const item = doc.data();
+            dados.forEach(item => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td>${item.tipo || ""}</td>
@@ -72,11 +72,15 @@
             const termo = document.getElementById('busca').value.toLowerCase();
 
             try {
-                const snapshot = await getDocs(ferramentaisCol);
-                const filtrados = snapshot.docs.filter(doc => {
-                    const data = doc.data();
-                    const sv = data.sv ? data.sv.toLowerCase() : "";
-                    const cliente = data.cliente ? data.cliente.toLowerCase() : "";
+                const snapshot = await get(ferramentaisRef);
+                const dados = snapshot.exists() ? snapshot.val() : {};
+
+                // Transformar objeto em array
+                const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
+
+                const filtrados = lista.filter(item => {
+                    const sv = item.sv ? item.sv.toLowerCase() : "";
+                    const cliente = item.cliente ? item.cliente.toLowerCase() : "";
                     return sv.includes(termo) || cliente.includes(termo);
                 });
 
