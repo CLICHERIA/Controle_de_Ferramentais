@@ -86,10 +86,8 @@
       gap: 5px;
     }
 
-    .qr-canvas {
-      background: #fff;
-      padding: 5px;
-      border-radius: 5px;
+    .qr-placeholder {
+      margin-top: 5px;
     }
 
   </style>
@@ -155,6 +153,7 @@
               <button class="editar">Editar</button>
               <button class="excluir">Excluir</button>
               <button class="qrcode">Gerar QR Code</button>
+              <button class="exportar">Exportar QR Code</button>
             </div>
             <div class="qr-placeholder"></div>
           </td>
@@ -175,7 +174,7 @@
           }
         };
 
-        // Botão QR Code
+        // Botão Gerar QR Code
         tr.querySelector(".qrcode").onclick = () => {
           const qrPlaceholder = tr.querySelector(".qr-placeholder");
           qrPlaceholder.innerHTML = ""; // limpa QR anterior
@@ -193,12 +192,25 @@
           const canvas = qrPlaceholder.querySelector("canvas");
           const ctx = canvas.getContext("2d");
           const logo = new Image();
-          logo.src = "docs/logosovel1337.png"; // caminho da logo no seu projeto
+          logo.src = "docs/logosovel1337.png";
           logo.onload = () => {
-            const x = canvas.width/2 - 20;
-            const y = canvas.height/2 - 20;
+            const x = canvas.width / 2 - 20;
+            const y = canvas.height / 2 - 20;
             ctx.drawImage(logo, x, y, 40, 40);
           };
+        };
+
+        // Botão Exportar QR Code
+        tr.querySelector(".exportar").onclick = () => {
+          const canvas = tr.querySelector(".qr-placeholder canvas");
+          if (!canvas) {
+            alert("Gerar o QR Code antes de exportar!");
+            return;
+          }
+          const link = document.createElement("a");
+          link.href = canvas.toDataURL("image/png");
+          link.download = `QR_${item.sv}.png`;
+          link.click();
         };
 
         tabela.appendChild(tr);
