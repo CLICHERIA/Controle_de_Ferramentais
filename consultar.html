@@ -1,83 +1,56 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Consultar Ferramental - SGF</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultar Ferramental</title>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_AUTH_DOMAIN",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_STORAGE_BUCKET",
+    messagingSenderId: "SEU_MSG_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  setPersistence(auth, browserLocalPersistence);
+
+  onAuthStateChanged(auth, user => {
+    if(!user){
+      window.location.href = "index.html";
+    } else {
+      document.getElementById('nomeUsuario').textContent = user.displayName || user.email;
+      document.getElementById('funcaoUsuario').textContent = "Operador D.A.C";
+    }
+  });
+</script>
 
 <style>
-  body {
-    background-color: #0a0f1a;
-    margin: 0;
-    padding: 0;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-  }
-
-  html, body { width:100%; height:100%; }
-
-  a { color: #00eaff; text-decoration: none; }
-
-  .logo-container {
-    display: block;
-    text-align: center;
-    margin: 40px 0 20px 0;
-  }
-
-  img.logo { width: 200px; filter: drop-shadow(0 0 8px #00eaff); }
-
-  .neon-button {
-    display: inline-block;
-    padding: 8px 20px;
-    color: #00eaff;
-    font-weight: bold;
-    font-size: 14px;
-    border-radius: 10px;
-    background-color: #0d1b2a;
-    box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
-    transition: 0.3s ease-in-out;
-    margin: 3px;
-    animation: neonPulse 1.5s infinite alternate;
-    cursor:pointer;
-  }
-
-  .neon-button:hover {
-    color: #00ffff;
-    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
-  }
-
-  @keyframes neonPulse {
-    0%,100{box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff;}
-    50%{box-shadow:0 0 15px #00eaff,0 0 30px #00eaff,0 0 45px #00eaff77;}
-  }
-
-  #painelUsuario {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #0d1b2a;
-    padding: 10px 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px #00eaff55;
-    color: #00eaff;
-    text-align: right;
-    z-index: 1000;
-  }
-
-  .centralizado {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  table { width:100%; border-collapse: collapse; margin-top:20px; }
-  th, td { padding:10px; text-align:left; border-bottom:1px solid #00eaff44; }
+  body { background:#0a0f1a; color:#fff; font-family:'Segoe UI',sans-serif; margin:0; padding:0;}
+  .logo-container{ text-align:center; margin-top:30px; filter: drop-shadow(0 0 8px #00eaff);}
+  img.logo{ width:200px;}
+  .centralizado{ max-width:900px; margin:30px auto; text-align:center;}
+  input{ width:60%; padding:10px; border-radius:8px; border:none; background:#0d1b2a; color:#fff; box-shadow:0 0 10px #00eaff22;}
+  .neon-button{ padding:10px 20px; margin:5px; background:#0d1b2a; color:#00eaff; font-weight:bold; border-radius:10px; text-decoration:none; display:inline-block; box-shadow:0 0 5px #00eaff,0 0 10px #00eaff; transition:0.3s;}
+  .neon-button:hover{ color:#00ffff; box-shadow:0 0 20px #00eaff;}
+  .top-right{ position:absolute; top:15px; right:20px; text-align:right; color:#00eaff; font-weight:bold;}
+  table{ width:100%; border-collapse:collapse; margin-top:20px;}
+  th, td{ padding:10px; border:1px solid #00eaff;}
 </style>
 </head>
 <body>
 
-<div id="painelUsuario">
-  <div><b>Nome:</b> <span id="nomeUsuario">---</span></div>
-  <div><b>Função:</b> <span id="funcaoUsuario">---</span></div>
+<div class="top-right">
+  Nome: <span id="nomeUsuario"></span><br>
+  Função: <span id="funcaoUsuario"></span>
 </div>
 
 <div class="logo-container">
@@ -85,113 +58,126 @@
 </div>
 
 <div class="centralizado">
-  <h2 style="color:#00bfff;">Consultar Ferramental</h2>
-
-  <input type="text" id="busca" placeholder="Buscar por SV ou Cliente">
-  <button id="btnBuscar" class="neon-button">Buscar</button>
+  <h2>Consultar Ferramental</h2>
+  <input type="text" id="busca" placeholder="Digite SV ou Cliente">
+  <button class="neon-button" id="btnBuscar">Buscar</button>
 
   <table id="tabelaResultados">
     <thead>
       <tr>
+        <th>Tipo</th>
         <th>SV</th>
         <th>Cliente</th>
-        <th>Tipo</th>
         <th>Data Registro</th>
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Resultados aparecem aqui -->
-    </tbody>
+    <tbody></tbody>
   </table>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.firebasestorage.app",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const equipeDAC = {
-  "samueldson@example.com":"Supervisor",
-  "rafaelly@example.com":"Analista Administrativo",
-  "elienson@example.com":"Assistente",
-  "gustavo@example.com":"Assistente",
-  "vanessa@example.com":"Assistente"
-};
-
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    const nome = user.displayName || user.email;
-    const funcao = equipeDAC[user.email] || "Operador";
-    document.getElementById('nomeUsuario').textContent = nome;
-    document.getElementById('funcaoUsuario').textContent = funcao;
-  } else {
-    window.location.href = "index.html";
-  }
-});
-
-// Exemplo de dados
-const dadosExemplo = [
-  {sv:"SV123", cliente:"Cliente A", tipo:"Faca", data:"2025-11-03"},
-  {sv:"SV456", cliente:"Cliente B", tipo:"Clichê", data:"2025-11-02"}
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script>
+const dadosFerramentais = [
+  {tipo:"Faca", sv:"F123", cliente:"Cliente1", dataRegistro:"2025-10-01"},
+  {tipo:"Clichê", sv:"C456", cliente:"Cliente2", dataRegistro:"2025-10-02"}
 ];
 
-function renderTabela(ferramentais){
+function renderTabela(filtros){
   const tbody = document.querySelector("#tabelaResultados tbody");
   tbody.innerHTML = "";
-  ferramentais.forEach(f=>{
+  filtros.forEach((f,index)=>{
     const tr = document.createElement("tr");
     tr.innerHTML = `
+      <td>${f.tipo}</td>
       <td>${f.sv}</td>
       <td contenteditable="false">${f.cliente}</td>
-      <td>${f.tipo}</td>
-      <td contenteditable="false">${f.data}</td>
+      <td contenteditable="false">${f.dataRegistro}</td>
       <td>
-        <button class="neon-button editar">Editar</button>
-        <button class="neon-button excluir">Excluir</button>
-        <button class="neon-button gerarQR">QR Code</button>
+        <button class="neon-button" onclick="editar(${index},this)">Editar</button>
+        <button class="neon-button" onclick="excluir(${index})">Excluir</button>
+        <button class="neon-button" onclick="gerarQRCode('${f.sv}')">QR Code</button>
       </td>
     `;
     tbody.appendChild(tr);
-
-    tr.querySelector(".editar").addEventListener("click", ()=>{
-      const tdCliente = tr.cells[1];
-      const tdData = tr.cells[3];
-      tdCliente.contentEditable = true;
-      tdData.contentEditable = true;
-      tdCliente.focus();
-      tdData.focus();
-      alert("Edite os campos Cliente e Data e pressione Enter para salvar");
-    });
-
-    tr.querySelector(".excluir").addEventListener("click", ()=>{
-      if(confirm("Deseja realmente excluir este ferramental?")){
-        tr.remove();
-      }
-    });
-
-    tr.querySelector(".gerarQR").addEventListener("click", ()=>{
-      alert("Aqui será gerado o QR Code com logo Sovel em PNG"); // Substituir com geração real
-    });
   });
+}
+
+function editar(i,btn){
+  const tr = btn.closest("tr");
+  const clienteTd = tr.children[2];
+  const dataTd = tr.children[3];
+  if(btn.textContent === "Editar"){
+    clienteTd.contentEditable = "true";
+    dataTd.contentEditable = "true";
+    btn.textContent = "Salvar";
+  } else {
+    clienteTd.contentEditable = "false";
+    dataTd.contentEditable = "false";
+    dadosFerramentais[i].cliente = clienteTd.textContent;
+    dadosFerramentais[i].dataRegistro = dataTd.textContent;
+    btn.textContent = "Editar";
+    alert("Alterações salvas!");
+  }
+}
+
+function excluir(i){
+  if(confirm("Deseja excluir este ferramental?")){
+    dadosFerramentais.splice(i,1);
+    renderTabela(dadosFerramentais);
+  }
+}
+
+function gerarQRCode(texto){
+  const modal = document.createElement("div");
+  modal.style.position = "fixed";
+  modal.style.top="0"; modal.style.left="0";
+  modal.style.width="100%"; modal.style.height="100%";
+  modal.style.background="rgba(0,0,0,0.8)";
+  modal.style.display="flex"; modal.style.alignItems="center"; modal.style.justifyContent="center";
+  modal.style.zIndex="9999";
+  modal.innerHTML = `
+    <div style="background:#0a0f1a; padding:20px; border-radius:20px; text-align:center;">
+      <canvas id="qrCanvas"></canvas>
+      <br><button class="neon-button" id="fechar">Fechar</button>
+      <button class="neon-button" id="baixar">Baixar PNG</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const canvas = modal.querySelector("#qrCanvas");
+  QRCode.toCanvas(canvas, texto, {
+    width:250,
+    margin:2,
+    color: {dark:"#00eaff", light:"#0a0f1a"}
+  }).then(()=>{
+    // Inserir logo no centro
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.src="logosovel1337.png";
+    img.onload = ()=>{
+      const size = canvas.width*0.25;
+      ctx.drawImage(img, canvas.width/2 - size/2, canvas.height/2 - size/2, size, size);
+    };
+  });
+
+  modal.querySelector("#fechar").onclick = ()=> modal.remove();
+  modal.querySelector("#baixar").onclick = ()=>{
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = `${texto}.png`;
+    link.click();
+  };
 }
 
 document.getElementById("btnBuscar").addEventListener("click", ()=>{
   const termo = document.getElementById("busca").value.toLowerCase();
-  const filtrado = dadosExemplo.filter(f=>f.sv.toLowerCase().includes(termo) || f.cliente.toLowerCase().includes(termo));
-  renderTabela(filtrado);
+  const filtrados = dadosFerramentais.filter(f=>f.sv.toLowerCase().includes(termo) || f.cliente.toLowerCase().includes(termo));
+  renderTabela(filtrados);
 });
+
+renderTabela(dadosFerramentais);
 </script>
+
 </body>
 </html>
