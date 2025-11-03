@@ -174,10 +174,10 @@
           }
         };
 
-        // Botão Gerar QR Code
+        // Botão Gerar QR Code com glow neon
         tr.querySelector(".qrcode").onclick = () => {
           const qrPlaceholder = tr.querySelector(".qr-placeholder");
-          qrPlaceholder.innerHTML = ""; // limpa QR anterior
+          qrPlaceholder.innerHTML = "";
 
           const qr = new QRCode(qrPlaceholder, {
             text: `SV: ${item.sv}\nCliente: ${item.cliente}`,
@@ -188,15 +188,25 @@
             correctLevel : QRCode.CorrectLevel.H
           });
 
-          // Inserir logo Sovel no centro
           const canvas = qrPlaceholder.querySelector("canvas");
           const ctx = canvas.getContext("2d");
+
+          // Inserir logo Sovel no centro
           const logo = new Image();
           logo.src = "docs/logosovel1337.png";
           logo.onload = () => {
             const x = canvas.width / 2 - 20;
             const y = canvas.height / 2 - 20;
+
+            // Glow neon no logo
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#00eaff";
             ctx.drawImage(logo, x, y, 40, 40);
+
+            // Contorno neon
+            ctx.strokeStyle = "#00eaff";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, 40, 40);
           };
         };
 
