@@ -1,101 +1,236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta de Ferramentais</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        input, button { padding: 8px; margin: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Ferramentais - SGF</title>
+
+  <style>
+    body {
+      background-color: #0a0f1a;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      color: #00eaff;
+      text-shadow: 0 0 5px #00eaff;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      margin: 5px 0;
+    }
+
+    input {
+      width: 300px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      color: #00eaff;
+      background-color: #0d1b2a;
+      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      color: #00ffff;
+      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
+    }
+
+    table {
+      width: 100%;
+      max-width: 1000px;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #0d1b2a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 20px #00eaff22;
+    }
+
+    th, td {
+      border: 1px solid #00eaff44;
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #091224;
+      color: #00eaff;
+    }
+
+    td button {
+      font-size: 14px;
+      padding: 5px 8px;
+      margin: 0 2px;
+      box-shadow: 0 0 3px #00eaff;
+    }
+
+    .qr-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .qr-canvas {
+      background: #fff;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+  </style>
 </head>
 <body>
-    <h1>Consulta de Ferramentais</h1>
-    <input type="text" id="busca" placeholder="Digite SV ou Cliente">
-    <button id="btnBuscar">Buscar</button>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Tipo</th>
-                <th>SV</th>
-                <th>Cliente</th>
-                <th>Data Fabricação</th>
-                <th>Data Registro</th>
-                <th>Responsável</th>
-            </tr>
-        </thead>
-        <tbody id="tabela"></tbody>
-    </table>
+  <h1>Consulta de Ferramentais</h1>
+  <input type="text" id="busca" placeholder="Digite SV ou Cliente">
+  <button id="btnBuscar">Buscar</button>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>SV</th>
+        <th>Cliente</th>
+        <th>Data Fabricação</th>
+        <th>Data Registro</th>
+        <th>Responsável</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela"></tbody>
+  </table>
 
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-            authDomain: "dacsovel-53481.firebaseapp.com",
-            databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com", // URL do Realtime Database
-            projectId: "dacsovel-53481",
-            storageBucket: "dacsovel-53481.appspot.com",
-            messagingSenderId: "37867522513",
-            appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+  <!-- Biblioteca QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getDatabase, ref, get, child, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+      authDomain: "dacsovel-53481.firebaseapp.com",
+      databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+      projectId: "dacsovel-53481",
+      storageBucket: "dacsovel-53481.appspot.com",
+      messagingSenderId: "37867522513",
+      appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const ferramentaisRef = ref(db, "ferramentais");
+
+    const tabela = document.getElementById("tabela");
+
+    function exibirFerramentais(dados) {
+      tabela.innerHTML = "";
+      dados.forEach(item => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${item.tipo || ""}</td>
+          <td>${item.sv || ""}</td>
+          <td>${item.cliente || ""}</td>
+          <td>${item.dataFabricacao || ""}</td>
+          <td>${item.dataRegistro || ""}</td>
+          <td>${item.responsavel || ""}</td>
+          <td class="qr-cell">
+            <div>
+              <button class="editar">Editar</button>
+              <button class="excluir">Excluir</button>
+              <button class="qrcode">Gerar QR Code</button>
+            </div>
+            <div class="qr-placeholder"></div>
+          </td>
+        `;
+
+        // Botão Editar
+        tr.querySelector(".editar").onclick = () => {
+          alert("Função de edição para SV: " + item.sv);
+          // Redirecionar ou abrir modal para edição
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const ferramentaisRef = ref(db, "ferramentais"); // Caminho no Realtime Database
+        // Botão Excluir
+        tr.querySelector(".excluir").onclick = async () => {
+          if(confirm("Deseja realmente excluir este registro?")) {
+            await remove(child(ferramentaisRef, item.id));
+            alert("Registro excluído com sucesso!");
+            tr.remove();
+          }
+        };
 
-        const tabela = document.getElementById("tabela");
+        // Botão QR Code
+        tr.querySelector(".qrcode").onclick = () => {
+          const qrPlaceholder = tr.querySelector(".qr-placeholder");
+          qrPlaceholder.innerHTML = ""; // limpa QR anterior
 
-        function exibirFerramentais(dados) {
-            tabela.innerHTML = "";
-            dados.forEach(item => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${item.tipo || ""}</td>
-                    <td>${item.sv || ""}</td>
-                    <td>${item.cliente || ""}</td>
-                    <td>${item.dataFabricacao || ""}</td>
-                    <td>${item.dataRegistro || ""}</td>
-                    <td>${item.responsavel || ""}</td>
-                `;
-                tabela.appendChild(tr);
-            });
+          const qr = new QRCode(qrPlaceholder, {
+            text: `SV: ${item.sv}\nCliente: ${item.cliente}`,
+            width: 150,
+            height: 150,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+          });
+
+          // Inserir logo Sovel no centro
+          const canvas = qrPlaceholder.querySelector("canvas");
+          const ctx = canvas.getContext("2d");
+          const logo = new Image();
+          logo.src = "docs/logosovel1337.png"; // caminho da logo no seu projeto
+          logo.onload = () => {
+            const x = canvas.width/2 - 20;
+            const y = canvas.height/2 - 20;
+            ctx.drawImage(logo, x, y, 40, 40);
+          };
+        };
+
+        tabela.appendChild(tr);
+      });
+    }
+
+    document.getElementById('btnBuscar').onclick = async () => {
+      const termo = document.getElementById('busca').value.toLowerCase();
+
+      try {
+        const snapshot = await get(ferramentaisRef);
+        const dados = snapshot.exists() ? snapshot.val() : {};
+        const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
+
+        const filtrados = lista.filter(item => {
+          const sv = item.sv ? item.sv.toLowerCase() : "";
+          const cliente = item.cliente ? item.cliente.toLowerCase() : "";
+          return sv.includes(termo) || cliente.includes(termo);
+        });
+
+        if (filtrados.length === 0) {
+          alert("Nenhum ferramental encontrado");
+          tabela.innerHTML = "";
+        } else {
+          exibirFerramentais(filtrados);
         }
 
-        document.getElementById('btnBuscar').onclick = async () => {
-            const termo = document.getElementById('busca').value.toLowerCase();
-
-            try {
-                const snapshot = await get(ferramentaisRef);
-                const dados = snapshot.exists() ? snapshot.val() : {};
-
-                // Transformar objeto em array
-                const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
-
-                const filtrados = lista.filter(item => {
-                    const sv = item.sv ? item.sv.toLowerCase() : "";
-                    const cliente = item.cliente ? item.cliente.toLowerCase() : "";
-                    return sv.includes(termo) || cliente.includes(termo);
-                });
-
-                if (filtrados.length === 0) {
-                    alert("Nenhum ferramental encontrado");
-                    tabela.innerHTML = "";
-                } else {
-                    exibirFerramentais(filtrados);
-                }
-
-            } catch (err) {
-                console.error("Erro ao buscar dados:", err);
-                alert("Erro ao buscar dados");
-            }
-        };
-    </script>
+      } catch (err) {
+        console.error("Erro ao buscar dados:", err);
+        alert("Erro ao buscar dados");
+      }
+    };
+  </script>
 </body>
 </html>
