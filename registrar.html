@@ -7,140 +7,131 @@
   <style>
     body {
       background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
+
+    a {
+      color: #00eaff;
+      text-decoration: none;
     }
+
+    .logo-container {
+      margin-top: 40px;
+      text-align: center;
+    }
+
     img.logo {
       width: 200px;
       filter: drop-shadow(0 0 8px #00eaff);
     }
+
     h1 {
       color: #00eaff;
       text-shadow: 0 0 20px #00eaff;
       text-align: center;
       margin: 20px 0;
     }
+
     form {
-      background: #0d1b2a;
-      padding: 20px;
+      background-color: #0d1b2a;
+      padding: 30px;
       border-radius: 15px;
       box-shadow: 0 0 20px #00eaff33;
       max-width: 500px;
       width: 90%;
     }
+
     label {
       display: block;
       margin-top: 15px;
-      color: #00eaff;
+      margin-bottom: 5px;
       font-weight: bold;
+      color: #00eaff;
     }
+
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
       border-radius: 8px;
-      border: 1px solid #00eaff;
-      background: #0a0f1a;
+      border: 1px solid #00eaff44;
+      background-color: #0a0f1a;
       color: #ffffff;
+      font-size: 14px;
     }
+
     button {
       margin-top: 20px;
       width: 100%;
-      padding: 15px;
-      font-weight: bold;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
+      padding: 12px;
       background-color: #0d1b2a;
       color: #00eaff;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
       box-shadow:
         0 0 5px #00eaff,
         0 0 10px #00eaff,
-        0 0 20px #00eaff,
-        0 0 40px #00eaff55;
-      cursor: pointer;
+        0 0 20px #00eaff;
       transition: 0.3s ease-in-out;
-      animation: neonPulse 1.5s infinite alternate;
     }
+
     button:hover {
       color: #00ffff;
       box-shadow:
         0 0 10px #00eaff,
         0 0 20px #00eaff,
-        0 0 30px #00eaff,
-        0 0 50px #00eaff77;
+        0 0 30px #00eaff;
     }
-    @keyframes neonPulse {
-      0%, 100% {
-        box-shadow:
-          0 0 5px #00eaff,
-          0 0 10px #00eaff,
-          0 0 20px #00eaff;
-      }
-      50% {
-        box-shadow:
-          0 0 15px #00eaff,
-          0 0 30px #00eaff,
-          0 0 45px #00eaff77;
-      }
-    }
-    a {
-      display: block;
-      margin-top: 15px;
-      text-align: center;
-      color: #00eaff;
-      text-decoration: none;
-    }
-    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
-  <!-- Logo centralizada -->
-  <div class="logo-container">
-    <img src="../logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" class="logo">
-  </div>
+<div class="logo-container">
+  <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" class="logo">
+</div>
 
-  <h1>Registrar Ferramental</h1>
+<h1>Registrar Ferramental</h1>
 
-  <form id="formRegistrar">
-    <label for="tipo">Tipo de Ferramental</label>
-    <select id="tipo" required>
-      <option value="">Selecione</option>
-      <option value="faca">Faca</option>
-      <option value="cliche">Clichê</option>
-    </select>
+<form id="formRegistrar">
+  <label for="tipo">Tipo de Ferramental</label>
+  <select id="tipo" required>
+    <option value="">Selecione</option>
+    <option value="faca">Faca</option>
+    <option value="cliche">Clichê</option>
+  </select>
 
-    <label for="sv">SV</label>
-    <input type="text" id="sv" placeholder="Ex: F123" required>
+  <label for="sv">SV</label>
+  <input type="text" id="sv" placeholder="Ex: F123" required>
 
-    <label for="cliente">Cliente</label>
-    <input type="text" id="cliente" placeholder="Nome do cliente" required>
+  <label for="cliente">Cliente</label>
+  <input type="text" id="cliente" placeholder="Nome do Cliente" required>
 
-    <label for="dataFabricacao">Data de Fabricação</label>
-    <input type="date" id="dataFabricacao">
+  <label for="dataFab">Data de Fabricação</label>
+  <input type="date" id="dataFab">
 
-    <label for="dataRegistro">Data de Registro no Sistema</label>
-    <input type="date" id="dataRegistro" required>
+  <label for="dataRegistro">Data de Registro no Sistema</label>
+  <input type="date" id="dataRegistro" required>
 
-    <label for="responsavel">Responsável pelo Registro</label>
-    <input type="text" id="responsavel" placeholder="Nome do responsável" required>
+  <label for="responsavel">Responsável pelo Registro</label>
+  <input type="text" id="responsavel" placeholder="Seu nome" required>
 
-    <button type="submit">Registrar</button>
-  </form>
+  <button type="submit">Registrar</button>
+</form>
 
-  <a href="menu.html">← Voltar ao Menu</a>
+<script>
+  const form = document.getElementById('formRegistrar');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Ferramental registrado com sucesso!');
+  });
+</script>
 
 </body>
 </html>
