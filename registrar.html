@@ -54,47 +54,47 @@ firebase.auth().onAuthStateChanged(user => {
     if (!user) {
         alert("Faça login primeiro!");
         window.location.href = "index.html";
-    }
-
-
-const dbRef = firebase.database().ref('ferramentais');
-
-document.getElementById('btnRegistrar').onclick = () => {
-    const tipo = document.getElementById('tipo').value;
-    const sv = document.getElementById('sv').value.trim();
-    const cliente = document.getElementById('cliente').value.trim();
-    const dataFabricacao = document.getElementById('dataFabricacao').value;
-    const dataRegistro = document.getElementById('dataRegistro').value;
-    const responsavel = document.getElementById('responsavel').value.trim();
-
-    if (!tipo || !sv || !cliente || !responsavel) {
-        alert("Preencha todos os campos obrigatórios (Tipo, SV, Cliente, Responsável)");
         return;
     }
 
-    const novoFerramental = {
-        tipo,
-        sv,
-        cliente,
-        dataFabricacao: dataFabricacao || "",
-        dataRegistro: dataRegistro || "",
-        responsavel
-    };
+    const dbRef = firebase.database().ref('ferramentais');
 
-    // Salva no Firebase
-    dbRef.push(novoFerramental)
-    .then(() => {
-        alert("Ferramental registrado com sucesso!");
-        // Limpa campos
-        document.getElementById('tipo').value = "";
-        document.getElementById('sv').value = "";
-        document.getElementById('cliente').value = "";
-        document.getElementById('dataFabricacao').value = "";
-        document.getElementById('dataRegistro').value = "";
-        document.getElementById('responsavel').value = "";
-    })
-    .catch(err => alert("Erro ao registrar: " + err.message));
-};
+    document.getElementById('btnRegistrar').onclick = () => {
+        const tipo = document.getElementById('tipo').value;
+        const sv = document.getElementById('sv').value.trim();
+        const cliente = document.getElementById('cliente').value.trim();
+        const dataFabricacao = document.getElementById('dataFabricacao').value;
+        const dataRegistro = document.getElementById('dataRegistro').value;
+        const responsavel = document.getElementById('responsavel').value.trim();
+
+        if (!tipo || !sv || !cliente || !responsavel) {
+            alert("Preencha todos os campos obrigatórios (Tipo, SV, Cliente, Responsável)");
+            return;
+        }
+
+        const novoFerramental = {
+            tipo,
+            sv,
+            cliente,
+            dataFabricacao: dataFabricacao || "",
+            dataRegistro: dataRegistro || "",
+            responsavel
+        };
+
+        dbRef.push(novoFerramental)
+        .then(() => {
+            alert("Ferramental registrado com sucesso!");
+            // Limpa campos
+            document.getElementById('tipo').value = "";
+            document.getElementById('sv').value = "";
+            document.getElementById('cliente').value = "";
+            document.getElementById('dataFabricacao').value = "";
+            document.getElementById('dataRegistro').value = "";
+            document.getElementById('responsavel').value = "";
+        })
+        .catch(err => alert("Erro ao registrar: " + err.message));
+    };
+});
 </script>
 
 </body>
