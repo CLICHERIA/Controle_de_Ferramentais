@@ -3,46 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menu Principal</title>
+<title>Menu - Sistema de Gestão</title>
 
 <style>
 body {
     background-color: #0a0f1a;
-    margin: 0; padding: 0;
     color: #ffffff;
     font-family: 'Segoe UI', sans-serif;
-    display: flex; flex-direction: column; align-items: center;
+    margin:0; padding:0;
 }
-h1 { color: #00eaff; text-shadow: 0 0 20px #00eaff; margin-top: 40px; }
-.neon-button {
-    display: inline-block;
-    padding: 15px 35px;
-    margin: 15px;
-    color: #00eaff;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    border-radius: 10px;
-    background-color: #0d1b2a;
-    box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff;
-    transition: 0.3s ease-in-out;
-}
-.neon-button:hover {
-    box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff, 0 0 30px #00eaff;
-    color: #00ffff;
-}
-.container { display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
-</style>
 
+.logo-container {
+    display: inline-block;
+    padding: 20px;
+    margin: 20px auto;
+    text-align:center;
+    filter: drop-shadow(0 0 8px #00eaff);
+}
+
+img.logo { display:block; margin:0 auto; }
+
+h1 { text-align:center; color:#00eaff; text-shadow:0 0 20px #00eaff; }
+
+.container {
+    display:flex; flex-direction:column; align-items:center;
+    margin-top:30px;
+}
+
+.neon-button {
+    display:inline-block;
+    padding:15px 35px;
+    margin:10px;
+    color:#00eaff;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:16px;
+    border-radius:10px;
+    background-color:#0d1b2a;
+    box-shadow: 0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff,0 0 40px #00eaff55;
+    transition:0.3s ease-in-out;
+    animation: neonPulse 1.5s infinite alternate;
+}
+
+.neon-button:hover {
+    color:#00ffff;
+    box-shadow:0 0 10px #00eaff,0 0 20px #00eaff,0 0 30px #00eaff,0 0 50px #00eaff77;
+}
+
+@keyframes neonPulse {
+    0%,100% { box-shadow:0 0 5px #00eaff,0 0 10px #00eaff,0 0 20px #00eaff; }
+    50% { box-shadow:0 0 15px #00eaff,0 0 30px #00eaff,0 0 45px #00eaff77; }
+}
+</style>
 </head>
 <body>
 
-<h1>⚙️ Menu Principal ⚙️</h1>
+<div class="logo-container">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel" width="200" class="logo">
+</div>
+
+<h1>Menu Principal</h1>
 
 <div class="container">
-  <a href="registrar.html" class="neon-button">Registrar Ferramental</a>
-  <a href="consultar.html" class="neon-button">Consultar Ferramental</a>
-  <a href="index.html" class="neon-button">Sair</a>
+    <a href="registrar.html" class="neon-button">📋 Registrar Ferramenta</a>
+    <a href="consultar.html" class="neon-button">🔍 Consultar Ferramenta</a>
+    <a href="docs/index.html" class="neon-button">🏠 Voltar ao Painel Interativo</a>
 </div>
 
 </body>
