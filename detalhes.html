@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalhes do Ferramental</title>
+  <style>
+    body {
+      background-color: #0a0f1a;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background-color: #0d1b2a;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00eaff33;
+      max-width: 500px;
+      width: 90%;
+      text-align: left;
+    }
+
+    h2 {
+      color: #00eaff;
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 0 5px #00eaff;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    strong {
+      color: #00eaff;
+    }
+
+    .botoes {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #00eaff;
+      color: #0a0f1a;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #00eaff55;
+    }
+
+    button:hover {
+      background-color: #00ffff;
+      box-shadow: 0 0 20px #00eaff;
+    }
+
+    @media print {
+      button { display: none; }
+      body { background: #fff; color: #000; }
+      .card { box-shadow: none; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Detalhes do Ferramental</h2>
+    <p><strong>Tipo:</strong> <span id="tipo"></span></p>
+    <p><strong>Nº NF-e:</strong> <span id="nfe"></span></p>
+    <p><strong>SV:</strong> <span id="sv"></span></p>
+    <p><strong>Nome:</strong> <span id="nome"></span></p>
+    <p><strong>Data de Registro:</strong> <span id="dataRegistro"></span></p>
+    <p><strong>Responsável:</strong> <span id="responsavel"></span></p>
+
+    <div class="botoes">
+      <button onclick="window.history.back()">Voltar</button>
+      <button onclick="window.print()">Imprimir</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+      authDomain: "dacsovel-53481.firebaseapp.com",
+      databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+      projectId: "dacsovel-53481",
+      storageBucket: "dacsovel-53481.appspot.com",
+      messagingSenderId: "37867522513",
+      appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (id) {
+      const itemRef = child(ref(db, "ferramentais"), id);
+      get(itemRef).then(snapshot => {
+        if (snapshot.exists()) {
+          const item = snapshot.val();
+          document.getElementById("tipo").textContent = item.tipo || "";
+          document.getElementById("nfe").textContent = item.nfe || "";
+          document.getElementById("sv").textContent = item.sv || "";
+          document.getElementById("nome").textContent = item.nome || "";
+          document.getElementById("dataRegistro").textContent = item.dataRegistro || "";
+          document.getElementById("responsavel").textContent = item.responsavel || "";
+        } else {
+          alert("Ferramental não encontrado!");
+        }
+      }).catch(() => alert("Erro ao carregar dados!"));
+    } else {
+      alert("ID inválido!");
+    }
+  </script>
+</body>
+</html>
