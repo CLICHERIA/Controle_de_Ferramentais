@@ -56,31 +56,28 @@
     display: flex;
     justify-content: center;
     gap: 5px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Botões lado a lado */
     margin-bottom: 10px;
   }
 
   .qr-container {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     margin-top: 10px;
     position: relative;
   }
 
   .qr-canvas {
-    border: 20px solid #ffffff; /* Aumentei borda para melhor leitura */
+    border: 25px solid #ffffff; /* Quiet zone maior */
     border-radius: 10px;
     box-shadow: 0 0 10px #00eaff44;
   }
 
   .qr-logo {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 30px;  /* Diminuído para não atrapalhar QR */
-    height: 30px;
-    transform: translate(-50%, -50%);
+    width: 50px;  /* Logo proporcional ao QR */
+    height: 50px;
     pointer-events: none;
   }
 </style>
@@ -193,12 +190,15 @@ function exibirFerramentais(dados) {
         correctLevel: QRCode.CorrectLevel.H
       });
 
+      // Desenhar logo central
       const ctx = canvas.getContext("2d");
       const logoImg = new Image();
       logoImg.src = "logosovel1337.png";
       logoImg.onload = () => {
-        const logoSize = 30;
-        ctx.drawImage(logoImg, (canvas.width - logoSize)/2, (canvas.height - logoSize)/2, logoSize, logoSize);
+        const logoSize = 50;
+        const x = (canvas.width - logoSize) / 2;
+        const y = (canvas.height - logoSize) / 2;
+        ctx.drawImage(logoImg, x, y, logoSize, logoSize);
       };
     };
 
