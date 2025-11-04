@@ -1,91 +1,107 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta de Ferramentais - SGF</title>
-  <style>
-    body {
-      background-color: #0a0f1a;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
-      text-align:center;
-    }
-    h1 {
-      color: #00eaff;
-      text-shadow: 0 0 5px #00eaff;
-    }
-    input, button {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      margin: 5px;
-    }
-    input { width: 300px; }
-    button {
-      cursor: pointer;
-      font-weight: bold;
-      color: #00eaff;
-      background-color: #0d1b2a;
-      box-shadow: 0 0 5px #00eaff;
-    }
-    button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff;
-    }
-    table {
-      width: 100%;
-      max-width: 1200px;
-      border-collapse: collapse;
-      margin: 20px auto;
-      background-color: #0d1b2a;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #00eaff22;
-    }
-    th, td {
-      border: 1px solid #00eaff44;
-      padding: 8px;
-      text-align: center;
-      vertical-align: middle;
-    }
-    th { background-color: #091224; color: #00eaff; }
-    .btn-group {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    .qr-placeholder {
-      margin-top: 10px;
-    }
-    .qr-placeholder canvas {
-      border-radius: 10px;
-      border: 10px solid #ffffff; /* Borda branca para facilitar leitura */
-      box-shadow: 0 0 10px #00eaff44;
-    }
-    video { width: 300px; border-radius: 10px; margin-top: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Ferramentais - SGF</title>
+<style>
+  body {
+    background-color: #0a0f1a;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
+    text-align:center;
+  }
+  h1 {
+    color: #00eaff;
+    text-shadow: 0 0 5px #00eaff;
+  }
+  input, button {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    margin: 5px;
+  }
+  input { width: 300px; }
+  button {
+    cursor: pointer;
+    font-weight: bold;
+    color: #00eaff;
+    background-color: #0d1b2a;
+    box-shadow: 0 0 5px #00eaff;
+  }
+  button:hover {
+    color: #00ffff;
+    box-shadow: 0 0 10px #00eaff;
+  }
+  table {
+    width: 100%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    margin: 20px auto;
+    background-color: #0d1b2a;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00eaff22;
+  }
+  th, td {
+    border: 1px solid #00eaff44;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  th { background-color: #091224; color: #00eaff; }
+
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .qr-container canvas {
+    border: 10px solid #ffffff; /* Borda branca para facilitar leitura */
+    border-radius: 10px;
+    box-shadow: 0 0 10px #00eaff44;
+  }
+
+  .qr-logo {
+    margin-top: 10px;
+    width: 150px;
+    display: block;
+  }
+
+  video {
+    width: 300px;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+</style>
 </head>
 <body>
 <h1>Consulta de Ferramentais</h1>
 <input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
 <button id="btnBuscar">Buscar</button>
+
 <table>
-  <thead>
-    <tr>
-      <th>Tipo</th><th>NF-e</th><th>SV</th><th>Nome</th><th>Data Registro</th><th>Estado</th>
-      <th>Localização</th><th>Responsável</th><th>Ações</th>
-    </tr>
-  </thead>
-  <tbody id="tabela"></tbody>
+<thead>
+<tr>
+  <th>Tipo</th><th>NF-e</th><th>SV</th><th>Nome</th><th>Data Registro</th><th>Estado</th>
+  <th>Localização</th><th>Responsável</th><th>Ações</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
 </table>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
 import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
@@ -129,82 +145,66 @@ function exibirFerramentais(dados) {
           <button class="qrcode">Gerar QR</button>
           <button class="exportar">Exportar QR</button>
         </div>
-        <div class="qr-placeholder"></div>
+        <div class="qr-container">
+          <img src="logosovel1337.png" alt="Logo Sovel" class="qr-logo">
+        </div>
       </td>
     `;
 
-    // Editar
-    tr.querySelector(".editar").onclick = async () => {
-      const novosDados = {};
-      novosDados.tipo = prompt("Tipo:", item.tipo) || item.tipo;
-      novosDados.nfe = prompt("NF-e:", item.nfe) || item.nfe;
-      novosDados.sv = prompt("SV:", item.sv) || item.sv;
-      novosDados.nome = prompt("Nome:", item.nome) || item.nome;
-      novosDados.dataRegistro = prompt("Data Registro:", item.dataRegistro) || item.dataRegistro;
-      novosDados.estado = prompt("Estado:", item.estado) || item.estado;
-      novosDados.localizacao = prompt("Localização:", item.localizacao) || item.localizacao;
-      novosDados.responsavel = prompt("Responsável (email):", item.responsavel) || item.responsavel;
+    let qrCodeInstance = null;
 
+    tr.querySelector(".editar").onclick = async () => {
+      const novosDados = {
+        tipo: prompt("Tipo:", item.tipo) || item.tipo,
+        nfe: prompt("NF-e:", item.nfe) || item.nfe,
+        sv: prompt("SV:", item.sv) || item.sv,
+        nome: prompt("Nome:", item.nome) || item.nome,
+        dataRegistro: prompt("Data Registro:", item.dataRegistro) || item.dataRegistro,
+        estado: prompt("Estado:", item.estado) || item.estado,
+        localizacao: prompt("Localização:", item.localizacao) || item.localizacao,
+        responsavel: prompt("Responsável (email):", item.responsavel) || item.responsavel
+      };
       try {
         await set(ref(db, `ferramentais/${item.id}`), novosDados);
-
-        let operador = novosDados.responsavel.split(".")[0] || novosDados.responsavel.split("@")[0] || novosDados.responsavel;
-        operador = operador.charAt(0).toUpperCase() + operador.slice(1);
-
-        const now = new Date();
-        const data = now.toLocaleDateString("pt-BR");
-        const hora = now.toLocaleTimeString("pt-BR", { hour: '2-digit', minute:'2-digit', second:'2-digit' });
-
-        alert(`Registro alterado com sucesso por ${operador} em ${data} - ${hora}`);
-
+        alert("Registro alterado com sucesso!");
         const snapshot = await get(ferramentaisRef);
-        const dadosAtuais = snapshot.exists() ? snapshot.val() : {};
-        const lista = Object.keys(dadosAtuais).map(key=>({id:key, ...dadosAtuais[key]}));
+        const lista = snapshot.exists() ? Object.keys(snapshot.val()).map(key=>({id:key, ...snapshot.val()[key]})) : [];
         exibirFerramentais(lista);
-
-      } catch(err){
-        console.error(err);
-        alert("Erro ao atualizar os dados");
-      }
+      } catch(err) { console.error(err); alert("Erro ao atualizar"); }
     };
 
-    // Excluir
     tr.querySelector(".excluir").onclick = async () => {
       if(confirm("Deseja realmente excluir este registro?")){
-        try {
-          await remove(ref(db, `ferramentais/${item.id}`));
-          tr.remove();
-        } catch(err){ console.error(err); alert("Erro ao excluir"); }
+        try { await remove(ref(db, `ferramentais/${item.id}`)); tr.remove(); }
+        catch(err){ console.error(err); alert("Erro ao excluir"); }
       }
     };
 
-    // Gerar QR
     tr.querySelector(".qrcode").onclick = () => {
-      const qrPlaceholder = tr.querySelector(".qr-placeholder");
-      qrPlaceholder.innerHTML = "";
+      const qrContainer = tr.querySelector(".qr-container");
+      qrContainer.innerHTML = `<img src="logosovel1337.png" alt="Logo Sovel" class="qr-logo">`;
       const linkDetalhes = `detalhes.html?id=${item.id}`;
-      new QRCode(qrPlaceholder, { 
-        text: linkDetalhes, 
-        width: 250, 
-        height: 250, 
-        colorDark:"#000000", 
-        colorLight:"#ffffff", 
+      qrCodeInstance = new QRCode(qrContainer, {
+        text: linkDetalhes,
+        width: 250,
+        height: 250,
+        colorDark:"#000000",
+        colorLight:"#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
     };
 
-    // Exportar QR
     tr.querySelector(".exportar").onclick = () => {
-      const qrPlaceholder = tr.querySelector(".qr-placeholder");
-      const canvas = qrPlaceholder.querySelector("canvas");
-      if(canvas){
-        const imgData = canvas.toDataURL("image/png");
-        const a = document.createElement("a");
-        a.href = imgData;
-        a.download = `${item.nome || 'qr-code'}.png`;
-        a.click();
+      if(qrCodeInstance){
+        const canvas = tr.querySelector(".qr-container canvas");
+        if(canvas){
+          const a = document.createElement("a");
+          a.href = canvas.toDataURL("image/png");
+          a.download = `${item.nome || 'qr-code'}.png`;
+          a.click();
+        }
       } else {
-        alert("Gere o QR Code antes de exportar.");
+        alert("Gere o QR Code primeiro.");
       }
     };
 
@@ -216,15 +216,15 @@ document.getElementById("btnBuscar").onclick = async () => {
   const termo = document.getElementById("busca").value.toLowerCase();
   try {
     const snapshot = await get(ferramentaisRef);
-    const dados = snapshot.exists() ? snapshot.val() : {};
-    const lista = Object.keys(dados).map(key=>({id:key, ...dados[key]}));
+    const lista = snapshot.exists() ? Object.keys(snapshot.val()).map(key=>({id:key, ...snapshot.val()[key]})) : [];
     const filtrados = lista.filter(item => 
       (item.sv && item.sv.toLowerCase().includes(termo)) ||
       (item.nome && item.nome.toLowerCase().includes(termo)) ||
       (item.nfe && item.nfe.toLowerCase().includes(termo))
     );
-    exibirFerramentais(filtrados);
-  } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
+    if(filtrados.length) exibirFerramentais(filtrados);
+    else { alert("Nenhum ferramental encontrado"); tabela.innerHTML=""; }
+  } catch(err){ console.error(err); alert("Erro ao buscar"); }
 };
 </script>
 </body>
