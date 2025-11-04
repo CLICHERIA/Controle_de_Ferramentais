@@ -52,12 +52,10 @@
   }
   th { background-color: #091224; color: #00eaff; }
 
+  /* Botões lado a lado */
   .btn-group {
-    display: flex;
-    justify-content: center;
+    display: inline-flex;
     gap: 5px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
   }
 
   .qr-container {
@@ -69,7 +67,7 @@
   .qr-canvas {
     border-radius: 10px;
     box-shadow: 0 0 10px #00eaff44;
-    display: none;
+    display: none; /* só aparece quando gerar QR */
   }
 </style>
 </head>
@@ -139,8 +137,9 @@ function exibirFerramentais(dados) {
     `;
 
     const canvas = tr.querySelector(".qr-canvas");
-    let qrCodeInstance = null;
+    let qrDataURL = null;
 
+    // Editar
     tr.querySelector(".editar").onclick = async () => {
       const novosDados = {
         tipo: prompt("Tipo:", item.tipo) || item.tipo,
@@ -161,6 +160,7 @@ function exibirFerramentais(dados) {
       } catch(err) { console.error(err); alert("Erro ao atualizar"); }
     };
 
+    // Excluir
     tr.querySelector(".excluir").onclick = async () => {
       if(confirm("Deseja realmente excluir este registro?")){
         try { await remove(ref(db, `ferramentais/${item.id}`)); tr.remove(); }
@@ -175,9 +175,9 @@ function exibirFerramentais(dados) {
       const size = 300;
       const quietZone = 20;
 
-      // Criar QR temporário
-      const qrDiv = document.createElement("div");
-      qrCodeInstance = new QRCode(qrDiv, {
+      // Criar QRCode em um div temporário
+      const tmpDiv = document.createElement("div");
+      new QRCode(tmpDiv, {
         text: linkDetalhes,
         width: size,
         height: size,
@@ -186,37 +186,40 @@ function exibirFerramentais(dados) {
         correctLevel: QRCode.CorrectLevel.H
       });
 
-      const qrImgSrc = qrDiv.querySelector('img').src;
+      const qrImg = tmpDiv.querySelector("img");
       const ctx = canvas.getContext("2d");
+
       const img = new Image();
-      img.src = qrImgSrc;
+      img.src = qrImg.src;
       img.onload = () => {
         canvas.width = size + quietZone*2;
         canvas.height = size + quietZone*2;
 
-        // Fundo branco
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#ffffff"; // fundo branco
+        ctx.fillRect(0,0,canvas.width, canvas.height);
 
-        // QR code
+        // QR code centralizado
         ctx.drawImage(img, quietZone, quietZone, size, size);
 
         // Logo central
-        const logoImg = new Image();
-        logoImg.src = "logosovel1337.png";
-        logoImg.onload = () => {
+        const logo = new Image();
+        logo.src = "logosovel1337.png";
+        logo.onload = () => {
           const logoSize = 50;
-          ctx.drawImage(logoImg, (canvas.width - logoSize)/2, (canvas.height - logoSize)/2, logoSize, logoSize);
+          ctx.drawImage(logo, (canvas.width - logoSize)/2, (canvas.height - logoSize)/2, logoSize, logoSize);
         };
+
+        // Salvar DataURL para exportação
+        qrDataURL = canvas.toDataURL("image/png");
       };
     };
 
     // Exportar QR
     tr.querySelector(".exportar").onclick = () => {
-      if(canvas.width > 0 && canvas.height > 0){
+      if(qrDataURL){
         const a = document.createElement("a");
-        a.href = canvas.toDataURL("image/png");
-        a.download = `${item.nome || 'qr-code'}.png`;
+        a.href = qrDataURL;
+        a.download = `${item.nome || "qr-code"}.png`;
         a.click();
       } else {
         alert("Gere o QR Code primeiro.");
@@ -227,6 +230,7 @@ function exibirFerramentais(dados) {
   });
 }
 
+// Buscar
 document.getElementById("btnBuscar").onclick = async () => {
   const termo = document.getElementById("busca").value.toLowerCase();
   try {
