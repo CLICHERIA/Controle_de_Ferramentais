@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta de Ferramentais - SGF</title>
-
   <style>
     body {
       background-color: #0a0f1a;
@@ -16,12 +15,10 @@
       padding: 20px;
       margin: 0;
     }
-
     h1 {
       color: #00eaff;
       text-shadow: 0 0 5px #00eaff;
     }
-
     input, button {
       padding: 10px;
       border-radius: 8px;
@@ -29,11 +26,7 @@
       font-size: 16px;
       margin: 5px 0;
     }
-
-    input {
-      width: 300px;
-    }
-
+    input { width: 300px; }
     button {
       cursor: pointer;
       font-weight: bold;
@@ -42,12 +35,10 @@
       box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff;
       transition: 0.3s;
     }
-
     button:hover {
       color: #00ffff;
       box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
     }
-
     table {
       width: 100%;
       max-width: 1100px;
@@ -58,195 +49,167 @@
       overflow: hidden;
       box-shadow: 0 0 20px #00eaff22;
     }
-
     th, td {
       border: 1px solid #00eaff44;
       padding: 8px;
       text-align: left;
       vertical-align: middle;
     }
-
-    th {
-      background-color: #091224;
-      color: #00eaff;
-    }
-
-    td button {
-      font-size: 14px;
-      padding: 5px 8px;
-      margin: 2px;
-      box-shadow: 0 0 3px #00eaff;
-    }
-
-    .qr-cell {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-
-    .qr-placeholder canvas {
-      border-radius: 10px;
-    }
+    th { background-color: #091224; color: #00eaff; }
+    td button { font-size: 14px; padding: 5px 8px; margin: 2px; box-shadow: 0 0 3px #00eaff; }
+    .qr-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .qr-placeholder canvas { border-radius: 10px; }
   </style>
 </head>
 <body>
 
-  <h1>Consulta de Ferramentais</h1>
-  <input type="text" id="busca" placeholder="Digite SV, Nome ou Cliente">
-  <button id="btnBuscar">Buscar</button>
+<h1>Consulta de Ferramentais</h1>
+<input type="text" id="busca" placeholder="Digite SV, Nome ou Cliente">
+<button id="btnBuscar">Buscar</button>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tipo</th>
-        <th>NF-e</th>
-        <th>SV</th>
-        <th>Nome</th>
-        <th>Data Registro</th>
-        <th>Estado</th>
-        <th>Localização</th>
-        <th>Responsável</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody id="tabela"></tbody>
-  </table>
+<table>
+  <thead>
+    <tr>
+      <th>Tipo</th>
+      <th>NF-e</th>
+      <th>SV</th>
+      <th>Nome</th>
+      <th>Data Registro</th>
+      <th>Estado</th>
+      <th>Localização</th>
+      <th>Responsável</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody id="tabela"></tbody>
+</table>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+import { getDatabase, ref, get, child, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-    import { getDatabase, ref, get, child, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.appspot.com",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-      authDomain: "dacsovel-53481.firebaseapp.com",
-      databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
-      projectId: "dacsovel-53481",
-      storageBucket: "dacsovel-53481.appspot.com",
-      messagingSenderId: "37867522513",
-      appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const ferramentaisRef = ref(db, "ferramentais");
+const tabela = document.getElementById("tabela");
+
+function exibirFerramentais(dados) {
+  tabela.innerHTML = "";
+  dados.forEach(item => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${item.tipo || ""}</td>
+      <td>${item.nfe || ""}</td>
+      <td>${item.sv || ""}</td>
+      <td>${item.nome || ""}</td>
+      <td>${item.dataRegistro || ""}</td>
+      <td>${item.estado || ""}</td>
+      <td>${item.localizacao || ""}</td>
+      <td>${item.responsavel || ""}</td>
+      <td class="qr-cell">
+        <div>
+          <button class="editar">Editar</button>
+          <button class="excluir">Excluir</button>
+          <button class="qrcode">Gerar QR Code</button>
+          <button class="exportar">Exportar</button>
+        </div>
+        <div class="qr-placeholder"></div>
+      </td>
+    `;
+
+    tr.querySelector(".editar").onclick = () => {
+      window.location.href = `editar.html?id=${item.id}`;
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const ferramentaisRef = ref(db, "ferramentais");
-    const tabela = document.getElementById("tabela");
-
-    function exibirFerramentais(dados) {
-      tabela.innerHTML = "";
-      dados.forEach(item => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${item.tipo || ""}</td>
-          <td>${item.nfe || ""}</td>
-          <td>${item.sv || ""}</td>
-          <td>${item.nome || ""}</td>
-          <td>${item.dataRegistro || ""}</td>
-          <td>${item.estado || ""}</td>
-          <td>${item.localizacao || ""}</td>
-          <td>${item.responsavel || ""}</td>
-          <td class="qr-cell">
-            <div>
-              <button class="editar">Editar</button>
-              <button class="excluir">Excluir</button>
-              <button class="qrcode">Gerar QR Code</button>
-              <button class="exportar">Exportar QR</button>
-            </div>
-            <div class="qr-placeholder"></div>
-          </td>
-        `;
-
-        // Botão Editar
-        tr.querySelector(".editar").onclick = () => {
-          window.location.href = `editar.html?id=${item.id}`;
-        };
-
-        // Botão Excluir
-        tr.querySelector(".excluir").onclick = async () => {
-          if (confirm("Deseja realmente excluir este registro?")) {
-            await remove(child(ferramentaisRef, item.id));
-            alert("Registro excluído com sucesso!");
-            tr.remove();
-          }
-        };
-
-        // Botão QR Code
-        tr.querySelector(".qrcode").onclick = () => {
-          const qrPlaceholder = tr.querySelector(".qr-placeholder");
-          qrPlaceholder.innerHTML = "";
-
-          const linkDetalhes = `detalhes.html?id=${item.id}`; // caminho relativo
-          const qr = new QRCode(qrPlaceholder, {
-            text: linkDetalhes,
-            width: 300,
-            height: 300,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-          });
-
-          // Adiciona logo
-          const canvas = qrPlaceholder.querySelector("canvas");
-          const ctx = canvas.getContext("2d");
-          const logo = new Image();
-          logo.src = "logosovel1337.png";
-          logo.onload = () => {
-            const logoSize = 60;
-            const x = canvas.width / 2 - logoSize / 2;
-            const y = canvas.height / 2 - logoSize / 2;
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = "#00eaff";
-            ctx.drawImage(logo, x, y, logoSize, logoSize);
-          };
-        };
-
-        // Botão Exportar QR
-        tr.querySelector(".exportar").onclick = () => {
-          const canvas = tr.querySelector(".qr-placeholder canvas");
-          if (!canvas) {
-            alert("Gere o QR Code antes de exportar!");
-            return;
-          }
-          const link = document.createElement("a");
-          link.href = canvas.toDataURL("image/png");
-          link.download = `QR_${item.sv}.png`;
-          link.click();
-        };
-
-        tabela.appendChild(tr);
-      });
-    }
-
-    document.getElementById('btnBuscar').onclick = async () => {
-      const termo = document.getElementById('busca').value.toLowerCase();
-
-      try {
-        const snapshot = await get(ferramentaisRef);
-        const dados = snapshot.exists() ? snapshot.val() : {};
-        const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
-
-        const filtrados = lista.filter(item => {
-          const sv = (item.sv || "").toLowerCase();
-          const nome = (item.nome || "").toLowerCase();
-          const nfe = (item.nfe || "").toLowerCase();
-          return sv.includes(termo) || nome.includes(termo) || nfe.includes(termo);
-        });
-
-        if (filtrados.length === 0) {
-          alert("Nenhum ferramental encontrado");
-          tabela.innerHTML = "";
-        } else {
-          exibirFerramentais(filtrados);
-        }
-      } catch (err) {
-        console.error("Erro ao buscar dados:", err);
-        alert("Erro ao buscar dados");
+    tr.querySelector(".excluir").onclick = async () => {
+      if(confirm("Deseja realmente excluir este registro?")) {
+        await remove(child(ferramentaisRef, item.id));
+        alert("Registro excluído com sucesso!");
+        tr.remove();
       }
     };
-  </script>
+
+    tr.querySelector(".qrcode").onclick = () => {
+      const qrPlaceholder = tr.querySelector(".qr-placeholder");
+      qrPlaceholder.innerHTML = "";
+
+      const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
+      const qr = new QRCode(qrPlaceholder, {
+        text: linkDetalhes,
+        width: 250,       // QR Code maior
+        height: 250,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      // Mantemos o canvas gerado para exportar
+      const canvas = qrPlaceholder.querySelector("canvas");
+      const ctx = canvas.getContext("2d");
+      const logo = new Image();
+      logo.src = "logosovel1337.png";
+      logo.onload = () => {
+        const x = canvas.width / 2 - 25;
+        const y = canvas.height / 2 - 25;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#00eaff";
+        ctx.drawImage(logo, x, y, 50, 50);
+      };
+    };
+
+    tr.querySelector(".exportar").onclick = () => {
+      const canvas = tr.querySelector(".qr-placeholder canvas");
+      if (!canvas) {
+        alert("Gere o QR Code antes de exportar!");
+        return;
+      }
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = `QR_${item.sv}.png`;
+      link.click();
+    };
+
+    tabela.appendChild(tr);
+  });
+}
+
+document.getElementById('btnBuscar').onclick = async () => {
+  const termo = document.getElementById('busca').value.toLowerCase();
+  try {
+    const snapshot = await get(ferramentaisRef);
+    const dados = snapshot.exists() ? snapshot.val() : {};
+    const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
+
+    const filtrados = lista.filter(item => {
+      const sv = (item.sv || "").toLowerCase();
+      const nome = (item.nome || "").toLowerCase();
+      const nfe = (item.nfe || "").toLowerCase();
+      return sv.includes(termo) || nome.includes(termo) || nfe.includes(termo);
+    });
+
+    if (filtrados.length === 0) {
+      alert("Nenhum ferramental encontrado");
+      tabela.innerHTML = "";
+    } else {
+      exibirFerramentais(filtrados);
+    }
+  } catch (err) {
+    console.error("Erro ao buscar dados:", err);
+    alert("Erro ao buscar dados");
+  }
+};
+</script>
 </body>
 </html>
