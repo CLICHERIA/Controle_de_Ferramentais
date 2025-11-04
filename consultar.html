@@ -89,30 +89,6 @@
     .qr-placeholder canvas {
       border-radius: 10px;
     }
-
-    /* Modal QR Code */
-    #qrModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    #qrModalContent {
-      background: #0d1b2a;
-      padding: 20px;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    #qrModalContent button {
-      margin-top: 15px;
-    }
   </style>
 </head>
 <body>
@@ -138,14 +114,6 @@
     <tbody id="tabela"></tbody>
   </table>
 
-  <!-- Modal QR Code -->
-  <div id="qrModal">
-    <div id="qrModalContent">
-      <div id="qrModalPlaceholder"></div>
-      <button id="btnFecharModal">Fechar</button>
-    </div>
-  </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script type="module">
@@ -167,14 +135,6 @@
     const ferramentaisRef = ref(db, "ferramentais");
     const tabela = document.getElementById("tabela");
 
-    // Modal
-    const qrModal = document.getElementById("qrModal");
-    const qrModalPlaceholder = document.getElementById("qrModalPlaceholder");
-    document.getElementById("btnFecharModal").onclick = () => qrModal.style.display = "none";
-
-    // Map para armazenar QR Codes por id
-    const qrMap = {};
-
     function exibirFerramentais(dados) {
       tabela.innerHTML = "";
       dados.forEach(item => {
@@ -193,18 +153,19 @@
             <div>
               <button class="editar">Editar</button>
               <button class="excluir">Excluir</button>
-              <button class="qrcode">QR Code</button>
-              <button class="exportar">Exportar</button>
+              <button class="qrcode">Gerar QR Code</button>
+              <button class="exportar">Exportar QR</button>
             </div>
+            <div class="qr-placeholder"></div>
           </td>
         `;
 
-        // Editar
+        // Botão Editar
         tr.querySelector(".editar").onclick = () => {
           window.location.href = `editar.html?id=${item.id}`;
         };
 
-        // Excluir
+        // Botão Excluir
         tr.querySelector(".excluir").onclick = async () => {
           if (confirm("Deseja realmente excluir este registro?")) {
             await remove(child(ferramentaisRef, item.id));
@@ -213,14 +174,13 @@
           }
         };
 
-        // Gerar QR Code
+        // Botão QR Code
         tr.querySelector(".qrcode").onclick = () => {
-          qrModal.style.display = "flex";
-          qrModalPlaceholder.innerHTML = "";
+          const qrPlaceholder = tr.querySelector(".qr-placeholder");
+          qrPlaceholder.innerHTML = "";
 
-          const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
-
-          const qr = new QRCode(qrModalPlaceholder, {
+          const linkDetalhes = `detalhes.html?id=${item.id}`; // caminho relativo
+          const qr = new QRCode(qrPlaceholder, {
             text: linkDetalhes,
             width: 300,
             height: 300,
@@ -229,7 +189,8 @@
             correctLevel: QRCode.CorrectLevel.H
           });
 
-          const canvas = qrModalPlaceholder.querySelector("canvas");
+          // Adiciona logo
+          const canvas = qrPlaceholder.querySelector("canvas");
           const ctx = canvas.getContext("2d");
           const logo = new Image();
           logo.src = "logosovel1337.png";
@@ -241,14 +202,11 @@
             ctx.shadowColor = "#00eaff";
             ctx.drawImage(logo, x, y, logoSize, logoSize);
           };
-
-          // Salva canvas no mapa
-          qrMap[item.id] = canvas;
         };
 
-        // Exportar QR Code
+        // Botão Exportar QR
         tr.querySelector(".exportar").onclick = () => {
-          const canvas = qrMap[item.id];
+          const canvas = tr.querySelector(".qr-placeholder canvas");
           if (!canvas) {
             alert("Gere o QR Code antes de exportar!");
             return;
@@ -263,9 +221,9 @@
       });
     }
 
-    // Buscar
     document.getElementById('btnBuscar').onclick = async () => {
       const termo = document.getElementById('busca').value.toLowerCase();
+
       try {
         const snapshot = await get(ferramentaisRef);
         const dados = snapshot.exists() ? snapshot.val() : {};
