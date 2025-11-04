@@ -69,6 +69,7 @@
   .qr-canvas {
     border-radius: 10px;
     box-shadow: 0 0 10px #00eaff44;
+    display: none;
   }
 </style>
 </head>
@@ -132,7 +133,7 @@ function exibirFerramentais(dados) {
           <button class="exportar">Exportar QR</button>
         </div>
         <div class="qr-container">
-          <canvas class="qr-canvas" style="display:none;"></canvas>
+          <canvas class="qr-canvas"></canvas>
         </div>
       </td>
     `;
@@ -171,47 +172,41 @@ function exibirFerramentais(dados) {
     tr.querySelector(".qrcode").onclick = () => {
       const linkDetalhes = `./detalhes.html?id=${item.id}`;
       canvas.style.display = "block";
+      const size = 300;
+      const quietZone = 20;
 
-      // Limpar canvas
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Criar QR temporário para obter dados
-      const qrTemp = new QRCode(document.createElement('div'), {
+      // Criar QR temporário
+      const qrDiv = document.createElement("div");
+      qrCodeInstance = new QRCode(qrDiv, {
         text: linkDetalhes,
-        width: 250,
-        height: 250,
+        width: size,
+        height: size,
         colorDark: "#000000",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
 
-      const qrImg = new Image();
-      qrImg.src = qrTemp._oDrawing._elImage.src || qrTemp._elImage?.src;
-      qrImg.onload = () => {
-        const quietZone = 25;
-        canvas.width = qrImg.width + 2 * quietZone;
-        canvas.height = qrImg.height + 2 * quietZone;
+      const qrImgSrc = qrDiv.querySelector('img').src;
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.src = qrImgSrc;
+      img.onload = () => {
+        canvas.width = size + quietZone*2;
+        canvas.height = size + quietZone*2;
 
-        // fundo branco
+        // Fundo branco
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // desenhar QR
-        ctx.drawImage(qrImg, quietZone, quietZone);
+        // QR code
+        ctx.drawImage(img, quietZone, quietZone, size, size);
 
-        // desenhar logo central
-        const logoSize = 50;
+        // Logo central
         const logoImg = new Image();
         logoImg.src = "logosovel1337.png";
         logoImg.onload = () => {
-          ctx.drawImage(
-            logoImg,
-            (canvas.width - logoSize) / 2,
-            (canvas.height - logoSize) / 2,
-            logoSize,
-            logoSize
-          );
+          const logoSize = 50;
+          ctx.drawImage(logoImg, (canvas.width - logoSize)/2, (canvas.height - logoSize)/2, logoSize, logoSize);
         };
       };
     };
