@@ -50,7 +50,7 @@
 
     table {
       width: 100%;
-      max-width: 1000px;
+      max-width: 1100px;
       border-collapse: collapse;
       margin-top: 20px;
       background-color: #0d1b2a;
@@ -74,7 +74,7 @@
     td button {
       font-size: 14px;
       padding: 5px 8px;
-      margin: 0 2px;
+      margin: 2px;
       box-shadow: 0 0 3px #00eaff;
     }
 
@@ -86,28 +86,27 @@
       gap: 5px;
     }
 
-    .qr-placeholder {
-      margin-top: 5px;
-      background-color: #fff;
-      padding: 10px;
-      border-radius: 12px;
+    .qr-placeholder canvas {
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
   <h1>Consulta de Ferramentais</h1>
-  <input type="text" id="busca" placeholder="Digite SV ou Cliente">
+  <input type="text" id="busca" placeholder="Digite SV, Nome ou Cliente">
   <button id="btnBuscar">Buscar</button>
 
   <table>
     <thead>
       <tr>
         <th>Tipo</th>
-        <th>SV</th>
         <th>NF-e</th>
+        <th>SV</th>
         <th>Nome</th>
         <th>Data Registro</th>
+        <th>Estado</th>
+        <th>Localização</th>
         <th>Responsável</th>
         <th>Ações</th>
       </tr>
@@ -115,7 +114,6 @@
     <tbody id="tabela"></tbody>
   </table>
 
-  <!-- Biblioteca QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script type="module">
@@ -144,28 +142,30 @@
 
         tr.innerHTML = `
           <td>${item.tipo || ""}</td>
-          <td>${item.sv || ""}</td>
           <td>${item.nfe || ""}</td>
+          <td>${item.sv || ""}</td>
           <td>${item.nome || ""}</td>
           <td>${item.dataRegistro || ""}</td>
+          <td>${item.estado || ""}</td>
+          <td>${item.localizacao || ""}</td>
           <td>${item.responsavel || ""}</td>
           <td class="qr-cell">
             <div>
               <button class="editar">Editar</button>
               <button class="excluir">Excluir</button>
-              <button class="qrcode">Gerar QR Code</button>
+              <button class="qrcode">QR Code</button>
               <button class="exportar">Exportar</button>
             </div>
             <div class="qr-placeholder"></div>
           </td>
         `;
 
-        // Editar
+        // Botão Editar
         tr.querySelector(".editar").onclick = () => {
           alert("Função de edição para SV: " + item.sv);
         };
 
-        // Excluir
+        // Botão Excluir
         tr.querySelector(".excluir").onclick = async () => {
           if (confirm("Deseja realmente excluir este registro?")) {
             await remove(child(ferramentaisRef, item.id));
@@ -174,16 +174,14 @@
           }
         };
 
-        // Gerar QR Code
+        // Botão QR Code
         tr.querySelector(".qrcode").onclick = () => {
           const qrPlaceholder = tr.querySelector(".qr-placeholder");
           qrPlaceholder.innerHTML = "";
 
-          // URL do detalhe
-          const linkDetalhe = `${window.location.origin}/detalhes.html?id=${item.id}`;
-
+          const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
           const qr = new QRCode(qrPlaceholder, {
-            text: linkDetalhe,
+            text: linkDetalhes,
             width: 150,
             height: 150,
             colorDark: "#000000",
@@ -193,26 +191,6 @@
 
           const canvas = qrPlaceholder.querySelector("canvas");
           const ctx = canvas.getContext("2d");
-          const radius = 15;
-
-          // Arredondar bordas
-          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.beginPath();
-          ctx.moveTo(radius, 0);
-          ctx.lineTo(canvas.width - radius, 0);
-          ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
-          ctx.lineTo(canvas.width, canvas.height - radius);
-          ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - radius, canvas.height);
-          ctx.lineTo(radius, canvas.height);
-          ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - radius);
-          ctx.lineTo(0, radius);
-          ctx.quadraticCurveTo(0, 0, radius, 0);
-          ctx.closePath();
-          ctx.clip();
-          ctx.putImageData(imgData, 0, 0);
-
-          // Inserir logo no centro com efeito neon
           const logo = new Image();
           logo.src = "logosovel1337.png";
           logo.onload = () => {
@@ -221,17 +199,14 @@
             ctx.shadowBlur = 15;
             ctx.shadowColor = "#00eaff";
             ctx.drawImage(logo, x, y, 40, 40);
-            ctx.strokeStyle = "#00eaff";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x, y, 40, 40);
           };
         };
 
-        // Exportar QR Code
+        // Botão Exportar QR Code
         tr.querySelector(".exportar").onclick = () => {
           const canvas = tr.querySelector(".qr-placeholder canvas");
           if (!canvas) {
-            alert("Gere o QR Code primeiro!");
+            alert("Gere o QR Code antes de exportar!");
             return;
           }
           const link = document.createElement("a");
@@ -244,9 +219,8 @@
       });
     }
 
-    // Buscar
-    document.getElementById("btnBuscar").onclick = async () => {
-      const termo = document.getElementById("busca").value.toLowerCase();
+    document.getElementById('btnBuscar').onclick = async () => {
+      const termo = document.getElementById('busca').value.toLowerCase();
 
       try {
         const snapshot = await get(ferramentaisRef);
@@ -254,9 +228,10 @@
         const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
 
         const filtrados = lista.filter(item => {
-          const sv = item.sv ? item.sv.toLowerCase() : "";
-          const cliente = item.nome ? item.nome.toLowerCase() : "";
-          return sv.includes(termo) || cliente.includes(termo);
+          const sv = (item.sv || "").toLowerCase();
+          const nome = (item.nome || "").toLowerCase();
+          const nfe = (item.nfe || "").toLowerCase();
+          return sv.includes(termo) || nome.includes(termo) || nfe.includes(termo);
         });
 
         if (filtrados.length === 0) {
