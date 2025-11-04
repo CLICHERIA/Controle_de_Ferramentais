@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta de Ferramentais - SGF</title>
   <style>
-    body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align:center;}
-    h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; text-align: center; }
+    body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align:center; }
+    h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; }
     input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
     input { width: 300px; }
     button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
@@ -14,7 +14,7 @@
     table { width: 100%; max-width: 1200px; border-collapse: collapse; margin: 20px auto; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
     th, td { border: 1px solid #00eaff44; padding: 8px; text-align: center; vertical-align: middle; }
     th { background-color: #091224; color: #00eaff; }
-    .qr-cell { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .qr-cell { display: flex; flex-direction: column; align-items: center; }
     .btn-group { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
     .qr-placeholder img { margin-top: 10px; border-radius: 10px; box-shadow: 0 0 10px #00eaff44; }
     video { width: 300px; border-radius: 10px; margin-top: 10px; }
@@ -34,7 +34,6 @@
   <tbody id="tabela"></tbody>
 </table>
 
-<!-- Bibliotecas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 
@@ -61,7 +60,6 @@ function exibirFerramentais(dados) {
   tabela.innerHTML = "";
   dados.forEach(item => {
     const tr = document.createElement("tr");
-    // Extrair primeiro nome do responsável
     let responsavelNome = item.responsavel ? item.responsavel.split(".")[0] : item.responsavel;
     responsavelNome = responsavelNome ? responsavelNome.charAt(0).toUpperCase() + responsavelNome.slice(1) : "";
 
@@ -85,7 +83,7 @@ function exibirFerramentais(dados) {
       </td>
     `;
 
-    // Botão Editar
+    // Editar
     tr.querySelector(".editar").onclick = async () => {
       const novosDados = {};
       novosDados.tipo = prompt("Tipo:", item.tipo) || item.tipo;
@@ -120,7 +118,7 @@ function exibirFerramentais(dados) {
       }
     };
 
-    // Botão Excluir
+    // Excluir
     tr.querySelector(".excluir").onclick = async () => {
       if(confirm("Deseja realmente excluir este registro?")){
         try {
@@ -130,7 +128,7 @@ function exibirFerramentais(dados) {
       }
     };
 
-    // Botão Gerar QR
+    // Gerar QR
     tr.querySelector(".qrcode").onclick = () => {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
@@ -141,11 +139,11 @@ function exibirFerramentais(dados) {
         height: 300, 
         colorDark:"#000000", 
         colorLight:"#ffffff", 
-        correctLevel: QRCode.CorrectLevel.H 
+        correctLevel: QRCode.CorrectLevel.H
       });
     };
 
-    // Botão Exportar QR
+    // Exportar QR
     tr.querySelector(".exportar").onclick = () => {
       const qrImg = tr.querySelector(".qr-placeholder img");
       if(qrImg){
@@ -168,12 +166,20 @@ document.getElementById("btnBuscar").onclick = async () => {
     const snapshot = await get(ferramentaisRef);
     const dados = snapshot.exists() ? snapshot.val() : {};
     const lista = Object.keys(dados).map(key=>({id:key, ...dados[key]}));
-    const filtrados = lista.filter(item=> item.sv?.toLowerCase().includes(termo) || item.nome?.toLowerCase().includes(termo) || item.nfe?.toLowerCase().includes(termo));
+    const filtrados = lista.filter(item => 
+      item.sv?.toLowerCase().includes(termo) || 
+      item.nome?.toLowerCase().includes(termo) || 
+      item.nfe?.toLowerCase().includes(termo)
+    );
+
     filtrados.length ? exibirFerramentais(filtrados) : (alert("Nenhum ferramental encontrado"), tabela.innerHTML="");
-  } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
+  } catch(err){
+    console.error(err);
+    alert("Erro ao buscar dados");
+  }
 };
 
-// Leitura de QR Code via câmera
+// LER QR CODE DIRETAMENTE PELA CAMERA
 const html5QrCode = new Html5Qrcode("qr-reader");
 const qrContainer = document.createElement("div");
 qrContainer.id = "qr-reader";
@@ -184,7 +190,7 @@ function startCameraScanner() {
     if(cameras && cameras.length){
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
+        { fps: 10, qrbox: 300 },
         qrCodeMessage => { window.location.href = qrCodeMessage; }
       );
     }
