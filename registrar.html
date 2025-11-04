@@ -38,6 +38,12 @@
       color: #00ffff;
       box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
     }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -51,7 +57,11 @@
   <input type="text" id="estado" placeholder="Estado">
   <input type="text" id="localizacao" placeholder="Localização">
   <input type="text" id="responsavel" placeholder="Responsável">
-  <button id="btnRegistrar">Registrar</button>
+
+  <div class="btn-group">
+    <button id="btnRegistrar">Registrar</button>
+    <button id="btnVoltarMenu">Voltar ao Menu</button>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
@@ -69,6 +79,9 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+
+    const btnVoltar = document.getElementById("btnVoltarMenu");
+    btnVoltar.onclick = () => window.location.href = "menu.html";
 
     document.getElementById("btnRegistrar").onclick = async () => {
       const tipo = document.getElementById("tipo").value;
