@@ -162,7 +162,7 @@
 
         // Botão Editar
         tr.querySelector(".editar").onclick = () => {
-          alert("Função de edição para SV: " + item.sv);
+          window.location.href = `editar.html?id=${item.id}`;
         };
 
         // Botão Excluir
