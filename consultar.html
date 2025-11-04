@@ -85,9 +85,10 @@
 <tbody id="tabela"></tbody>
 </table>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- ✅ carrega a lib do QRCode corretamente -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
-<!-- 🔧 Firebase carregado como módulo -->
+<!-- 🔧 Firebase module -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
   import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
@@ -105,7 +106,6 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // Expõe para o script comum
   window.db = db;
   window.ref = ref;
   window.get = get;
@@ -113,25 +113,25 @@
   window.set = set;
 </script>
 
-<!-- 🔧 Script principal (não é módulo) -->
+<!-- ✅ Script principal -->
 <script>
 window.addEventListener("load", async () => {
   const ferramentaisRef = ref(db, "ferramentais");
   const tabela = document.getElementById("tabela");
 
-  async function buscarFerramentais() {
+  document.getElementById("btnBuscar").onclick = async () => {
     const termo = document.getElementById("busca").value.toLowerCase();
     const snapshot = await get(ferramentaisRef);
-    const lista = snapshot.exists() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
+    const lista = snapshot.exists()
+      ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] }))
+      : [];
     const filtrados = lista.filter(item =>
       (item.sv && item.sv.toLowerCase().includes(termo)) ||
       (item.nome && item.nome.toLowerCase().includes(termo)) ||
       (item.nfe && item.nfe.toLowerCase().includes(termo))
     );
     exibirFerramentais(filtrados);
-  }
-
-  document.getElementById("btnBuscar").onclick = buscarFerramentais;
+  };
 
   function exibirFerramentais(dados) {
     tabela.innerHTML = "";
@@ -165,15 +165,17 @@ window.addEventListener("load", async () => {
       const canvas = tr.querySelector(".qr-canvas");
       let qrDataURL = null;
 
-      // Gerar QR
+      // ✅ Gerar QR code
       tr.querySelector(".qrcode").onclick = () => {
-        const linkDetalhes = `./detalhes.html?id=${item.id}`;
+        const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${item.id}`;
         canvas.style.display = "block";
+
         const size = 300;
         const quietZone = 20;
+        const qrTemp = document.createElement("div");
 
-        const tmpDiv = document.createElement("div");
-        new QRCode(tmpDiv, {
+        // gera QR no container temporário
+        new QRCode(qrTemp, {
           text: linkDetalhes,
           width: size,
           height: size,
@@ -182,33 +184,37 @@ window.addEventListener("load", async () => {
           correctLevel: QRCode.CorrectLevel.H
         });
 
-        let qrDataSrc;
-        const qrImg = tmpDiv.querySelector("img");
-        const qrCanvas = tmpDiv.querySelector("canvas");
-        if (qrImg) qrDataSrc = qrImg.src;
-        else if (qrCanvas) qrDataSrc = qrCanvas.toDataURL("image/png");
-        else return alert("Erro ao gerar QR Code.");
+        setTimeout(() => {
+          const qrImg = qrTemp.querySelector("img") || qrTemp.querySelector("canvas");
+          if (!qrImg) {
+            alert("Erro ao gerar QR Code.");
+            return;
+          }
 
-        const ctx = canvas.getContext("2d");
-        const img = new Image();
-        img.src = qrDataSrc;
-        img.onload = () => {
-          canvas.width = size + quietZone * 2;
-          canvas.height = size + quietZone * 2;
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, quietZone, quietZone, size, size);
+          const ctx = canvas.getContext("2d");
+          const img = new Image();
+          img.src = qrImg.src || qrImg.toDataURL("image/png");
 
-          const logo = new Image();
-          logo.src = "logosovel1337.png";
-          logo.onload = () => {
-            const logoSize = 50;
-            ctx.drawImage(logo, (canvas.width - logoSize) / 2, (canvas.height - logoSize) / 2, logoSize, logoSize);
+          img.onload = () => {
+            canvas.width = size + quietZone * 2;
+            canvas.height = size + quietZone * 2;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, quietZone, quietZone, size, size);
+
+            const logo = new Image();
+            logo.src = "logosovel1337.png";
+            logo.onload = () => {
+              const logoSize = 50;
+              ctx.drawImage(logo, (canvas.width - logoSize) / 2, (canvas.height - logoSize) / 2, logoSize, logoSize);
+            };
+
+            qrDataURL = canvas.toDataURL("image/png");
           };
-          qrDataURL = canvas.toDataURL("image/png");
-        };
+        }, 200); // pequena espera garante que QRCode foi renderizado
       };
 
+      // ✅ Exportar QR code
       tr.querySelector(".exportar").onclick = () => {
         if (!qrDataURL) return alert("Gere o QR Code primeiro.");
         const a = document.createElement("a");
