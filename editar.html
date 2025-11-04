@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Editar Ferramental - SGF</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #0a0f1a;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  padding: 30px;
+}
+.container {
+  background: #0d1b2a;
+  padding: 25px;
+  border-radius: 15px;
+  max-width: 600px;
+  margin: auto;
+  box-shadow: 0 0 20px #00eaff33;
+}
+h2 {
+  color: #00eaff;
+  text-shadow: 0 0 8px #00eaff;
+}
+input, select {
+  width: 85%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #00bfff;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 5px;
+}
+button:hover {
+  background: #00eaff;
+  box-shadow: 0 0 15px #00eaff;
+}
+img.logo {
+  width: 120px;
+  margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <img src="logosovel1337.png" alt="Logo" class="logo">
+  <h2>Editar Ferramental</h2>
+
+  <select id="tipo">
+    <option value="">Tipo de Ferramental</option>
+    <option value="Faca">Faca</option>
+    <option value="Clichê">Clichê</option>
+  </select><br>
+
+  <input type="text" id="nfe" placeholder="Nº da NF-e (opcional)">
+  <input type="text" id="sv" placeholder="SV">
+  <input type="text" id="nome" placeholder="Nome">
+  <input type="text" id="dataRegistro" placeholder="Data de Registro (dd/mm/aaaa hh:mm:ss)">
+  
+  <select id="estado">
+    <option value="">Estado</option>
+    <option value="Em uso">Em uso</option>
+    <option value="Danificada">Danificada</option>
+    <option value="Em manutenção">Em manutenção</option>
+    <option value="Para substituir">Para substituir</option>
+  </select><br>
+
+  <input type="text" id="localizacao" placeholder="Localização (Armário, fileira, posição)">
+  <input type="text" id="responsavel" readonly placeholder="Responsável">
+
+  <button id="btnSalvar">Salvar Alterações</button>
+  <button onclick="window.location.href='consultar.html'">Cancelar</button>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.firebasestorage.app",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+if (!id) {
+  alert("ID inválido!");
+  window.location.href = "consultar.html";
+}
+
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    alert("Faça login primeiro!");
+    window.location.href = "index.html";
+    return;
+  }
+  document.getElementById("responsavel").value = user.email;
+
+  const refItem = db.ref("ferramentais/" + id);
+  refItem.once("value").then(snapshot => {
+    if (snapshot.exists()) {
+      const dados = snapshot.val();
+      document.getElementById("tipo").value = dados.tipo || "";
+      document.getElementById("nfe").value = dados.nfe || "";
+      document.getElementById("sv").value = dados.sv || "";
+      document.getElementById("nome").value = dados.nome || "";
+      document.getElementById("dataRegistro").value = dados.dataRegistro || "";
+      document.getElementById("estado").value = dados.estado || "";
+      document.getElementById("localizacao").value = dados.localizacao || "";
+    } else {
+      alert("Registro não encontrado.");
+      window.location.href = "consultar.html";
+    }
+  });
+
+  document.getElementById("btnSalvar").onclick = () => {
+    const tipo = document.getElementById("tipo").value;
+    const nfe = document.getElementById("nfe").value.trim();
+    const sv = document.getElementById("sv").value.trim();
+    const nome = document.getElementById("nome").value.trim();
+    const dataRegistro = document.getElementById("dataRegistro").value.trim();
+    const estado = document.getElementById("estado").value;
+    const localizacao = document.getElementById("localizacao").value.trim();
+    const responsavel = user.email;
+
+    if (!tipo || !sv || !nome || !estado || !localizacao) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
+    const atualizado = {
+      tipo,
+      nfe,
+      sv,
+      nome,
+      dataRegistro,
+      estado,
+      localizacao,
+      responsavel
+    };
+
+    refItem.update(atualizado)
+      .then(() => {
+        alert("Ferramental atualizado com sucesso!");
+        window.location.href = "consultar.html";
+      })
+      .catch(err => alert("Erro ao salvar: " + err.message));
+  };
+});
+</script>
+</body>
+</html>
