@@ -87,174 +87,151 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+<!-- 🔧 Firebase carregado como módulo -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+  import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-  authDomain: "dacsovel-53481.firebaseapp.com",
-  databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
-  projectId: "dacsovel-53481",
-  storageBucket: "dacsovel-53481.appspot.com",
-  messagingSenderId: "37867522513",
-  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+    authDomain: "dacsovel-53481.firebaseapp.com",
+    databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+    projectId: "dacsovel-53481",
+    storageBucket: "dacsovel-53481.appspot.com",
+    messagingSenderId: "37867522513",
+    appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-// Tornar acessível fora do módulo
-window.db = db;
-window.ref = ref;
-window.get = get;
-window.remove = remove;
-window.set = set;
+  // Expõe para o script comum
+  window.db = db;
+  window.ref = ref;
+  window.get = get;
+  window.remove = remove;
+  window.set = set;
 </script>
 
+<!-- 🔧 Script principal (não é módulo) -->
 <script>
-const ferramentaisRef = ref(db, "ferramentais");
-const tabela = document.getElementById("tabela");
+window.addEventListener("load", async () => {
+  const ferramentaisRef = ref(db, "ferramentais");
+  const tabela = document.getElementById("tabela");
 
-function exibirFerramentais(dados) {
-  tabela.innerHTML = "";
-  dados.forEach(item => {
-    const tr = document.createElement("tr");
-
-    let responsavelNome = item.responsavel ? item.responsavel.split(".")[0] : item.responsavel;
-    responsavelNome = responsavelNome ? responsavelNome.charAt(0).toUpperCase() + responsavelNome.slice(1) : "";
-
-    tr.innerHTML = `
-      <td>${item.tipo||""}</td>
-      <td>${item.nfe||""}</td>
-      <td>${item.sv||""}</td>
-      <td>${item.nome||""}</td>
-      <td>${item.dataRegistro||""}</td>
-      <td>${item.estado||""}</td>
-      <td>${item.localizacao||""}</td>
-      <td>${responsavelNome||""}</td>
-      <td>
-        <div class="btn-group">
-          <button class="editar">Editar</button>
-          <button class="excluir">Excluir</button>
-          <button class="qrcode">Gerar QR</button>
-          <button class="exportar">Exportar QR</button>
-        </div>
-        <div class="qr-container">
-          <canvas class="qr-canvas"></canvas>
-        </div>
-      </td>
-    `;
-
-    const canvas = tr.querySelector(".qr-canvas");
-    let qrDataURL = null;
-
-    tr.querySelector(".editar").onclick = async () => {
-      const novosDados = {
-        tipo: prompt("Tipo:", item.tipo) || item.tipo,
-        nfe: prompt("NF-e:", item.nfe) || item.nfe,
-        sv: prompt("SV:", item.sv) || item.sv,
-        nome: prompt("Nome:", item.nome) || item.nome,
-        dataRegistro: prompt("Data Registro:", item.dataRegistro) || item.dataRegistro,
-        estado: prompt("Estado:", item.estado) || item.estado,
-        localizacao: prompt("Localização:", item.localizacao) || item.localizacao,
-        responsavel: prompt("Responsável (email):", item.responsavel) || item.responsavel
-      };
-      try {
-        await set(ref(db, `ferramentais/${item.id}`), novosDados);
-        alert("Registro alterado com sucesso!");
-        const snapshot = await get(ferramentaisRef);
-        const lista = snapshot.exists() ? Object.keys(snapshot.val()).map(key=>({id:key, ...snapshot.val()[key]})) : [];
-        exibirFerramentais(lista);
-      } catch(err) { console.error(err); alert("Erro ao atualizar"); }
-    };
-
-    tr.querySelector(".excluir").onclick = async () => {
-      if(confirm("Deseja realmente excluir este registro?")){
-        try { await remove(ref(db, `ferramentais/${item.id}`)); tr.remove(); }
-        catch(err){ console.error(err); alert("Erro ao excluir"); }
-      }
-    };
-
-    // ✅ Gerar QR agora funciona
-    tr.querySelector(".qrcode").onclick = () => {
-      const linkDetalhes = `./detalhes.html?id=${item.id}`;
-      canvas.style.display = "block";
-      const size = 300;
-      const quietZone = 20;
-
-      const tmpDiv = document.createElement("div");
-      new QRCode(tmpDiv, {
-        text: linkDetalhes,
-        width: size,
-        height: size,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      let qrDataSrc;
-      const qrImg = tmpDiv.querySelector("img");
-      const qrCanvas = tmpDiv.querySelector("canvas");
-      if (qrImg) {
-        qrDataSrc = qrImg.src;
-      } else if (qrCanvas) {
-        qrDataSrc = qrCanvas.toDataURL("image/png");
-      } else {
-        alert("Erro ao gerar QR Code.");
-        return;
-      }
-
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
-      img.src = qrDataSrc;
-      img.onload = () => {
-        canvas.width = size + quietZone * 2;
-        canvas.height = size + quietZone * 2;
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, quietZone, quietZone, size, size);
-
-        const logo = new Image();
-        logo.src = "logosovel1337.png";
-        logo.onload = () => {
-          const logoSize = 50;
-          ctx.drawImage(logo, (canvas.width - logoSize) / 2, (canvas.height - logoSize) / 2, logoSize, logoSize);
-        };
-
-        qrDataURL = canvas.toDataURL("image/png");
-      };
-    };
-
-    tr.querySelector(".exportar").onclick = () => {
-      if (qrDataURL) {
-        const a = document.createElement("a");
-        a.href = qrDataURL;
-        a.download = `${item.nome || "qr-code"}.png`;
-        a.click();
-      } else {
-        alert("Gere o QR Code primeiro.");
-      }
-    };
-
-    tabela.appendChild(tr);
-  });
-}
-
-document.getElementById("btnBuscar").onclick = async () => {
-  const termo = document.getElementById("busca").value.toLowerCase();
-  try {
+  async function buscarFerramentais() {
+    const termo = document.getElementById("busca").value.toLowerCase();
     const snapshot = await get(ferramentaisRef);
-    const lista = snapshot.exists() ? Object.keys(snapshot.val()).map(key=>({id:key, ...snapshot.val()[key]})) : [];
+    const lista = snapshot.exists() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
     const filtrados = lista.filter(item =>
       (item.sv && item.sv.toLowerCase().includes(termo)) ||
       (item.nome && item.nome.toLowerCase().includes(termo)) ||
       (item.nfe && item.nfe.toLowerCase().includes(termo))
     );
-    if (filtrados.length) exibirFerramentais(filtrados);
-    else { alert("Nenhum ferramental encontrado"); tabela.innerHTML = ""; }
-  } catch(err){ console.error(err); alert("Erro ao buscar"); }
-};
+    exibirFerramentais(filtrados);
+  }
+
+  document.getElementById("btnBuscar").onclick = buscarFerramentais;
+
+  function exibirFerramentais(dados) {
+    tabela.innerHTML = "";
+    dados.forEach(item => {
+      const tr = document.createElement("tr");
+      let responsavelNome = item.responsavel ? item.responsavel.split(".")[0] : item.responsavel;
+      responsavelNome = responsavelNome ? responsavelNome.charAt(0).toUpperCase() + responsavelNome.slice(1) : "";
+
+      tr.innerHTML = `
+        <td>${item.tipo || ""}</td>
+        <td>${item.nfe || ""}</td>
+        <td>${item.sv || ""}</td>
+        <td>${item.nome || ""}</td>
+        <td>${item.dataRegistro || ""}</td>
+        <td>${item.estado || ""}</td>
+        <td>${item.localizacao || ""}</td>
+        <td>${responsavelNome || ""}</td>
+        <td>
+          <div class="btn-group">
+            <button class="editar">Editar</button>
+            <button class="excluir">Excluir</button>
+            <button class="qrcode">Gerar QR</button>
+            <button class="exportar">Exportar QR</button>
+          </div>
+          <div class="qr-container">
+            <canvas class="qr-canvas"></canvas>
+          </div>
+        </td>
+      `;
+
+      const canvas = tr.querySelector(".qr-canvas");
+      let qrDataURL = null;
+
+      // Gerar QR
+      tr.querySelector(".qrcode").onclick = () => {
+        const linkDetalhes = `./detalhes.html?id=${item.id}`;
+        canvas.style.display = "block";
+        const size = 300;
+        const quietZone = 20;
+
+        const tmpDiv = document.createElement("div");
+        new QRCode(tmpDiv, {
+          text: linkDetalhes,
+          width: size,
+          height: size,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+
+        let qrDataSrc;
+        const qrImg = tmpDiv.querySelector("img");
+        const qrCanvas = tmpDiv.querySelector("canvas");
+        if (qrImg) qrDataSrc = qrImg.src;
+        else if (qrCanvas) qrDataSrc = qrCanvas.toDataURL("image/png");
+        else return alert("Erro ao gerar QR Code.");
+
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.src = qrDataSrc;
+        img.onload = () => {
+          canvas.width = size + quietZone * 2;
+          canvas.height = size + quietZone * 2;
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, quietZone, quietZone, size, size);
+
+          const logo = new Image();
+          logo.src = "logosovel1337.png";
+          logo.onload = () => {
+            const logoSize = 50;
+            ctx.drawImage(logo, (canvas.width - logoSize) / 2, (canvas.height - logoSize) / 2, logoSize, logoSize);
+          };
+          qrDataURL = canvas.toDataURL("image/png");
+        };
+      };
+
+      tr.querySelector(".exportar").onclick = () => {
+        if (!qrDataURL) return alert("Gere o QR Code primeiro.");
+        const a = document.createElement("a");
+        a.href = qrDataURL;
+        a.download = `${item.nome || "qr-code"}.png`;
+        a.click();
+      };
+
+      tr.querySelector(".excluir").onclick = async () => {
+        if (confirm("Deseja realmente excluir este registro?")) {
+          await remove(ref(db, "ferramentais/" + item.id));
+          tr.remove();
+        }
+      };
+
+      tr.querySelector(".editar").onclick = () => {
+        window.location.href = `editar.html?id=${item.id}`;
+      };
+
+      tabela.appendChild(tr);
+    });
+  }
+});
 </script>
 </body>
 </html>
