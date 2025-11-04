@@ -19,7 +19,7 @@
 
     h1 {
       color: #00eaff;
-      text-shadow: 0 0 5px #00eaff;
+      text-shadow: 0 0 10px #00eaff;
     }
 
     input, button {
@@ -89,6 +89,51 @@
     .qr-placeholder canvas {
       border-radius: 10px;
     }
+
+    /* Modal para QR Code ampliado */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #0a0f1a;
+      padding: 20px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 20px #00eaff;
+      position: relative;
+    }
+
+    .modal-content canvas {
+      width: 300px;
+      height: 300px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #00eaff;
+      cursor: pointer;
+    }
+
+    .close-modal:hover {
+      color: #00ffff;
+    }
   </style>
 </head>
 <body>
@@ -114,6 +159,14 @@
     <tbody id="tabela"></tbody>
   </table>
 
+  <!-- Modal -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div id="qrModalPlaceholder"></div>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script type="module">
@@ -134,6 +187,22 @@
     const db = getDatabase(app);
     const ferramentaisRef = ref(db, "ferramentais");
     const tabela = document.getElementById("tabela");
+
+    const qrModal = document.getElementById("qrModal");
+    const qrModalPlaceholder = document.getElementById("qrModalPlaceholder");
+    const closeModal = document.querySelector(".close-modal");
+
+    closeModal.onclick = () => {
+      qrModal.style.display = "none";
+      qrModalPlaceholder.innerHTML = "";
+    };
+
+    window.onclick = (event) => {
+      if (event.target === qrModal) {
+        qrModal.style.display = "none";
+        qrModalPlaceholder.innerHTML = "";
+      }
+    };
 
     function exibirFerramentais(dados) {
       tabela.innerHTML = "";
@@ -160,12 +229,10 @@
           </td>
         `;
 
-        // Botão Editar
         tr.querySelector(".editar").onclick = () => {
           window.location.href = `editar.html?id=${item.id}`;
         };
 
-        // Botão Excluir
         tr.querySelector(".excluir").onclick = async () => {
           if (confirm("Deseja realmente excluir este registro?")) {
             await remove(child(ferramentaisRef, item.id));
@@ -174,35 +241,35 @@
           }
         };
 
-        // Botão QR Code
         tr.querySelector(".qrcode").onclick = () => {
-          const qrPlaceholder = tr.querySelector(".qr-placeholder");
-          qrPlaceholder.innerHTML = "";
+          qrModal.style.display = "flex";
+          qrModalPlaceholder.innerHTML = "";
 
           const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
-          const qr = new QRCode(qrPlaceholder, {
+
+          const qr = new QRCode(qrModalPlaceholder, {
             text: linkDetalhes,
-            width: 150,
-            height: 150,
+            width: 300,
+            height: 300,
             colorDark: "#000000",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
           });
 
-          const canvas = qrPlaceholder.querySelector("canvas");
+          const canvas = qrModalPlaceholder.querySelector("canvas");
           const ctx = canvas.getContext("2d");
           const logo = new Image();
           logo.src = "logosovel1337.png";
           logo.onload = () => {
-            const x = canvas.width / 2 - 20;
-            const y = canvas.height / 2 - 20;
-            ctx.shadowBlur = 15;
+            const logoSize = 60;
+            const x = canvas.width / 2 - logoSize / 2;
+            const y = canvas.height / 2 - logoSize / 2;
+            ctx.shadowBlur = 20;
             ctx.shadowColor = "#00eaff";
-            ctx.drawImage(logo, x, y, 40, 40);
+            ctx.drawImage(logo, x, y, logoSize, logoSize);
           };
         };
 
-        // Botão Exportar QR Code
         tr.querySelector(".exportar").onclick = () => {
           const canvas = tr.querySelector(".qr-placeholder canvas");
           if (!canvas) {
@@ -221,7 +288,6 @@
 
     document.getElementById('btnBuscar').onclick = async () => {
       const termo = document.getElementById('busca').value.toLowerCase();
-
       try {
         const snapshot = await get(ferramentaisRef);
         const dados = snapshot.exists() ? snapshot.val() : {};
