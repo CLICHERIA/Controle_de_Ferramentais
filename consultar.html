@@ -15,8 +15,9 @@ table { width: 100%; max-width: 1100px; border-collapse: collapse; margin-top: 2
 th, td { border: 1px solid #00eaff44; padding: 8px; text-align: left; vertical-align: middle; }
 th { background-color: #091224; color: #00eaff; }
 .qr-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.qr-placeholder { background: #ffffff; padding: 10px; border-radius: 10px; }
+.qr-placeholder { background: #ffffff; padding: 10px; border-radius: 10px; margin-top: 5px; }
 video { width: 300px; border-radius: 10px; margin-top: 10px; }
+.acao-buttons button { margin: 2px; }
 </style>
 </head>
 <body>
@@ -41,7 +42,7 @@ video { width: 300px; border-radius: 10px; margin-top: 10px; }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
@@ -73,23 +74,58 @@ function exibirFerramentais(dados) {
       <td>${item.localizacao||""}</td>
       <td>${item.responsavel||""}</td>
       <td class="qr-cell">
-        <button class="qrcode">Gerar QR</button>
-        <div class="qr-placeholder"></div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+          <div class="acao-buttons">
+            <button class="editar">Editar</button>
+            <button class="excluir">Excluir</button>
+            <button class="exportar">Exportar QR</button>
+          </div>
+          <button class="qrcode">Gerar QR</button>
+          <div class="qr-placeholder"></div>
+        </div>
       </td>
     `;
+    
+    // Eventos dos botões
+    tr.querySelector(".editar").onclick = () => {
+      alert(`Editar ${item.nome}`);
+      // Coloque aqui o código para abrir a página de edição
+    };
+
+    tr.querySelector(".excluir").onclick = async () => {
+      if(confirm(`Deseja realmente excluir ${item.nome}?`)){
+        try {
+          await remove(ref(db, `ferramentais/${item.id}`));
+          alert("Excluído com sucesso!");
+          tr.remove();
+        } catch(err){ console.error(err); alert("Erro ao excluir"); }
+      }
+    };
+
     tr.querySelector(".qrcode").onclick = () => {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
-      // Link correto para detalhes
       const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-      new QRCode(qrPlaceholder, { 
-        text: linkDetalhes, 
-        width: 250, 
-        height: 250, 
-        colorDark:"#000000", 
-        colorLight:"#ffffff" 
-      });
+      new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000000", colorLight:"#ffffff" });
     };
+
+    tr.querySelector(".exportar").onclick = () => {
+      const qrPlaceholder = tr.querySelector(".qr-placeholder");
+      qrPlaceholder.innerHTML = "";
+      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
+      const qr = new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000000", colorLight:"#ffffff" });
+      
+      setTimeout(() => {
+        const img = qrPlaceholder.querySelector("img");
+        if(img){
+          const a = document.createElement("a");
+          a.href = img.src;
+          a.download = `${item.nome || 'qr-code'}.png`;
+          a.click();
+        }
+      }, 300); // aguarda a renderização do QR
+    };
+
     tabela.appendChild(tr);
   });
 }
@@ -119,7 +155,6 @@ function startCameraScanner() {
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
         qrCodeMessage => { 
-          // Redireciona apenas se for URL válida
           if(qrCodeMessage.startsWith("http")) window.location.href = qrCodeMessage; 
         }
       );
