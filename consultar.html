@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta de Ferramentais - SGF</title>
   <style>
-    body { background-color: #0a0f1a; color: #ffffff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+    body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
     h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; text-align: center; }
     input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
     input { width: 300px; }
@@ -15,95 +15,98 @@
     th, td { border: 1px solid #00eaff44; padding: 8px; text-align: left; vertical-align: middle; }
     th { background-color: #091224; color: #00eaff; }
     .qr-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-    .qr-placeholder canvas { border-radius: 10px; }
+    video { width: 300px; border-radius: 10px; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h1>Consulta de Ferramentais</h1>
-  <input type="text" id="busca" placeholder="Digite SV, Nome ou Cliente">
-  <button id="btnBuscar">Buscar</button>
+<h1>Consulta de Ferramentais</h1>
+<input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
+<button id="btnBuscar">Buscar</button>
+<table>
+  <thead>
+    <tr>
+      <th>Tipo</th><th>NF-e</th><th>SV</th><th>Nome</th><th>Data Registro</th><th>Estado</th>
+      <th>Localização</th><th>Responsável</th><th>Ações</th>
+    </tr>
+  </thead>
+  <tbody id="tabela"></tbody>
+</table>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tipo</th><th>NF-e</th><th>SV</th><th>Nome</th><th>Data Registro</th><th>Estado</th>
-        <th>Localização</th><th>Responsável</th><th>Ações</th>
-      </tr>
-    </thead>
-    <tbody id="tabela"></tbody>
-  </table>
+<!-- Biblioteca para QR Code -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Biblioteca para leitura de QR Code -->
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-    import { getDatabase, ref, get, child, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+import { getDatabase, ref, get, child, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-      authDomain: "dacsovel-53481.firebaseapp.com",
-      databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
-      projectId: "dacsovel-53481",
-      storageBucket: "dacsovel-53481.appspot.com",
-      messagingSenderId: "37867522513",
-      appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+const firebaseConfig = {
+  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.appspot.com",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const ferramentaisRef = ref(db, "ferramentais");
+const tabela = document.getElementById("tabela");
+
+function exibirFerramentais(dados) {
+  tabela.innerHTML = "";
+  dados.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.tipo||""}</td><td>${item.nfe||""}</td><td>${item.sv||""}</td><td>${item.nome||""}</td>
+      <td>${item.dataRegistro||""}</td><td>${item.estado||""}</td><td>${item.localizacao||""}</td><td>${item.responsavel||""}</td>
+      <td class="qr-cell">
+        <button class="qrcode">Gerar QR</button>
+        <div class="qr-placeholder"></div>
+      </td>
+    `;
+    tr.querySelector(".qrcode").onclick = () => {
+      const qrPlaceholder = tr.querySelector(".qr-placeholder");
+      qrPlaceholder.innerHTML = "";
+      const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
+      new QRCode(qrPlaceholder, { text: linkDetalhes, width: 200, height: 200, colorDark:"#000000", colorLight:"#ffffff" });
     };
+    tabela.appendChild(tr);
+  });
+}
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const ferramentaisRef = ref(db, "ferramentais");
-    const tabela = document.getElementById("tabela");
+document.getElementById("btnBuscar").onclick = async () => {
+  const termo = document.getElementById("busca").value.toLowerCase();
+  try {
+    const snapshot = await get(ferramentaisRef);
+    const dados = snapshot.exists() ? snapshot.val() : {};
+    const lista = Object.keys(dados).map(key=>({id:key, ...dados[key]}));
+    const filtrados = lista.filter(item=> item.sv?.toLowerCase().includes(termo) || item.nome?.toLowerCase().includes(termo) || item.nfe?.toLowerCase().includes(termo));
+    filtrados.length ? exibirFerramentais(filtrados) : (alert("Nenhum ferramental encontrado"), tabela.innerHTML="");
+  } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
+};
 
-    function exibirFerramentais(dados) {
-      tabela.innerHTML = "";
-      dados.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${item.tipo||""}</td><td>${item.nfe||""}</td><td>${item.sv||""}</td><td>${item.nome||""}</td>
-          <td>${item.dataRegistro||""}</td><td>${item.estado||""}</td><td>${item.localizacao||""}</td><td>${item.responsavel||""}</td>
-          <td class="qr-cell">
-            <button class="editar">Editar</button>
-            <button class="excluir">Excluir</button>
-            <button class="qrcode">QR Code</button>
-            <button class="exportar">Exportar</button>
-            <div class="qr-placeholder"></div>
-          </td>
-        `;
+// LER QR CODE DIRETAMENTE PELA CAMERA
+const html5QrCode = new Html5Qrcode("qr-reader");
+const qrContainer = document.createElement("div");
+qrContainer.id = "qr-reader";
+document.body.insertBefore(qrContainer, document.body.firstChild);
 
-        tr.querySelector(".editar").onclick = () => window.location.href=`editar.html?id=${item.id}`;
-        tr.querySelector(".excluir").onclick = async () => {
-          if(confirm("Deseja realmente excluir?")) { await remove(child(ferramentaisRef, item.id)); alert("Excluído!"); tr.remove(); }
-        };
-
-        tr.querySelector(".qrcode").onclick = () => {
-          const qrPlaceholder = tr.querySelector(".qr-placeholder");
-          qrPlaceholder.innerHTML = "";
-          const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
-          new QRCode(qrPlaceholder, { text: linkDetalhes, width: 200, height: 200, colorDark:"#000000", colorLight:"#ffffff", correctLevel: QRCode.CorrectLevel.H });
-        };
-
-        tr.querySelector(".exportar").onclick = () => {
-          const canvas = tr.querySelector(".qr-placeholder canvas");
-          if(!canvas){ alert("Gere o QR Code primeiro!"); return; }
-          const link = document.createElement("a");
-          link.href = canvas.toDataURL("image/png");
-          link.download = `QR_${item.sv}.png`;
-          link.click();
-        };
-
-        tabela.appendChild(tr);
-      });
+function startCameraScanner() {
+  Html5Qrcode.getCameras().then(cameras => {
+    if(cameras && cameras.length){
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        qrCodeMessage => { window.location.href = qrCodeMessage; }
+      );
     }
-
-    document.getElementById("btnBuscar").onclick = async () => {
-      const termo = document.getElementById("busca").value.toLowerCase();
-      try{
-        const snapshot = await get(ferramentaisRef);
-        const dados = snapshot.exists() ? snapshot.val() : {};
-        const lista = Object.keys(dados).map(key=>({id:key, ...dados[key]}));
-        const filtrados = lista.filter(item=> item.sv?.toLowerCase().includes(termo) || item.nome?.toLowerCase().includes(termo) || item.nfe?.toLowerCase().includes(termo));
-        filtrados.length ? exibirFerramentais(filtrados) : (alert("Nenhum ferramental encontrado"), tabela.innerHTML="");
-      } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
-    };
-  </script>
+  }).catch(err => console.error(err));
+}
+startCameraScanner();
+</script>
 </body>
 </html>
