@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta de Ferramentais - SGF</title>
-  <style>
-    body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align:center; }
-    h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; }
-    input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
-    input { width: 300px; }
-    button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
-    button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff; }
-    table { width: 100%; max-width: 1200px; border-collapse: collapse; margin: 20px auto; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
-    th, td { border: 1px solid #00eaff44; padding: 8px; text-align: center; vertical-align: middle; }
-    th { background-color: #091224; color: #00eaff; }
-    .qr-cell { display: flex; flex-direction: column; align-items: center; }
-    .btn-group { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
-    .qr-placeholder { margin-top: 10px; }
-    .qr-placeholder img { border-radius: 10px; box-shadow: 0 0 10px #00eaff44; }
-    video { width: 300px; border-radius: 10px; margin-top: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Ferramentais - SGF</title>
+<style>
+  body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align:center; }
+  h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; }
+  input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
+  input { width: 300px; }
+  button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
+  button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff; }
+  table { width: 100%; max-width: 1200px; border-collapse: collapse; margin: 20px auto; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
+  th, td { border: 1px solid #00eaff44; padding: 8px; text-align: center; vertical-align: middle; }
+  th { background-color: #091224; color: #00eaff; }
+  .qr-cell { display: flex; flex-direction: column; align-items: center; }
+  .btn-group { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+  .qr-placeholder { margin-top: 10px; padding: 10px; background: #ffffff; border-radius: 10px; display: flex; justify-content: center; }
+  .qr-placeholder img { display: block; }
+</style>
 </head>
 <body>
 <h1>Consulta de Ferramentais</h1>
@@ -134,14 +133,13 @@ function exibirFerramentais(dados) {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
       const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
-      new QRCode(qrPlaceholder, { 
-        text: linkDetalhes, 
-        width: 300, 
-        height: 300, 
-        colorDark:"#000000", 
-        colorLight:"#ffffff", 
-        correctLevel: QRCode.CorrectLevel.H,
-        margin: 20 // margem para facilitar leitura
+      new QRCode(qrPlaceholder, {
+        text: linkDetalhes,
+        width: 250,
+        height: 250,
+        colorDark:"#000000",
+        colorLight:"#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
       });
     };
 
@@ -168,9 +166,9 @@ document.getElementById("btnBuscar").onclick = async () => {
     const snapshot = await get(ferramentaisRef);
     const dados = snapshot.exists() ? snapshot.val() : {};
     const lista = Object.keys(dados).map(key=>({id:key, ...dados[key]}));
-    const filtrados = lista.filter(item => 
-      item.sv?.toLowerCase().includes(termo) || 
-      item.nome?.toLowerCase().includes(termo) || 
+    const filtrados = lista.filter(item =>
+      item.sv?.toLowerCase().includes(termo) ||
+      item.nome?.toLowerCase().includes(termo) ||
       item.nfe?.toLowerCase().includes(termo)
     );
 
@@ -192,7 +190,7 @@ function startCameraScanner() {
     if(cameras && cameras.length){
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 300 },
+        { fps: 10, qrbox: 250 },
         qrCodeMessage => { window.location.href = qrCodeMessage; }
       );
     }
