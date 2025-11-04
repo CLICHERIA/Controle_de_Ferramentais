@@ -4,82 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalhes do Ferramental - SGF</title>
-
   <style>
-    body {
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
-      margin: 0;
-    }
-
-    h1 {
-      color: #00eaff;
-      text-shadow: 0 0 20px #00eaff;
-      text-align: center;
-    }
-
-    .centralizado {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .detalhes-card {
-      background: #0d1b2a;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px #00eaff22;
-      margin-top: 30px;
-      text-align: left;
-    }
-
-    .detalhes-card h2 {
-      color: #00bfff;
-      text-shadow: 0 0 15px #00eaff;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .detalhes-card p {
-      font-size: 16px;
-      line-height: 1.6;
-      color: #c0dfff;
-      margin: 8px 0;
-    }
-
-    .voltar-button {
-      display: inline-block;
-      padding: 12px 25px;
-      margin-top: 20px;
-      color: #00eaff;
-      background-color: #0d1b2a;
-      border-radius: 10px;
-      font-weight: bold;
-      text-decoration: none;
-      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff;
-      transition: 0.3s;
-    }
-
-    .voltar-button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
-    }
+    body { background-color: #0a0f1a; color: #ffffff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+    h1 { color:#00eaff; text-shadow:0 0 20px #00eaff; text-align:center; }
+    .centralizado{ max-width:900px; margin:0 auto; text-align:center; }
+    .detalhes-card{ background:#0d1b2a; padding:20px; border-radius:20px; box-shadow:0 0 20px #00eaff22; margin-top:30px; text-align:left; }
+    .detalhes-card h2{ color:#00bfff; text-shadow:0 0 15px #00eaff; margin-bottom:20px; text-align:center; }
+    .detalhes-card p{ font-size:16px; line-height:1.6; color:#c0dfff; margin:8px 0; }
+    .voltar-button{ display:inline-block; padding:12px 25px; margin-top:20px; color:#00eaff; background-color:#0d1b2a; border-radius:10px; font-weight:bold; text-decoration:none; box-shadow:0 0 5px #00eaff,0 0 10px #00eaff; transition:.3s; }
+    .voltar-button:hover{ color:#00ffff; box-shadow:0 0 10px #00eaff,0 0 20px #00eaff; }
   </style>
 </head>
 <body>
   <h1>Detalhes do Ferramental</h1>
   <div class="centralizado">
-    <div class="detalhes-card" id="detalhes">
-      <h2>Carregando...</h2>
-    </div>
+    <div class="detalhes-card" id="detalhes"><h2>Carregando...</h2></div>
     <a href="consultar.html" class="voltar-button">← Voltar à Consulta</a>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
@@ -93,47 +38,30 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
     const detalhesDiv = document.getElementById("detalhes");
 
-    // Função para pegar parâmetro da URL
-    function getParametroURL(nome) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(nome);
-    }
-
+    function getParametroURL(nome){ return new URLSearchParams(window.location.search).get(nome); }
     const idFerramental = getParametroURL("id");
 
-    if (!idFerramental) {
-      detalhesDiv.innerHTML = "<h2>ID do ferramental não fornecido!</h2>";
-    } else {
-      async function carregarDetalhes() {
-        try {
-          const ferramentalRef = ref(db, `ferramentais/${idFerramental}`);
-          const snapshot = await get(ferramentalRef);
-
-          if (!snapshot.exists()) {
-            detalhesDiv.innerHTML = "<h2>Ferramental não encontrado!</h2>";
-            return;
-          }
-
+    if(!idFerramental){ detalhesDiv.innerHTML="<h2>ID do ferramental não fornecido!</h2>"; }
+    else {
+      async function carregarDetalhes(){
+        try{
+          const snapshot = await get(ref(db, `ferramentais/${idFerramental}`));
+          if(!snapshot.exists()){ detalhesDiv.innerHTML="<h2>Ferramental não encontrado!</h2>"; return; }
           const data = snapshot.val();
           detalhesDiv.innerHTML = `
-            <h2>${data.nome || "Sem nome"}</h2>
-            <p><strong>Tipo:</strong> ${data.tipo || "-"}</p>
-            <p><strong>NF-e:</strong> ${data.nfe || "-"}</p>
-            <p><strong>SV:</strong> ${data.sv || "-"}</p>
-            <p><strong>Data de Registro:</strong> ${data.dataRegistro || "-"}</p>
-            <p><strong>Estado:</strong> ${data.estado || "-"}</p>
-            <p><strong>Localização:</strong> ${data.localizacao || "-"}</p>
-            <p><strong>Responsável:</strong> ${data.responsavel || "-"}</p>
+            <h2>${data.nome||"Sem nome"}</h2>
+            <p><strong>Tipo:</strong> ${data.tipo||"-"}</p>
+            <p><strong>NF-e:</strong> ${data.nfe||"-"}</p>
+            <p><strong>SV:</strong> ${data.sv||"-"}</p>
+            <p><strong>Data de Registro:</strong> ${data.dataRegistro||"-"}</p>
+            <p><strong>Estado:</strong> ${data.estado||"-"}</p>
+            <p><strong>Localização:</strong> ${data.localizacao||"-"}</p>
+            <p><strong>Responsável:</strong> ${data.responsavel||"-"}</p>
           `;
-        } catch (error) {
-          console.error(error);
-          detalhesDiv.innerHTML = "<h2>Erro ao carregar os detalhes!</h2>";
-        }
+        } catch(err){ console.error(err); detalhesDiv.innerHTML="<h2>Erro ao carregar os detalhes!</h2>"; }
       }
-
       carregarDetalhes();
     }
   </script>
