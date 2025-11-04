@@ -100,7 +100,7 @@ video { width: 300px; border-radius: 10px; margin-top: 10px; }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
@@ -121,6 +121,14 @@ function exibirFerramentais(dados) {
   tabela.innerHTML = "";
   dados.forEach(item => {
     const tr = document.createElement("tr");
+
+    // Extrair primeiro nome do email
+    let primeiroNome = "";
+    if(item.responsavel){
+      const email = item.responsavel;
+      primeiroNome = email.split(".")[0] || email.split("@")[0] || email;
+    }
+
     tr.innerHTML = `
       <td>${item.tipo||""}</td>
       <td>${item.nfe||""}</td>
@@ -129,7 +137,7 @@ function exibirFerramentais(dados) {
       <td>${item.dataRegistro||""}</td>
       <td>${item.estado||""}</td>
       <td>${item.localizacao||""}</td>
-      <td>${item.responsavel||""}</td>
+      <td>${primeiroNome}</td>
       <td class="qr-cell">
         <div class="acao-buttons">
           <button class="editar">Editar</button>
@@ -141,8 +149,32 @@ function exibirFerramentais(dados) {
       </td>
     `;
 
-    // Eventos
-    tr.querySelector(".editar").onclick = () => alert(`Editar ${item.nome}`);
+    // Botão Editar
+    tr.querySelector(".editar").onclick = async () => {
+      const novosDados = {};
+      novosDados.tipo = prompt("Tipo:", item.tipo) || item.tipo;
+      novosDados.nfe = prompt("NF-e:", item.nfe) || item.nfe;
+      novosDados.sv = prompt("SV:", item.sv) || item.sv;
+      novosDados.nome = prompt("Nome:", item.nome) || item.nome;
+      novosDados.dataRegistro = prompt("Data Registro:", item.dataRegistro) || item.dataRegistro;
+      novosDados.estado = prompt("Estado:", item.estado) || item.estado;
+      novosDados.localizacao = prompt("Localização:", item.localizacao) || item.localizacao;
+      novosDados.responsavel = prompt("Responsável (email):", item.responsavel) || item.responsavel;
+
+      try {
+        await set(ref(db, `ferramentais/${item.id}`), novosDados);
+        alert("Dados atualizados com sucesso!");
+        const snapshot = await get(ferramentaisRef);
+        const dadosAtuais = snapshot.exists() ? snapshot.val() : {};
+        const lista = Object.keys(dadosAtuais).map(key=>({id:key, ...dadosAtuais[key]}));
+        exibirFerramentais(lista);
+      } catch(err){
+        console.error(err);
+        alert("Erro ao atualizar os dados");
+      }
+    };
+
+    // Botão Excluir
     tr.querySelector(".excluir").onclick = async () => {
       if(confirm(`Deseja realmente excluir ${item.nome}?`)){
         try { await remove(ref(db, `ferramentais/${item.id}`)); tr.remove(); } 
@@ -150,27 +182,62 @@ function exibirFerramentais(dados) {
       }
     };
 
-    tr.querySelector(".qrcode").onclick = () => {
-      const qrPlaceholder = tr.querySelector(".qr-placeholder");
-      qrPlaceholder.innerHTML = "";
-      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-      new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000", colorLight:"#fff" });
-    };
+    // Gerar QR (otimizado para leitura com margem extra)
+tr.querySelector(".qrcode").onclick = () => {
+  const qrPlaceholder = tr.querySelector(".qr-placeholder");
+  qrPlaceholder.innerHTML = "";
 
-    tr.querySelector(".exportar").onclick = () => {
-      const qrPlaceholder = tr.querySelector(".qr-placeholder");
-      qrPlaceholder.innerHTML = "";
-      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-      const qr = new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000", colorLight:"#fff" });
-      setTimeout(() => {
-        const img = qrPlaceholder.querySelector("img");
-        if(img){
-          const a = document.createElement("a");
-          a.href = img.src;
-          a.download = `${item.nome || 'qr-code'}.png`;
-          a.click();
-        }
-      }, 300);
+  // Criar container com padding para margem
+  const qrContainer = document.createElement("div");
+  qrContainer.style.padding = "20px";  // margem extra ao redor do QR
+  qrContainer.style.background = "#ffffff"; // fundo branco
+  qrContainer.style.display = "inline-block";
+  
+  qrPlaceholder.appendChild(qrContainer);
+
+  const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
+  new QRCode(qrContainer, {
+    text: linkDetalhes,
+    width: 300,
+    height: 300,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+};
+
+// Exportar QR com margem extra
+tr.querySelector(".exportar").onclick = () => {
+  const qrPlaceholder = tr.querySelector(".qr-placeholder");
+  qrPlaceholder.innerHTML = "";
+
+  const qrContainer = document.createElement("div");
+  qrContainer.style.padding = "20px";
+  qrContainer.style.background = "#ffffff";
+  qrContainer.style.display = "inline-block";
+  qrPlaceholder.appendChild(qrContainer);
+
+  const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
+  const qr = new QRCode(qrContainer, {
+    text: linkDetalhes,
+    width: 300,
+    height: 300,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  // Exportar PNG
+  setTimeout(() => {
+    const img = qrContainer.querySelector("img");
+    if(img){
+      const a = document.createElement("a");
+      a.href = img.src;
+      a.download = `${item.nome || 'qr-code'}.png`;
+      a.click();
+    }
+  }, 300);
+};
     };
 
     tabela.appendChild(tr);
@@ -201,12 +268,13 @@ function startCameraScanner() {
       html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        qrCodeMessage => { if(qrCodeMessage.startsWith("http")) window.location.href = qrCodeMessage; }
+        qrCodeMessage => { window.location.href = qrCodeMessage; }
       );
     }
   }).catch(err => console.error(err));
 }
 startCameraScanner();
+
 </script>
 </body>
 </html>
