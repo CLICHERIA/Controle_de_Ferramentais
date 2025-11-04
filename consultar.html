@@ -10,7 +10,7 @@
     color: #fff;
     font-family: 'Segoe UI', sans-serif;
     padding: 20px;
-    text-align: center;
+    text-align:center;
   }
   h1 {
     color: #00eaff;
@@ -56,22 +56,22 @@
     display: flex;
     justify-content: center;
     gap: 5px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     margin-bottom: 10px;
   }
 
   .qr-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin-top: 10px;
+    display: flex;
+    justify-content: center;
   }
 
-  .qr-container canvas {
-    border: 10px solid #ffffff;
+  canvas.qr-code {
+    background-color: #ffffff; /* Fundo branco */
     border-radius: 10px;
-    box-shadow: 0 0 10px #00eaff44;
+    padding: 20px; /* Margem extra para leitura confiável */
   }
+
 </style>
 </head>
 <body>
@@ -109,51 +109,6 @@ const db = getDatabase(app);
 const ferramentaisRef = ref(db, "ferramentais");
 const tabela = document.getElementById("tabela");
 
-function gerarQRCodeComLogo(link, container, callback){
-  container.innerHTML = ""; // Limpa QR anterior
-
-  const tamanho = 250;
-  const canvas = document.createElement("canvas");
-  canvas.width = tamanho;
-  canvas.height = tamanho;
-  container.appendChild(canvas);
-
-  // Gera QR Code temporário
-  const qr = new QRCode(document.createElement("div"), {
-    text: link,
-    width: tamanho,
-    height: tamanho,
-    colorDark:"#000000",
-    colorLight:"#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  // Pega a imagem do QR e desenha no canvas com logo
-  setTimeout(() => { // espera QR ser gerado
-    const qrCanvas = qr._el.querySelector("canvas");
-    const ctx = canvas.getContext("2d");
-
-    // Desenha QR no canvas final
-    ctx.drawImage(qrCanvas, 0, 0, tamanho, tamanho);
-
-    // Desenha borda branca
-    ctx.lineWidth = 20;
-    ctx.strokeStyle = "#ffffff";
-    ctx.strokeRect(0, 0, tamanho, tamanho);
-
-    // Desenha logo centralizado
-    const logo = new Image();
-    logo.src = "logosovel1337.png";
-    logo.onload = () => {
-      const logoTamanho = tamanho * 0.2;
-      const x = (tamanho - logoTamanho)/2;
-      const y = (tamanho - logoTamanho)/2;
-      ctx.drawImage(logo, x, y, logoTamanho, logoTamanho);
-      if(callback) callback(canvas);
-    };
-  }, 100);
-}
-
 function exibirFerramentais(dados) {
   tabela.innerHTML = "";
   dados.forEach(item => {
@@ -182,7 +137,7 @@ function exibirFerramentais(dados) {
       </td>
     `;
 
-    let qrCanvas = null;
+    let qrCodeInstance = null;
 
     tr.querySelector(".editar").onclick = async () => {
       const novosDados = {
@@ -213,17 +168,44 @@ function exibirFerramentais(dados) {
 
     tr.querySelector(".qrcode").onclick = () => {
       const qrContainer = tr.querySelector(".qr-container");
-      gerarQRCodeComLogo(`detalhes.html?id=${item.id}`, qrContainer, (canvas) => {
-        qrCanvas = canvas;
+      qrContainer.innerHTML = "";
+
+      const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
+
+      const canvas = document.createElement("canvas");
+      canvas.classList.add("qr-code");
+      qrContainer.appendChild(canvas);
+
+      qrCodeInstance = new QRCode(canvas, {
+        text: linkDetalhes,
+        width: 250,
+        height: 250,
+        colorDark:"#000000",
+        colorLight:"#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
       });
+
+      // Logo pequena central
+      const imgLogo = new Image();
+      imgLogo.src = "logosovel1337.png";
+      imgLogo.onload = () => {
+        const ctx = canvas.getContext("2d");
+        const logoSize = canvas.width * 0.18;
+        const x = (canvas.width - logoSize)/2;
+        const y = (canvas.height - logoSize)/2;
+        ctx.drawImage(imgLogo, x, y, logoSize, logoSize);
+      };
     };
 
     tr.querySelector(".exportar").onclick = () => {
-      if(qrCanvas){
-        const a = document.createElement("a");
-        a.href = qrCanvas.toDataURL("image/png");
-        a.download = `${item.nome || 'qr-code'}.png`;
-        a.click();
+      if(qrCodeInstance){
+        const canvas = tr.querySelector("canvas.qr-code");
+        if(canvas){
+          const a = document.createElement("a");
+          a.href = canvas.toDataURL("image/png");
+          a.download = `${item.nome || 'qr-code'}.png`;
+          a.click();
+        }
       } else {
         alert("Gere o QR Code primeiro.");
       }
