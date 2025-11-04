@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta de Ferramentais - SGF</title>
-  <style>
-    body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
-    h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; text-align: center; }
-    input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
-    input { width: 300px; }
-    button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
-    button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff; }
-    table { width: 100%; max-width: 1100px; border-collapse: collapse; margin-top: 20px; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
-    th, td { border: 1px solid #00eaff44; padding: 8px; text-align: left; vertical-align: middle; }
-    th { background-color: #091224; color: #00eaff; }
-    .qr-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-    video { width: 300px; border-radius: 10px; margin-top: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Ferramentais - SGF</title>
+<style>
+body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; text-align: center; }
+input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
+input { width: 300px; }
+button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
+button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff; }
+table { width: 100%; max-width: 1100px; border-collapse: collapse; margin-top: 20px; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
+th, td { border: 1px solid #00eaff44; padding: 8px; text-align: left; vertical-align: middle; }
+th { background-color: #091224; color: #00eaff; }
+.qr-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.qr-placeholder { background: #ffffff; padding: 10px; border-radius: 10px; }
+video { width: 300px; border-radius: 10px; margin-top: 10px; }
+</style>
 </head>
 <body>
+
 <h1>Consulta de Ferramentais</h1>
 <input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
 <button id="btnBuscar">Buscar</button>
+
 <table>
   <thead>
     <tr>
@@ -32,14 +35,13 @@
   <tbody id="tabela"></tbody>
 </table>
 
-<!-- Biblioteca para QR Code -->
+<!-- Bibliotecas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- Biblioteca para leitura de QR Code -->
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getDatabase, ref, get, child, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
@@ -56,13 +58,20 @@ const db = getDatabase(app);
 const ferramentaisRef = ref(db, "ferramentais");
 const tabela = document.getElementById("tabela");
 
+// Função para exibir ferramentais
 function exibirFerramentais(dados) {
   tabela.innerHTML = "";
   dados.forEach(item => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${item.tipo||""}</td><td>${item.nfe||""}</td><td>${item.sv||""}</td><td>${item.nome||""}</td>
-      <td>${item.dataRegistro||""}</td><td>${item.estado||""}</td><td>${item.localizacao||""}</td><td>${item.responsavel||""}</td>
+      <td>${item.tipo||""}</td>
+      <td>${item.nfe||""}</td>
+      <td>${item.sv||""}</td>
+      <td>${item.nome||""}</td>
+      <td>${item.dataRegistro||""}</td>
+      <td>${item.estado||""}</td>
+      <td>${item.localizacao||""}</td>
+      <td>${item.responsavel||""}</td>
       <td class="qr-cell">
         <button class="qrcode">Gerar QR</button>
         <div class="qr-placeholder"></div>
@@ -71,13 +80,21 @@ function exibirFerramentais(dados) {
     tr.querySelector(".qrcode").onclick = () => {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
-      const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
-      new QRCode(qrPlaceholder, { text: linkDetalhes, width: 200, height: 200, colorDark:"#000000", colorLight:"#ffffff" });
+      // Link correto para detalhes
+      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
+      new QRCode(qrPlaceholder, { 
+        text: linkDetalhes, 
+        width: 250, 
+        height: 250, 
+        colorDark:"#000000", 
+        colorLight:"#ffffff" 
+      });
     };
     tabela.appendChild(tr);
   });
 }
 
+// Buscar ferramentais
 document.getElementById("btnBuscar").onclick = async () => {
   const termo = document.getElementById("busca").value.toLowerCase();
   try {
@@ -89,7 +106,7 @@ document.getElementById("btnBuscar").onclick = async () => {
   } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
 };
 
-// LER QR CODE DIRETAMENTE PELA CAMERA
+// Scanner de QR Code
 const html5QrCode = new Html5Qrcode("qr-reader");
 const qrContainer = document.createElement("div");
 qrContainer.id = "qr-reader";
@@ -101,7 +118,10 @@ function startCameraScanner() {
       html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        qrCodeMessage => { window.location.href = qrCodeMessage; }
+        qrCodeMessage => { 
+          // Redireciona apenas se for URL válida
+          if(qrCodeMessage.startsWith("http")) window.location.href = qrCodeMessage; 
+        }
       );
     }
   }).catch(err => console.error(err));
