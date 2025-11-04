@@ -1,89 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consulta de Ferramentais - SGF</title>
-<style>
-body {
-  background-color: #0a0f1a;
-  color: #fff;
-  font-family: 'Segoe UI', sans-serif;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-h1 {
-  color: #00eaff;
-  text-shadow: 0 0 5px #00eaff;
-  text-align: center;
-}
-input, button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
-  margin: 5px;
-}
-input { width: 300px; }
-button {
-  cursor: pointer;
-  font-weight: bold;
-  color: #00eaff;
-  background-color: #0d1b2a;
-  box-shadow: 0 0 5px #00eaff;
-}
-button:hover {
-  color: #00ffff;
-  box-shadow: 0 0 10px #00eaff;
-}
-table {
-  width: 100%;
-  max-width: 1200px;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: #0d1b2a;
-  border-radius: 10px;
-  box-shadow: 0 0 20px #00eaff22;
-}
-th, td {
-  border: 1px solid #00eaff44;
-  padding: 8px;
-  text-align: center;
-  vertical-align: middle;
-}
-th {
-  background-color: #091224;
-  color: #00eaff;
-}
-.qr-cell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-.acao-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-.qr-placeholder {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-}
-video { width: 300px; border-radius: 10px; margin-top: 10px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Ferramentais - SGF</title>
+  <style>
+    body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align:center;}
+    h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; text-align: center; }
+    input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
+    input { width: 300px; }
+    button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
+    button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff; }
+    table { width: 100%; max-width: 1200px; border-collapse: collapse; margin: 20px auto; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
+    th, td { border: 1px solid #00eaff44; padding: 8px; text-align: center; vertical-align: middle; }
+    th { background-color: #091224; color: #00eaff; }
+    .qr-cell { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .btn-group { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+    .qr-placeholder img { margin-top: 10px; border-radius: 10px; box-shadow: 0 0 10px #00eaff44; }
+    video { width: 300px; border-radius: 10px; margin-top: 10px; }
+  </style>
 </head>
 <body>
-
 <h1>Consulta de Ferramentais</h1>
-<div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-  <input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
-  <button id="btnBuscar">Buscar</button>
-</div>
-
+<input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
+<button id="btnBuscar">Buscar</button>
 <table>
   <thead>
     <tr>
@@ -121,12 +61,9 @@ function exibirFerramentais(dados) {
   tabela.innerHTML = "";
   dados.forEach(item => {
     const tr = document.createElement("tr");
-
-    let primeiroNome = "";
-    if(item.responsavel){
-      const email = item.responsavel;
-      primeiroNome = email.split(".")[0] || email.split("@")[0] || email;
-    }
+    // Extrair primeiro nome do responsável
+    let responsavelNome = item.responsavel ? item.responsavel.split(".")[0] : item.responsavel;
+    responsavelNome = responsavelNome ? responsavelNome.charAt(0).toUpperCase() + responsavelNome.slice(1) : "";
 
     tr.innerHTML = `
       <td>${item.tipo||""}</td>
@@ -136,9 +73,9 @@ function exibirFerramentais(dados) {
       <td>${item.dataRegistro||""}</td>
       <td>${item.estado||""}</td>
       <td>${item.localizacao||""}</td>
-      <td>${primeiroNome}</td>
+      <td>${responsavelNome||""}</td>
       <td class="qr-cell">
-        <div class="acao-buttons">
+        <div class="btn-group">
           <button class="editar">Editar</button>
           <button class="excluir">Excluir</button>
           <button class="qrcode">Gerar QR</button>
@@ -162,11 +99,21 @@ function exibirFerramentais(dados) {
 
       try {
         await set(ref(db, `ferramentais/${item.id}`), novosDados);
-        alert("Dados atualizados com sucesso!");
+
+        let operador = novosDados.responsavel.split(".")[0] || novosDados.responsavel.split("@")[0] || novosDados.responsavel;
+        operador = operador.charAt(0).toUpperCase() + operador.slice(1);
+
+        const now = new Date();
+        const data = now.toLocaleDateString("pt-BR");
+        const hora = now.toLocaleTimeString("pt-BR", { hour: '2-digit', minute:'2-digit', second:'2-digit' });
+
+        alert(`Registro alterado com sucesso por ${operador} em ${data} - ${hora}`);
+
         const snapshot = await get(ferramentaisRef);
         const dadosAtuais = snapshot.exists() ? snapshot.val() : {};
         const lista = Object.keys(dadosAtuais).map(key=>({id:key, ...dadosAtuais[key]}));
         exibirFerramentais(lista);
+
       } catch(err){
         console.error(err);
         alert("Erro ao atualizar os dados");
@@ -175,65 +122,40 @@ function exibirFerramentais(dados) {
 
     // Botão Excluir
     tr.querySelector(".excluir").onclick = async () => {
-      if(confirm(`Deseja realmente excluir ${item.nome}?`)){
-        try { await remove(ref(db, `ferramentais/${item.id}`)); tr.remove(); } 
-        catch(err){ console.error(err); alert("Erro ao excluir"); }
+      if(confirm("Deseja realmente excluir este registro?")){
+        try {
+          await remove(ref(db, `ferramentais/${item.id}`));
+          tr.remove();
+        } catch(err){ console.error(err); alert("Erro ao excluir"); }
       }
     };
 
-    // Gerar QR (com margem extra)
+    // Botão Gerar QR
     tr.querySelector(".qrcode").onclick = () => {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
-
-      const qrContainer = document.createElement("div");
-      qrContainer.style.padding = "20px"; // margem extra
-      qrContainer.style.background = "#ffffff";
-      qrContainer.style.display = "inline-block";
-      qrPlaceholder.appendChild(qrContainer);
-
-      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-      new QRCode(qrContainer, {
-        text: linkDetalhes,
-        width: 300,
-        height: 300,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
+      const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
+      new QRCode(qrPlaceholder, { 
+        text: linkDetalhes, 
+        width: 300, 
+        height: 300, 
+        colorDark:"#000000", 
+        colorLight:"#ffffff", 
+        correctLevel: QRCode.CorrectLevel.H 
       });
     };
 
-    // Exportar QR
+    // Botão Exportar QR
     tr.querySelector(".exportar").onclick = () => {
-      const qrPlaceholder = tr.querySelector(".qr-placeholder");
-      qrPlaceholder.innerHTML = "";
-
-      const qrContainer = document.createElement("div");
-      qrContainer.style.padding = "20px"; // margem extra
-      qrContainer.style.background = "#ffffff";
-      qrContainer.style.display = "inline-block";
-      qrPlaceholder.appendChild(qrContainer);
-
-      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-      const qr = new QRCode(qrContainer, {
-        text: linkDetalhes,
-        width: 300,
-        height: 300,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      // Exportar PNG após render
-      setTimeout(() => {
-        const img = qrContainer.querySelector("img");
-        if(img){
-          const a = document.createElement("a");
-          a.href = img.src;
-          a.download = `${item.nome || 'qr-code'}.png`;
-          a.click();
-        }
-      }, 300);
+      const qrImg = tr.querySelector(".qr-placeholder img");
+      if(qrImg){
+        const a = document.createElement("a");
+        a.href = qrImg.src;
+        a.download = `${item.nome || 'qr-code'}.png`;
+        a.click();
+      } else {
+        alert("Gere o QR Code antes de exportar.");
+      }
     };
 
     tabela.appendChild(tr);
@@ -251,7 +173,7 @@ document.getElementById("btnBuscar").onclick = async () => {
   } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
 };
 
-// LER QR CODE DIRETAMENTE PELA CAMERA
+// Leitura de QR Code via câmera
 const html5QrCode = new Html5Qrcode("qr-reader");
 const qrContainer = document.createElement("div");
 qrContainer.id = "qr-reader";
