@@ -65,17 +65,12 @@
       background-color: #00ffff;
       box-shadow: 0 0 20px #00eaff;
     }
-
-    @media print {
-      button { display: none; }
-      body { background: #fff; color: #000; }
-      .card { box-shadow: none; border: 1px solid #ccc; }
-    }
   </style>
 </head>
 <body>
 
-  <div class="card">
+  <div class="card" id="cardFerramental">
+    <img src="logosovel1337.png" alt="Logo Sovel" style="display:block;margin:0 auto 10px;width:100px;">
     <h2>Detalhes do Ferramental</h2>
     <p><strong>Tipo:</strong> <span id="tipo"></span></p>
     <p><strong>Nº NF-e:</strong> <span id="nfe"></span></p>
@@ -86,10 +81,11 @@
 
     <div class="botoes">
       <button onclick="window.history.back()">Voltar</button>
-      <button onclick="window.print()">Imprimir</button>
+      <button id="btnPDF">Gerar PDF</button>
     </div>
   </div>
 
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
@@ -128,5 +124,43 @@
       alert("ID inválido!");
     }
   </script>
+
+  <!-- jsPDF e html2canvas para gerar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    document.getElementById("btnPDF").addEventListener("click", async () => {
+      const { jsPDF } = window.jspdf;
+      const card = document.getElementById("cardFerramental");
+
+      // Gera imagem do card
+      const canvas = await html2canvas(card, {
+        backgroundColor: "#0a0f1a",
+        scale: 3
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      // Cria PDF
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        putOnlyUsedFonts: true
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+      
+      // Nome do arquivo
+      const sv = document.getElementById("sv").textContent || "Ferramental";
+      pdf.save(`Ferramental_${sv}.pdf`);
+    });
+  </script>
+
 </body>
 </html>
