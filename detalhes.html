@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detalhes do Ferramental - SGF</title>
+  <title>Detalhes do Ferramental</title>
   <style>
     body {
       background-color: #0a0f1a;
-      color: #fff;
+      color: #ffffff;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
       flex-direction: column;
@@ -15,107 +15,74 @@
       padding: 20px;
       margin: 0;
     }
-
-    .card {
-      background: #0d1b2a;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00eaff33;
-      padding: 25px;
-      width: 90%;
-      max-width: 600px;
-      text-align: left;
-    }
-
-    h1 {
-      text-align: center;
-      color: #00eaff;
-      text-shadow: 0 0 8px #00eaff;
-    }
-
-    .campo {
-      margin: 12px 0;
-    }
-
-    .label {
-      color: #00eaff;
-      font-weight: bold;
-    }
-
-    .valor {
-      color: #fff;
-      font-size: 16px;
-    }
-
-    button {
-      margin-top: 20px;
+    h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; }
+    .detalhes {
       background-color: #0d1b2a;
-      border: none;
-      padding: 10px 20px;
+      padding: 20px;
       border-radius: 10px;
-      color: #00eaff;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 0 10px #00eaff55;
-      transition: 0.3s;
+      box-shadow: 0 0 20px #00eaff22;
+      max-width: 500px;
+      width: 100%;
     }
-
-    button:hover {
-      box-shadow: 0 0 20px #00eaff;
-      color: #00ffff;
-    }
+    .detalhes p { margin: 10px 0; }
+    .detalhes strong { color: #00ffff; }
   </style>
 </head>
 <body>
+<h1>Detalhes do Ferramental</h1>
+<div class="detalhes" id="detalhes"></div>
 
-  <h1>Detalhes do Ferramental</h1>
-  <div class="card" id="detalhes"></div>
-  <button onclick="window.location.href='consultar.html'">Voltar</button>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+  authDomain: "dacsovel-53481.firebaseapp.com",
+  databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+  projectId: "dacsovel-53481",
+  storageBucket: "dacsovel-53481.appspot.com",
+  messagingSenderId: "37867522513",
+  appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-      authDomain: "dacsovel-53481.firebaseapp.com",
-      databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
-      projectId: "dacsovel-53481",
-      storageBucket: "dacsovel-53481.appspot.com",
-      messagingSenderId: "37867522513",
-      appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-    };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const detalhesDiv = document.getElementById("detalhes");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+// Pega ID da URL
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
 
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    const detalhesDiv = document.getElementById("detalhes");
-
-    if (!id) {
-      detalhesDiv.innerHTML = "<p>ID não encontrado.</p>";
-    } else {
-      const refItem = child(ref(db), "ferramentais/" + id);
-      get(refItem).then(snapshot => {
-        if (snapshot.exists()) {
-          const dados = snapshot.val();
-          detalhesDiv.innerHTML = `
-            <div class="campo"><span class="label">Tipo:</span> <span class="valor">${dados.tipo}</span></div>
-            <div class="campo"><span class="label">Nº NF-e:</span> <span class="valor">${dados.nfe || "-"}</span></div>
-            <div class="campo"><span class="label">SV:</span> <span class="valor">${dados.sv}</span></div>
-            <div class="campo"><span class="label">Nome:</span> <span class="valor">${dados.nome}</span></div>
-            <div class="campo"><span class="label">Data de Registro:</span> <span class="valor">${dados.dataRegistro}</span></div>
-            <div class="campo"><span class="label">Estado:</span> <span class="valor">${dados.estado}</span></div>
-            <div class="campo"><span class="label">Localização:</span> <span class="valor">${dados.localizacao}</span></div>
-            <div class="campo"><span class="label">Responsável:</span> <span class="valor">${dados.responsavel}</span></div>
-          `;
-        } else {
-          detalhesDiv.innerHTML = "<p>Registro não encontrado.</p>";
-        }
-      }).catch(err => {
-        detalhesDiv.innerHTML = `<p>Erro: ${err.message}</p>`;
-      });
+async function carregarDetalhes() {
+  if(!id) {
+    detalhesDiv.innerHTML = "<p>ID do ferramental não informado!</p>";
+    return;
+  }
+  try {
+    const snapshot = await get(child(ref(db), `ferramentais/${id}`));
+    if(!snapshot.exists()) {
+      detalhesDiv.innerHTML = "<p>Ferramental não encontrado!</p>";
+      return;
     }
-  </script>
+    const item = snapshot.val();
+    detalhesDiv.innerHTML = `
+      <p><strong>Tipo:</strong> ${item.tipo}</p>
+      <p><strong>NF-e:</strong> ${item.nfe}</p>
+      <p><strong>SV:</strong> ${item.sv}</p>
+      <p><strong>Nome:</strong> ${item.nome}</p>
+      <p><strong>Data Registro:</strong> ${item.dataRegistro}</p>
+      <p><strong>Estado:</strong> ${item.estado}</p>
+      <p><strong>Localização:</strong> ${item.localizacao}</p>
+      <p><strong>Responsável:</strong> ${item.responsavel}</p>
+    `;
+  } catch(err) {
+    detalhesDiv.innerHTML = "<p>Erro ao carregar detalhes.</p>";
+    console.error(err);
+  }
+}
+
+carregarDetalhes();
+</script>
 </body>
 </html>
