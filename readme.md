@@ -1,65 +1,65 @@
-!-- ====================== --
-!-- README - GRUPO SOVEL --
-!-- ====================== --
+<!-- ====================== -->
+<!-- README - GRUPO SOVEL -->
+<!-- ====================== -->
 
-!-- Estilo global --
-style
+<!-- Estilo global -->
+<style>
   body {
-    background-color #0a0f1a;  fundo preto site inteiro 
-    margin 0;
-    padding 0;
-    color #ffffff;
-    font-family 'Segoe UI', sans-serif;
+    background-color: #0a0f1a; /* fundo preto site inteiro */
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
   }
 
   html, body {
-    width 100%;
-    height 100%;
+    width: 100%;
+    height: 100%;
   }
 
   a {
-    color #00eaff;
-    text-decoration none;
+    color: #00eaff;
+    text-decoration: none;
   }
 
-   Container da logo para glow seguro 
+  /* Container da logo para glow seguro */
   .logo-container {
-    display inline-block;
-    background transparent;
-    padding 0;
-    margin 0;
-    filter drop-shadow(0 0 8px #00eaff);  brilho neon 
+    display: inline-block;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    filter: drop-shadow(0 0 8px #00eaff); /* brilho neon */
   }
 
   img.logo {
-    display block;
-    margin 0 auto;
-    background-color transparent;
-    vertical-align middle;
+    display: block;
+    margin: 0 auto;
+    background-color: transparent;
+    vertical-align: middle;
   }
 
-   Neon Button 
+  /* Neon Button */
   .neon-button {
-    display inline-block;
-    padding 15px 35px;
-    color #00eaff;
-    text-decoration none;
-    font-weight bold;
-    font-size 16px;
-    border-radius 10px;
-    background-color #0d1b2a;
-    box-shadow
+    display: inline-block;
+    padding: 15px 35px;
+    color: #00eaff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 10px;
+    background-color: #0d1b2a;
+    box-shadow:
       0 0 5px #00eaff,
       0 0 10px #00eaff,
       0 0 20px #00eaff,
       0 0 40px #00eaff55;
-    transition 0.3s ease-in-out;
-    animation neonPulse 1.5s infinite alternate;
+    transition: 0.3s ease-in-out;
+    animation: neonPulse 1.5s infinite alternate;
   }
 
-  .neon-buttonhover {
-    color #00ffff;
-    box-shadow
+  .neon-button:hover {
+    color: #00ffff;
+    box-shadow:
       0 0 10px #00eaff,
       0 0 20px #00eaff,
       0 0 30px #00eaff,
@@ -68,37 +68,37 @@ style
 
   @keyframes neonPulse {
     0%, 100% {
-      box-shadow
+      box-shadow:
         0 0 5px #00eaff,
         0 0 10px #00eaff,
         0 0 20px #00eaff;
     }
     50% {
-      box-shadow
+      box-shadow:
         0 0 15px #00eaff,
         0 0 30px #00eaff,
         0 0 45px #00eaff77;
     }
   }
 
-   Neon animado para os cards da equipe 
+  /* Neon animado para os cards da equipe */
   .neon-card {
-    background #0a0f1a;
-    color #ffffff;
-    padding 25px;
-    border-radius 20px;
-    text-align center;
-    min-width 200px;
-    box-shadow
+    background: #0a0f1a;
+    color: #ffffff;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 200px;
+    box-shadow:
       0 0 10px #00eaff,
       0 0 20px #00eaff55;
-    animation neonCardPulse 2s infinite alternate;
-    transition transform 0.3s ease-in-out;
+    animation: neonCardPulse 2s infinite alternate;
+    transition: transform 0.3s ease-in-out;
   }
 
-  .neon-cardhover {
-    transform scale(1.05);
-    box-shadow
+  .neon-card:hover {
+    transform: scale(1.05);
+    box-shadow:
       0 0 20px #00eaff,
       0 0 40px #00eaff77,
       0 0 60px #00eaff99;
@@ -106,171 +106,171 @@ style
 
   @keyframes neonCardPulse {
     0%, 100% {
-      box-shadow
+      box-shadow:
         0 0 5px #00eaff,
         0 0 15px #00eaff22;
     }
     50% {
-      box-shadow
+      box-shadow:
         0 0 15px #00eaff,
         0 0 30px #00eaff44;
     }
   }
 
   .neon-card h3 {
-    margin 0 0 10px 0;
-    color #00eaff;
-    text-shadow 0 0 8px #00eaff;
+    margin: 0 0 10px 0;
+    color: #00eaff;
+    text-shadow: 0 0 8px #00eaff;
   }
 
   .neon-card p {
-    margin 0;
+    margin: 0;
   }
 
-   Centralização geral das seções 
+  /* Centralização geral das seções */
   .centralizado {
-    text-align center;
-    max-width 900px;
-    margin 0 auto;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
   }
 
-   Pre centralizado 
+  /* Pre centralizado */
   .pre-centralizado {
-    display inline-block;
-    text-align left;
-    background-color #0d1b2a;
-    color #00eaff;
-    padding 20px;
-    border-radius 10px;
-    box-shadow 0 0 20px #00eaff22;
+    display: inline-block;
+    text-align: left;
+    background-color: #0d1b2a;
+    color: #00eaff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00eaff22;
   }
-style
+</style>
 
-!-- ====================== --
-!-- Bloco Logo + Título --
-!-- ====================== --
-div style=background-color#0a0f1a; padding40px; border-radius20px; box-shadow0 0 30px #00eaff55; text-aligncenter;
+<!-- ====================== -->
+<!-- Bloco Logo + Título -->
+<!-- ====================== -->
+<div style="background-color:#0a0f1a; padding:40px; border-radius:20px; box-shadow:0 0 30px #00eaff55; text-align:center;">
 
-  !-- Logo centralizada em container transparente com glow --
-  div class=logo-container
-    img src=logosovel1337.png alt=Logo Grupo Sovel da Amazônia width=200 class=logo 
-  div
+  <!-- Logo centralizada em container transparente com glow -->
+  <div class="logo-container">
+    <img src="logosovel1337.png" alt="Logo Grupo Sovel da Amazônia" width="200" class="logo" />
+  </div>
 
-  !-- Título neon --
-  h1 style=color#00eaff; text-shadow0 0 20px #00eaff; margin-top20px;
+  <!-- Título neon -->
+  <h1 style="color:#00eaff; text-shadow:0 0 20px #00eaff; margin-top:20px;">
     ⚙️ Sistema de Gestão de Ferramentais ⚙️
-  h1
+  </h1>
 
-  !-- Subtítulo --
-  p style=color#9fd0ff; font-size18px; margin-top10px;
-    bDepartamento de Amostras e Clicheriabbr
-    bGrupo Sovel da Amazôniab
-  p
+  <!-- Subtítulo -->
+  <p style="color:#9fd0ff; font-size:18px; margin-top:10px;">
+    <b>Departamento de Amostras e Clicheria</b><br>
+    <b>Grupo Sovel da Amazônia</b>
+  </p>
 
-  !-- Badges --
-  p style=margin-top20px;
-    img src=httpsimg.shields.iobadgeStatus-Em%20Operação-00ffccstyle=for-the-badge&logo=serverless&logoColor=white alt=Status
-    img src=httpsimg.shields.iobadgeVersão-1.0.0-007bffstyle=for-the-badge&logo=semanticrelease&logoColor=white alt=Versão
-    img src=httpsimg.shields.iobadgeAtualizado-Outubro%2F2025-333333style=for-the-badge&logo=github&logoColor=white alt=Última atualização
-    img src=httpsimg.shields.iobadgeTecnologia-QR--Code%20%7C%20Gestão--Digital-0099ffstyle=for-the-badge&logo=qrcode&logoColor=white alt=Tecnologia
-  p
+  <!-- Badges -->
+  <p style="margin-top:20px;">
+    <img src="https://img.shields.io/badge/Status-Em%20Operação-00ffcc?style=for-the-badge&logo=serverless&logoColor=white" alt="Status">
+    <img src="https://img.shields.io/badge/Versão-1.0.0-007bff?style=for-the-badge&logo=semanticrelease&logoColor=white" alt="Versão">
+    <img src="https://img.shields.io/badge/Atualizado-Outubro%2F2025-333333?style=for-the-badge&logo=github&logoColor=white" alt="Última atualização">
+    <img src="https://img.shields.io/badge/Tecnologia-QR--Code%20%7C%20Gestão--Digital-0099ff?style=for-the-badge&logo=qrcode&logoColor=white" alt="Tecnologia">
+  </p>
 
-  !-- Botão Painel Interativo neon animado --
-  p style=margin-top20px;
-    a href=docsindex.html target=_blank class=neon-button
+  <!-- Botão Painel Interativo neon animado -->
+  <p style="margin-top:20px;">
+    <a href="docs/index.html" target="_blank" class="neon-button">
       Acessar Painel Interativo
-    a
-  p
+    </a>
+  </p>
 
-div
+</div>
 
-hr style=border0; border-top1px solid #00eaff44; margin30px 0;
+<hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-!-- ====================== --
-!-- Conteúdo Centralizado --
-!-- ====================== --
-div class=centralizado
+<!-- ====================== -->
+<!-- Conteúdo Centralizado -->
+<!-- ====================== -->
+<div class="centralizado">
 
-  !-- Sobre o Projeto --
-  h2 style=color#00bfff; text-shadow0 0 15px #00eaff;💡 Sobre o Projetoh2
+  <!-- Sobre o Projeto -->
+  <h2 style="color:#00bfff; text-shadow:0 0 15px #00eaff;">💡 Sobre o Projeto</h2>
 
-  p style=color#c0dfff; font-size16px; line-height1.6;
-    O bSistema de Gestão de Ferramentaisb tem como propósito bautomatizar e digitalizarb o controle de ferramentais do bDepartamento de Amostras e Clicheriab.br
-    Através de uma interface moderna e integração com bQR Codesb, o sistema gerencia btodo o ciclo de vida das ferramentasb, desde o recebimento até a substituição.
-  p
+  <p style="color:#c0dfff; font-size:16px; line-height:1.6;">
+    O <b>Sistema de Gestão de Ferramentais</b> tem como propósito <b>automatizar e digitalizar</b> o controle de ferramentais do <b>Departamento de Amostras e Clicheria</b>.<br>
+    Através de uma interface moderna e integração com <b>QR Codes</b>, o sistema gerencia <b>todo o ciclo de vida das ferramentas</b>, desde o recebimento até a substituição.
+  </p>
 
-  p style=color#a9e5ff; font-size16px; line-height1.6;
-    🔹 Cada ferramenta possui um bQR Code exclusivob contendo informações técnicas e rastreáveis.br
-    🔹 Foco em beficiência, agilidade e segurança operacionalb.br
-    🔹 Desenvolvido com base em binovação tecnológica e melhoria contínuab.
-  p
+  <p style="color:#a9e5ff; font-size:16px; line-height:1.6;">
+    🔹 Cada ferramenta possui um <b>QR Code exclusivo</b> contendo informações técnicas e rastreáveis.<br>
+    🔹 Foco em <b>eficiência, agilidade e segurança operacional</b>.<br>
+    🔹 Desenvolvido com base em <b>inovação tecnológica e melhoria contínua</b>.
+  </p>
 
-  hr style=border0; border-top1px solid #00eaff44; margin30px 0;
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-  !-- Grupo Sovel --
-  h2 style=color#00bfff;🏢 Grupo Sovel da Amazôniah2
-  p style=color#c0dfff;bDepartamento de Amostras e Clicheriabp
+  <!-- Grupo Sovel -->
+  <h2 style="color:#00bfff;">🏢 Grupo Sovel da Amazônia</h2>
+  <p style="color:#c0dfff;"><b>Departamento de Amostras e Clicheria</b></p>
 
-  hr style=border0; border-top1px solid #00eaff44; margin30px 0;
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-  !-- Equipe D.A.C --
-  h2 style=color#00bfff; text-shadow0 0 20px #00eaff; margin-bottom30px;👥 Equipe D.A.Ch2
+  <!-- Equipe D.A.C -->
+  <h2 style="color:#00bfff; text-shadow:0 0 20px #00eaff; margin-bottom:30px;">👥 Equipe D.A.C</h2>
 
-  div style=displayflex; flex-wrapwrap; justify-contentcenter; gap30px;
-    div class=neon-card
-      h3⚡ Samueldson Ferreirah3
-      p🛡️ Supervisorp
-    div
-    div class=neon-card
-      h3📊 Rafaelly Azevedoh3
-      p💼 Analista Administrativop
-    div
-    div class=neon-card
-      h3🔧 Elienson Duarteh3
-      p🛠️ Assistentep
-    div
-    div class=neon-card
-      h3🔧 Gustavo Albuquerqueh3
-      p🛠️ Assistentep
-    div
-    div class=neon-card
-      h3🔧 Vanessa Nascimentoh3
-      p🛠️ Assistentep
-    div
-  div
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:30px;">
+    <div class="neon-card">
+      <h3>⚡ Samueldson Ferreira</h3>
+      <p>🛡️ Supervisor</p>
+    </div>
+    <div class="neon-card">
+      <h3>📊 Rafaelly Azevedo</h3>
+      <p>💼 Analista Administrativo</p>
+    </div>
+    <div class="neon-card">
+      <h3>🔧 Elienson Duarte</h3>
+      <p>🛠️ Assistente</p>
+    </div>
+    <div class="neon-card">
+      <h3>🔧 Gustavo Albuquerque</h3>
+      <p>🛠️ Assistente</p>
+    </div>
+    <div class="neon-card">
+      <h3>🔧 Vanessa Nascimento</h3>
+      <p>🛠️ Assistente</p>
+    </div>
+  </div>
 
-  hr style=border0; border-top1px solid #00eaff44; margin30px 0;
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-  !-- Tecnologias --
-  h2 style=color#00bfff;🛠️ Tecnologias e Recursosh2
+  <!-- Tecnologias -->
+  <h2 style="color:#00bfff;">🛠️ Tecnologias e Recursos</h2>
 
-  div style=background-color#0a0f1a; color#00eaff; padding20px; border-radius10px; text-alignleft; max-width600px; margin0 auto; white-spacepre-wrap;
-- Interface responsiva (HTML5CSS3)
+  <div style="background-color:#0a0f1a; color:#00eaff; padding:20px; border-radius:10px; text-align:left; max-width:600px; margin:0 auto; white-space:pre-wrap;">
+- Interface responsiva (HTML5/CSS3)
 - Controle de ferramentais via QR Code
 - Painel interativo e intuitivo
 - Relatórios e histórico de movimentações
 - Base pronta para integração com banco de dados interno
-div
+</div>
 
 
-  hr style=border0; border-top1px solid #00eaff44; margin30px 0;
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-  !-- Contato --
-  h2 style=color#00bfff;💬 Contato e Sugestõesh2
-  p style=color#c0dfff; font-size16px; line-height1.6;
-    Envie suas ideias e melhorias diretamente para o bDepartamento de Amostras e Clicheriab.brbr
-    📧 a href=mailtodac@sovel.com.brdac@sovel.com.brabr
+  <!-- Contato -->
+  <h2 style="color:#00bfff;">💬 Contato e Sugestões</h2>
+  <p style="color:#c0dfff; font-size:16px; line-height:1.6;">
+    Envie suas ideias e melhorias diretamente para o <b>Departamento de Amostras e Clicheria</b>.<br><br>
+    📧 <a href="mailto:dac@sovel.com.br">dac@sovel.com.br</a><br>
     📍 Manaus - AM, Brasil
-  p
+  </p>
 
-  hr style=border0; border-top1px solid #00eaff44; margin30px 0;
+  <hr style="border:0; border-top:1px solid #00eaff44; margin:30px 0;">
 
-  p style=font-styleitalic; color#66d9ff;
+  <p style="font-style:italic; color:#66d9ff;">
     “Eficiência e inovação caminham lado a lado quando trabalhamos com propósito.”
-  p
+  </p>
 
-  p style=color#00eaff;b— Equipe D.A.C  Grupo Sovel da Amazôniabp
+  <p style="color:#00eaff;"><b>— Equipe D.A.C | Grupo Sovel da Amazônia</b></p>
 
-  sub style=color#777;© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheriasub
+  <sub style="color:#777;">© 2025 Grupo Sovel da Amazônia • Departamento de Amostras e Clicheria</sub>
 
-div
+</div>
