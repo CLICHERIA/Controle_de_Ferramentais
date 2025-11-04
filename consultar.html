@@ -52,7 +52,6 @@
   }
   th { background-color: #091224; color: #00eaff; }
 
-  /* Botões lado a lado */
   .btn-group {
     display: inline-flex;
     gap: 5px;
@@ -67,7 +66,7 @@
   .qr-canvas {
     border-radius: 10px;
     box-shadow: 0 0 10px #00eaff44;
-    display: none; /* só aparece quando gerar QR */
+    display: none;
   }
 </style>
 </head>
@@ -87,6 +86,7 @@
 </table>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
 import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
@@ -103,6 +103,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+// Tornar acessível fora do módulo
+window.db = db;
+window.ref = ref;
+window.get = get;
+window.remove = remove;
+window.set = set;
+</script>
+
+<script>
 const ferramentaisRef = ref(db, "ferramentais");
 const tabela = document.getElementById("tabela");
 
@@ -139,7 +149,6 @@ function exibirFerramentais(dados) {
     const canvas = tr.querySelector(".qr-canvas");
     let qrDataURL = null;
 
-    // Editar
     tr.querySelector(".editar").onclick = async () => {
       const novosDados = {
         tipo: prompt("Tipo:", item.tipo) || item.tipo,
@@ -160,7 +169,6 @@ function exibirFerramentais(dados) {
       } catch(err) { console.error(err); alert("Erro ao atualizar"); }
     };
 
-    // Excluir
     tr.querySelector(".excluir").onclick = async () => {
       if(confirm("Deseja realmente excluir este registro?")){
         try { await remove(ref(db, `ferramentais/${item.id}`)); tr.remove(); }
@@ -168,14 +176,13 @@ function exibirFerramentais(dados) {
       }
     };
 
-    // Gerar QR
+    // ✅ Gerar QR agora funciona
     tr.querySelector(".qrcode").onclick = () => {
       const linkDetalhes = `./detalhes.html?id=${item.id}`;
       canvas.style.display = "block";
       const size = 300;
       const quietZone = 20;
 
-      // Criar QRCode em div temporário
       const tmpDiv = document.createElement("div");
       new QRCode(tmpDiv, {
         text: linkDetalhes,
@@ -186,7 +193,6 @@ function exibirFerramentais(dados) {
         correctLevel: QRCode.CorrectLevel.H
       });
 
-      // Corrigir caso QRCode.js gere canvas em vez de img
       let qrDataSrc;
       const qrImg = tmpDiv.querySelector("img");
       const qrCanvas = tmpDiv.querySelector("canvas");
@@ -205,7 +211,6 @@ function exibirFerramentais(dados) {
       img.onload = () => {
         canvas.width = size + quietZone * 2;
         canvas.height = size + quietZone * 2;
-
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, quietZone, quietZone, size, size);
@@ -221,7 +226,6 @@ function exibirFerramentais(dados) {
       };
     };
 
-    // Exportar QR
     tr.querySelector(".exportar").onclick = () => {
       if (qrDataURL) {
         const a = document.createElement("a");
@@ -237,23 +241,19 @@ function exibirFerramentais(dados) {
   });
 }
 
-// Buscar
 document.getElementById("btnBuscar").onclick = async () => {
   const termo = document.getElementById("busca").value.toLowerCase();
   try {
     const snapshot = await get(ferramentaisRef);
     const lista = snapshot.exists() ? Object.keys(snapshot.val()).map(key=>({id:key, ...snapshot.val()[key]})) : [];
-    const filtrados = lista.filter(item => 
+    const filtrados = lista.filter(item =>
       (item.sv && item.sv.toLowerCase().includes(termo)) ||
       (item.nome && item.nome.toLowerCase().includes(termo)) ||
       (item.nfe && item.nfe.toLowerCase().includes(termo))
     );
     if (filtrados.length) exibirFerramentais(filtrados);
     else { alert("Nenhum ferramental encontrado"); tabela.innerHTML = ""; }
-  } catch(err) {
-    console.error(err);
-    alert("Erro ao buscar");
-  }
+  } catch(err){ console.error(err); alert("Erro ao buscar"); }
 };
 </script>
 </body>
