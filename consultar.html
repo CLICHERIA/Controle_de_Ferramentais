@@ -145,7 +145,8 @@ function exibirFerramentais(dados) {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
 
-      const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
+      const linkDetalhes = `detalhes.html?id=${item.id}`;
+
       const qr = new QRCode(qrPlaceholder, {
         text: linkDetalhes,
         width: 250,       // QR Code maior
