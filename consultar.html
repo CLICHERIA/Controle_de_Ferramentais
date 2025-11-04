@@ -68,12 +68,20 @@
     box-shadow: 0 0 10px #00eaff44;
     display: none;
   }
+
+  .top-buttons {
+    margin-bottom: 20px;
+  }
 </style>
 </head>
 <body>
 <h1>Consulta de Ferramentais</h1>
-<input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
-<button id="btnBuscar">Buscar</button>
+
+<div class="top-buttons">
+  <input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
+  <button id="btnBuscar">Buscar</button>
+  <button id="btnVoltarMenu">Voltar ao Menu</button>
+</div>
 
 <table>
 <thead>
@@ -85,10 +93,8 @@
 <tbody id="tabela"></tbody>
 </table>
 
-<!-- ✅ carrega a lib do QRCode corretamente -->
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
-<!-- 🔧 Firebase module -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
   import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
@@ -106,20 +112,14 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  window.db = db;
-  window.ref = ref;
-  window.get = get;
-  window.remove = remove;
-  window.set = set;
-</script>
-
-<!-- ✅ Script principal -->
-<script>
-window.addEventListener("load", async () => {
   const ferramentaisRef = ref(db, "ferramentais");
   const tabela = document.getElementById("tabela");
+  const btnBuscar = document.getElementById("btnBuscar");
+  const btnVoltar = document.getElementById("btnVoltarMenu");
 
-  document.getElementById("btnBuscar").onclick = async () => {
+  btnVoltar.onclick = () => window.location.href = "menu.html";
+
+  btnBuscar.onclick = async () => {
     const termo = document.getElementById("busca").value.toLowerCase();
     const snapshot = await get(ferramentaisRef);
     const lista = snapshot.exists()
@@ -130,14 +130,15 @@ window.addEventListener("load", async () => {
       (item.nome && item.nome.toLowerCase().includes(termo)) ||
       (item.nfe && item.nfe.toLowerCase().includes(termo))
     );
-    exibirFerramentais(filtrados);
+    if (filtrados.length) exibirFerramentais(filtrados);
+    else tabela.innerHTML = "<tr><td colspan='9'>Nenhum ferramental encontrado</td></tr>";
   };
 
   function exibirFerramentais(dados) {
     tabela.innerHTML = "";
     dados.forEach(item => {
       const tr = document.createElement("tr");
-      let responsavelNome = item.responsavel ? item.responsavel.split(".")[0] : item.responsavel;
+      let responsavelNome = item.responsavel ? item.responsavel.split(".")[0] : "";
       responsavelNome = responsavelNome ? responsavelNome.charAt(0).toUpperCase() + responsavelNome.slice(1) : "";
 
       tr.innerHTML = `
@@ -165,31 +166,24 @@ window.addEventListener("load", async () => {
       const canvas = tr.querySelector(".qr-canvas");
       let qrDataURL = null;
 
-      // ✅ Gerar QR code
       tr.querySelector(".qrcode").onclick = () => {
         const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${item.id}`;
         canvas.style.display = "block";
+        const size = 300, quietZone = 20;
 
-        const size = 300;
-        const quietZone = 20;
-        const qrTemp = document.createElement("div");
-
-        // gera QR no container temporário
-        new QRCode(qrTemp, {
+        const temp = document.createElement("div");
+        new QRCode(temp, {
           text: linkDetalhes,
           width: size,
           height: size,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
+          colorDark: "#000",
+          colorLight: "#fff",
           correctLevel: QRCode.CorrectLevel.H
         });
 
         setTimeout(() => {
-          const qrImg = qrTemp.querySelector("img") || qrTemp.querySelector("canvas");
-          if (!qrImg) {
-            alert("Erro ao gerar QR Code.");
-            return;
-          }
+          const qrImg = temp.querySelector("img") || temp.querySelector("canvas");
+          if (!qrImg) return alert("Erro ao gerar QR Code.");
 
           const ctx = canvas.getContext("2d");
           const img = new Image();
@@ -211,10 +205,9 @@ window.addEventListener("load", async () => {
 
             qrDataURL = canvas.toDataURL("image/png");
           };
-        }, 200); // pequena espera garante que QRCode foi renderizado
+        }, 200);
       };
 
-      // ✅ Exportar QR code
       tr.querySelector(".exportar").onclick = () => {
         if (!qrDataURL) return alert("Gere o QR Code primeiro.");
         const a = document.createElement("a");
@@ -223,21 +216,17 @@ window.addEventListener("load", async () => {
         a.click();
       };
 
+      tr.querySelector(".editar").onclick = () => window.location.href = `editar.html?id=${item.id}`;
       tr.querySelector(".excluir").onclick = async () => {
         if (confirm("Deseja realmente excluir este registro?")) {
-          await remove(ref(db, "ferramentais/" + item.id));
+          await remove(ref(db, `ferramentais/${item.id}`));
           tr.remove();
         }
-      };
-
-      tr.querySelector(".editar").onclick = () => {
-        window.location.href = `editar.html?id=${item.id}`;
       };
 
       tabela.appendChild(tr);
     });
   }
-});
 </script>
 </body>
 </html>
