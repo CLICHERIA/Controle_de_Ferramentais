@@ -74,7 +74,7 @@
     td button {
       font-size: 14px;
       padding: 5px 8px;
-      margin: 0 2px;
+      margin: 2px;
       box-shadow: 0 0 3px #00eaff;
     }
 
@@ -86,25 +86,24 @@
       gap: 5px;
     }
 
-    .qr-placeholder {
-      margin-top: 5px;
+    canvas {
+      border-radius: 10px;
     }
-
   </style>
 </head>
 <body>
 
   <h1>Consulta de Ferramentais</h1>
-  <input type="text" id="busca" placeholder="Digite SV ou Cliente">
+  <input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
   <button id="btnBuscar">Buscar</button>
 
   <table>
     <thead>
       <tr>
         <th>Tipo</th>
+        <th>NF-e</th>
         <th>SV</th>
-        <th>Cliente</th>
-        <th>Data Fabricação</th>
+        <th>Nome</th>
         <th>Data Registro</th>
         <th>Responsável</th>
         <th>Ações</th>
@@ -113,7 +112,6 @@
     <tbody id="tabela"></tbody>
   </table>
 
-  <!-- Biblioteca QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script type="module">
@@ -143,9 +141,9 @@
 
         tr.innerHTML = `
           <td>${item.tipo || ""}</td>
+          <td>${item.nfe || ""}</td>
           <td>${item.sv || ""}</td>
-          <td>${item.cliente || ""}</td>
-          <td>${item.dataFabricacao || ""}</td>
+          <td>${item.nome || ""}</td>
           <td>${item.dataRegistro || ""}</td>
           <td>${item.responsavel || ""}</td>
           <td class="qr-cell">
@@ -159,30 +157,31 @@
           </td>
         `;
 
-        // Botão Editar
+        // Editar
         tr.querySelector(".editar").onclick = () => {
-          alert("Função de edição para SV: " + item.sv);
-          // Redirecionar ou abrir modal para edição
+          alert("Função de edição para: " + item.sv);
         };
 
-        // Botão Excluir
+        // Excluir
         tr.querySelector(".excluir").onclick = async () => {
-          if(confirm("Deseja realmente excluir este registro?")) {
+          if (confirm("Deseja realmente excluir este registro?")) {
             await remove(child(ferramentaisRef, item.id));
-            alert("Registro excluído com sucesso!");
+            alert("Registro excluído!");
             tr.remove();
           }
         };
 
-        // Botão Gerar QR Code com glow neon
+        // Gerar QR Code
         tr.querySelector(".qrcode").onclick = () => {
           const qrPlaceholder = tr.querySelector(".qr-placeholder");
           qrPlaceholder.innerHTML = "";
 
+          const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
+
           const qr = new QRCode(qrPlaceholder, {
-            text: `SV: ${item.sv}\nCliente: ${item.cliente}`,
-            width: 150,
-            height: 150,
+            text: linkDetalhes,
+            width: 160,
+            height: 160,
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
@@ -191,30 +190,27 @@
           const canvas = qrPlaceholder.querySelector("canvas");
           const ctx = canvas.getContext("2d");
 
-          // Inserir logo Sovel no centro
           const logo = new Image();
-          logo.src = "docs/logosovel1337.png";
+          logo.src = "logosovel1337.png";
           logo.onload = () => {
             const x = canvas.width / 2 - 20;
             const y = canvas.height / 2 - 20;
 
-            // Glow neon no logo
             ctx.shadowBlur = 15;
             ctx.shadowColor = "#00eaff";
             ctx.drawImage(logo, x, y, 40, 40);
 
-            // Contorno neon
             ctx.strokeStyle = "#00eaff";
             ctx.lineWidth = 2;
-            ctx.strokeRect(x, y, 40, 40);
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
           };
         };
 
-        // Botão Exportar QR Code
+        // Exportar QR Code
         tr.querySelector(".exportar").onclick = () => {
           const canvas = tr.querySelector(".qr-placeholder canvas");
           if (!canvas) {
-            alert("Gerar o QR Code antes de exportar!");
+            alert("Gere o QR Code primeiro!");
             return;
           }
           const link = document.createElement("a");
@@ -227,8 +223,8 @@
       });
     }
 
-    document.getElementById('btnBuscar').onclick = async () => {
-      const termo = document.getElementById('busca').value.toLowerCase();
+    document.getElementById("btnBuscar").onclick = async () => {
+      const termo = document.getElementById("busca").value.toLowerCase();
 
       try {
         const snapshot = await get(ferramentaisRef);
@@ -236,9 +232,8 @@
         const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
 
         const filtrados = lista.filter(item => {
-          const sv = item.sv ? item.sv.toLowerCase() : "";
-          const cliente = item.cliente ? item.cliente.toLowerCase() : "";
-          return sv.includes(termo) || cliente.includes(termo);
+          const texto = `${item.sv || ""} ${item.nome || ""} ${item.nfe || ""}`.toLowerCase();
+          return texto.includes(termo);
         });
 
         if (filtrados.length === 0) {
@@ -249,8 +244,8 @@
         }
 
       } catch (err) {
-        console.error("Erro ao buscar dados:", err);
-        alert("Erro ao buscar dados");
+        console.error(err);
+        alert("Erro ao buscar dados!");
       }
     };
   </script>
