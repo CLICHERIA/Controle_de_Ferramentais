@@ -122,7 +122,6 @@ function exibirFerramentais(dados) {
   dados.forEach(item => {
     const tr = document.createElement("tr");
 
-    // Extrair primeiro nome do email
     let primeiroNome = "";
     if(item.responsavel){
       const email = item.responsavel;
@@ -182,69 +181,65 @@ function exibirFerramentais(dados) {
       }
     };
 
-    // Gerar QR (otimizado para leitura com margem extra)
-tr.querySelector(".qrcode").onclick = () => {
-  const qrPlaceholder = tr.querySelector(".qr-placeholder");
-  qrPlaceholder.innerHTML = "";
+    // Gerar QR (com margem extra)
+    tr.querySelector(".qrcode").onclick = () => {
+      const qrPlaceholder = tr.querySelector(".qr-placeholder");
+      qrPlaceholder.innerHTML = "";
 
-  // Criar container com padding para margem
-  const qrContainer = document.createElement("div");
-  qrContainer.style.padding = "20px";  // margem extra ao redor do QR
-  qrContainer.style.background = "#ffffff"; // fundo branco
-  qrContainer.style.display = "inline-block";
-  
-  qrPlaceholder.appendChild(qrContainer);
+      const qrContainer = document.createElement("div");
+      qrContainer.style.padding = "20px"; // margem extra
+      qrContainer.style.background = "#ffffff";
+      qrContainer.style.display = "inline-block";
+      qrPlaceholder.appendChild(qrContainer);
 
-  const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-  new QRCode(qrContainer, {
-    text: linkDetalhes,
-    width: 300,
-    height: 300,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-  });
-};
+      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
+      new QRCode(qrContainer, {
+        text: linkDetalhes,
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    };
 
-// Exportar QR com margem extra
-tr.querySelector(".exportar").onclick = () => {
-  const qrPlaceholder = tr.querySelector(".qr-placeholder");
-  qrPlaceholder.innerHTML = "";
+    // Exportar QR
+    tr.querySelector(".exportar").onclick = () => {
+      const qrPlaceholder = tr.querySelector(".qr-placeholder");
+      qrPlaceholder.innerHTML = "";
 
-  const qrContainer = document.createElement("div");
-  qrContainer.style.padding = "20px";
-  qrContainer.style.background = "#ffffff";
-  qrContainer.style.display = "inline-block";
-  qrPlaceholder.appendChild(qrContainer);
+      const qrContainer = document.createElement("div");
+      qrContainer.style.padding = "20px"; // margem extra
+      qrContainer.style.background = "#ffffff";
+      qrContainer.style.display = "inline-block";
+      qrPlaceholder.appendChild(qrContainer);
 
-  const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-  const qr = new QRCode(qrContainer, {
-    text: linkDetalhes,
-    width: 300,
-    height: 300,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-  });
+      const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
+      const qr = new QRCode(qrContainer, {
+        text: linkDetalhes,
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
 
-  // Exportar PNG
-  setTimeout(() => {
-    const img = qrContainer.querySelector("img");
-    if(img){
-      const a = document.createElement("a");
-      a.href = img.src;
-      a.download = `${item.nome || 'qr-code'}.png`;
-      a.click();
-    }
-  }, 300);
-};
+      // Exportar PNG após render
+      setTimeout(() => {
+        const img = qrContainer.querySelector("img");
+        if(img){
+          const a = document.createElement("a");
+          a.href = img.src;
+          a.download = `${item.nome || 'qr-code'}.png`;
+          a.click();
+        }
+      }, 300);
     };
 
     tabela.appendChild(tr);
   });
 }
 
-// Buscar
 document.getElementById("btnBuscar").onclick = async () => {
   const termo = document.getElementById("busca").value.toLowerCase();
   try {
@@ -256,7 +251,7 @@ document.getElementById("btnBuscar").onclick = async () => {
   } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
 };
 
-// QR Scanner
+// LER QR CODE DIRETAMENTE PELA CAMERA
 const html5QrCode = new Html5Qrcode("qr-reader");
 const qrContainer = document.createElement("div");
 qrContainer.id = "qr-reader";
@@ -274,7 +269,6 @@ function startCameraScanner() {
   }).catch(err => console.error(err));
 }
 startCameraScanner();
-
 </script>
 </body>
 </html>
