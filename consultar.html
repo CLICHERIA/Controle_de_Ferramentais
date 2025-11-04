@@ -4,95 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta de Ferramentais - SGF</title>
-
   <style>
-    body {
-      background-color: #0a0f1a;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      margin: 0;
-    }
-
-    h1 {
-      color: #00eaff;
-      text-shadow: 0 0 5px #00eaff;
-    }
-
-    input, button {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      margin: 5px 0;
-    }
-
-    input {
-      width: 300px;
-    }
-
-    button {
-      cursor: pointer;
-      font-weight: bold;
-      color: #00eaff;
-      background-color: #0d1b2a;
-      box-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      color: #00ffff;
-      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
-    }
-
-    table {
-      width: 100%;
-      max-width: 1100px;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: #0d1b2a;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 20px #00eaff22;
-    }
-
-    th, td {
-      border: 1px solid #00eaff44;
-      padding: 8px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
-      background-color: #091224;
-      color: #00eaff;
-    }
-
-    td button {
-      font-size: 14px;
-      padding: 5px 8px;
-      margin: 2px;
-      box-shadow: 0 0 3px #00eaff;
-    }
-
-    .qr-cell {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-
-    .qr-placeholder canvas {
-      border-radius: 10px;
-    }
+    body { background-color: #0a0f1a; color: #ffffff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+    h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; text-align: center; }
+    input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
+    input { width: 300px; }
+    button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
+    button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff; }
+    table { width: 100%; max-width: 1100px; border-collapse: collapse; margin-top: 20px; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
+    th, td { border: 1px solid #00eaff44; padding: 8px; text-align: left; vertical-align: middle; }
+    th { background-color: #091224; color: #00eaff; }
+    .qr-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .qr-placeholder canvas { border-radius: 10px; }
   </style>
 </head>
 <body>
-
   <h1>Consulta de Ferramentais</h1>
   <input type="text" id="busca" placeholder="Digite SV, Nome ou Cliente">
   <button id="btnBuscar">Buscar</button>
@@ -100,22 +26,14 @@
   <table>
     <thead>
       <tr>
-        <th>Tipo</th>
-        <th>NF-e</th>
-        <th>SV</th>
-        <th>Nome</th>
-        <th>Data Registro</th>
-        <th>Estado</th>
-        <th>Localização</th>
-        <th>Responsável</th>
-        <th>Ações</th>
+        <th>Tipo</th><th>NF-e</th><th>SV</th><th>Nome</th><th>Data Registro</th><th>Estado</th>
+        <th>Localização</th><th>Responsável</th><th>Ações</th>
       </tr>
     </thead>
     <tbody id="tabela"></tbody>
   </table>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
     import { getDatabase, ref, get, child, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
@@ -139,64 +57,33 @@
       tabela.innerHTML = "";
       dados.forEach(item => {
         const tr = document.createElement("tr");
-
         tr.innerHTML = `
-          <td>${item.tipo || ""}</td>
-          <td>${item.nfe || ""}</td>
-          <td>${item.sv || ""}</td>
-          <td>${item.nome || ""}</td>
-          <td>${item.dataRegistro || ""}</td>
-          <td>${item.estado || ""}</td>
-          <td>${item.localizacao || ""}</td>
-          <td>${item.responsavel || ""}</td>
+          <td>${item.tipo||""}</td><td>${item.nfe||""}</td><td>${item.sv||""}</td><td>${item.nome||""}</td>
+          <td>${item.dataRegistro||""}</td><td>${item.estado||""}</td><td>${item.localizacao||""}</td><td>${item.responsavel||""}</td>
           <td class="qr-cell">
-            <div>
-              <button class="editar">Editar</button>
-              <button class="excluir">Excluir</button>
-              <button class="qrcode">Gerar QR Code</button>
-              <button class="exportar">Exportar QR</button>
-            </div>
+            <button class="editar">Editar</button>
+            <button class="excluir">Excluir</button>
+            <button class="qrcode">QR Code</button>
+            <button class="exportar">Exportar</button>
             <div class="qr-placeholder"></div>
           </td>
         `;
 
-        // Botão Editar
-        tr.querySelector(".editar").onclick = () => {
-          window.location.href = `editar.html?id=${item.id}`;
-        };
-
-        // Botão Excluir
+        tr.querySelector(".editar").onclick = () => window.location.href=`editar.html?id=${item.id}`;
         tr.querySelector(".excluir").onclick = async () => {
-          if (confirm("Deseja realmente excluir este registro?")) {
-            await remove(child(ferramentaisRef, item.id));
-            alert("Registro excluído com sucesso!");
-            tr.remove();
-          }
+          if(confirm("Deseja realmente excluir?")) { await remove(child(ferramentaisRef, item.id)); alert("Excluído!"); tr.remove(); }
         };
 
-        // Botão QR Code
         tr.querySelector(".qrcode").onclick = () => {
           const qrPlaceholder = tr.querySelector(".qr-placeholder");
-          qrPlaceholder.innerHTML = ""; // Limpa QR antigo
-
-          const linkDetalhes = `detalhes.html?id=${item.id}`;
-          const qr = new QRCode(qrPlaceholder, {
-            text: linkDetalhes,
-            width: 300, // QR maior
-            height: 300,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-          });
+          qrPlaceholder.innerHTML = "";
+          const linkDetalhes = `${window.location.origin}/detalhes.html?id=${item.id}`;
+          new QRCode(qrPlaceholder, { text: linkDetalhes, width: 200, height: 200, colorDark:"#000000", colorLight:"#ffffff", correctLevel: QRCode.CorrectLevel.H });
         };
 
-        // Botão Exportar QR Code
         tr.querySelector(".exportar").onclick = () => {
           const canvas = tr.querySelector(".qr-placeholder canvas");
-          if (!canvas) {
-            alert("Gere o QR Code antes de exportar!");
-            return;
-          }
+          if(!canvas){ alert("Gere o QR Code primeiro!"); return; }
           const link = document.createElement("a");
           link.href = canvas.toDataURL("image/png");
           link.download = `QR_${item.sv}.png`;
@@ -207,31 +94,15 @@
       });
     }
 
-    document.getElementById('btnBuscar').onclick = async () => {
-      const termo = document.getElementById('busca').value.toLowerCase();
-
-      try {
+    document.getElementById("btnBuscar").onclick = async () => {
+      const termo = document.getElementById("busca").value.toLowerCase();
+      try{
         const snapshot = await get(ferramentaisRef);
         const dados = snapshot.exists() ? snapshot.val() : {};
-        const lista = Object.keys(dados).map(key => ({ id: key, ...dados[key] }));
-
-        const filtrados = lista.filter(item => {
-          const sv = (item.sv || "").toLowerCase();
-          const nome = (item.nome || "").toLowerCase();
-          const nfe = (item.nfe || "").toLowerCase();
-          return sv.includes(termo) || nome.includes(termo) || nfe.includes(termo);
-        });
-
-        if (filtrados.length === 0) {
-          alert("Nenhum ferramental encontrado");
-          tabela.innerHTML = "";
-        } else {
-          exibirFerramentais(filtrados);
-        }
-      } catch (err) {
-        console.error("Erro ao buscar dados:", err);
-        alert("Erro ao buscar dados");
-      }
+        const lista = Object.keys(dados).map(key=>({id:key, ...dados[key]}));
+        const filtrados = lista.filter(item=> item.sv?.toLowerCase().includes(termo) || item.nome?.toLowerCase().includes(termo) || item.nfe?.toLowerCase().includes(termo));
+        filtrados.length ? exibirFerramentais(filtrados) : (alert("Nenhum ferramental encontrado"), tabela.innerHTML="");
+      } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
     };
   </script>
 </body>
