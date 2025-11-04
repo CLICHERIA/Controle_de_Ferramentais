@@ -5,26 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Consulta de Ferramentais - SGF</title>
 <style>
-body { background-color: #0a0f1a; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
-h1 { color: #00eaff; text-shadow: 0 0 5px #00eaff; text-align: center; }
-input, button { padding: 10px; border-radius: 8px; border: none; font-size: 16px; margin: 5px; }
+body {
+  background-color: #0a0f1a;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+h1 {
+  color: #00eaff;
+  text-shadow: 0 0 5px #00eaff;
+  text-align: center;
+}
+input, button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  margin: 5px;
+}
 input { width: 300px; }
-button { cursor: pointer; font-weight: bold; color: #00eaff; background-color: #0d1b2a; box-shadow: 0 0 5px #00eaff; }
-button:hover { color: #00ffff; box-shadow: 0 0 10px #00eaff; }
-table { width: 100%; max-width: 1100px; border-collapse: collapse; margin-top: 20px; background-color: #0d1b2a; border-radius: 10px; box-shadow: 0 0 20px #00eaff22; }
-th, td { border: 1px solid #00eaff44; padding: 8px; text-align: left; vertical-align: middle; }
-th { background-color: #091224; color: #00eaff; }
-.qr-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.qr-placeholder { background: #ffffff; padding: 10px; border-radius: 10px; margin-top: 5px; }
+button {
+  cursor: pointer;
+  font-weight: bold;
+  color: #00eaff;
+  background-color: #0d1b2a;
+  box-shadow: 0 0 5px #00eaff;
+}
+button:hover {
+  color: #00ffff;
+  box-shadow: 0 0 10px #00eaff;
+}
+table {
+  width: 100%;
+  max-width: 1200px;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #0d1b2a;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #00eaff22;
+}
+th, td {
+  border: 1px solid #00eaff44;
+  padding: 8px;
+  text-align: center;
+  vertical-align: middle;
+}
+th {
+  background-color: #091224;
+  color: #00eaff;
+}
+.qr-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.acao-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.qr-placeholder {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
 video { width: 300px; border-radius: 10px; margin-top: 10px; }
-.acao-buttons button { margin: 2px; }
 </style>
 </head>
 <body>
 
 <h1>Consulta de Ferramentais</h1>
-<input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
-<button id="btnBuscar">Buscar</button>
+<div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+  <input type="text" id="busca" placeholder="Digite SV, Nome ou NF-e">
+  <button id="btnBuscar">Buscar</button>
+</div>
 
 <table>
   <thead>
@@ -59,7 +117,6 @@ const db = getDatabase(app);
 const ferramentaisRef = ref(db, "ferramentais");
 const tabela = document.getElementById("tabela");
 
-// Função para exibir ferramentais
 function exibirFerramentais(dados) {
   tabela.innerHTML = "";
   dados.forEach(item => {
@@ -74,31 +131,22 @@ function exibirFerramentais(dados) {
       <td>${item.localizacao||""}</td>
       <td>${item.responsavel||""}</td>
       <td class="qr-cell">
-        <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-          <div class="acao-buttons">
-            <button class="editar">Editar</button>
-            <button class="excluir">Excluir</button>
-            <button class="exportar">Exportar QR</button>
-          </div>
+        <div class="acao-buttons">
+          <button class="editar">Editar</button>
+          <button class="excluir">Excluir</button>
           <button class="qrcode">Gerar QR</button>
-          <div class="qr-placeholder"></div>
+          <button class="exportar">Exportar QR</button>
         </div>
+        <div class="qr-placeholder"></div>
       </td>
     `;
-    
-    // Eventos dos botões
-    tr.querySelector(".editar").onclick = () => {
-      alert(`Editar ${item.nome}`);
-      // Coloque aqui o código para abrir a página de edição
-    };
 
+    // Eventos
+    tr.querySelector(".editar").onclick = () => alert(`Editar ${item.nome}`);
     tr.querySelector(".excluir").onclick = async () => {
       if(confirm(`Deseja realmente excluir ${item.nome}?`)){
-        try {
-          await remove(ref(db, `ferramentais/${item.id}`));
-          alert("Excluído com sucesso!");
-          tr.remove();
-        } catch(err){ console.error(err); alert("Erro ao excluir"); }
+        try { await remove(ref(db, `ferramentais/${item.id}`)); tr.remove(); } 
+        catch(err){ console.error(err); alert("Erro ao excluir"); }
       }
     };
 
@@ -106,15 +154,14 @@ function exibirFerramentais(dados) {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
       const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-      new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000000", colorLight:"#ffffff" });
+      new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000", colorLight:"#fff" });
     };
 
     tr.querySelector(".exportar").onclick = () => {
       const qrPlaceholder = tr.querySelector(".qr-placeholder");
       qrPlaceholder.innerHTML = "";
       const linkDetalhes = `${window.location.href.split("/").slice(0,-1).join("/")}/detalhes.html?id=${item.id}`;
-      const qr = new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000000", colorLight:"#ffffff" });
-      
+      const qr = new QRCode(qrPlaceholder, { text: linkDetalhes, width: 250, height: 250, colorDark:"#000", colorLight:"#fff" });
       setTimeout(() => {
         const img = qrPlaceholder.querySelector("img");
         if(img){
@@ -123,14 +170,14 @@ function exibirFerramentais(dados) {
           a.download = `${item.nome || 'qr-code'}.png`;
           a.click();
         }
-      }, 300); // aguarda a renderização do QR
+      }, 300);
     };
 
     tabela.appendChild(tr);
   });
 }
 
-// Buscar ferramentais
+// Buscar
 document.getElementById("btnBuscar").onclick = async () => {
   const termo = document.getElementById("busca").value.toLowerCase();
   try {
@@ -142,7 +189,7 @@ document.getElementById("btnBuscar").onclick = async () => {
   } catch(err){ console.error(err); alert("Erro ao buscar dados"); }
 };
 
-// Scanner de QR Code
+// QR Scanner
 const html5QrCode = new Html5Qrcode("qr-reader");
 const qrContainer = document.createElement("div");
 qrContainer.id = "qr-reader";
@@ -154,9 +201,7 @@ function startCameraScanner() {
       html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        qrCodeMessage => { 
-          if(qrCodeMessage.startsWith("http")) window.location.href = qrCodeMessage; 
-        }
+        qrCodeMessage => { if(qrCodeMessage.startsWith("http")) window.location.href = qrCodeMessage; }
       );
     }
   }).catch(err => console.error(err));
