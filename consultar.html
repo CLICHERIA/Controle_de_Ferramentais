@@ -19,7 +19,7 @@
 
     h1 {
       color: #00eaff;
-      text-shadow: 0 0 10px #00eaff;
+      text-shadow: 0 0 5px #00eaff;
     }
 
     input, button {
@@ -90,49 +90,28 @@
       border-radius: 10px;
     }
 
-    /* Modal para QR Code ampliado */
-    .modal {
+    /* Modal QR Code */
+    #qrModal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.8);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
       justify-content: center;
       align-items: center;
+      z-index: 999;
     }
 
-    .modal-content {
-      background-color: #0a0f1a;
+    #qrModalContent {
+      background: #0d1b2a;
       padding: 20px;
-      border-radius: 12px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: 0 0 20px #00eaff;
-      position: relative;
     }
 
-    .modal-content canvas {
-      width: 300px;
-      height: 300px;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #00eaff;
-      cursor: pointer;
-    }
-
-    .close-modal:hover {
-      color: #00ffff;
+    #qrModalContent button {
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -159,11 +138,11 @@
     <tbody id="tabela"></tbody>
   </table>
 
-  <!-- Modal -->
-  <div id="qrModal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
+  <!-- Modal QR Code -->
+  <div id="qrModal">
+    <div id="qrModalContent">
       <div id="qrModalPlaceholder"></div>
+      <button id="btnFecharModal">Fechar</button>
     </div>
   </div>
 
@@ -188,21 +167,13 @@
     const ferramentaisRef = ref(db, "ferramentais");
     const tabela = document.getElementById("tabela");
 
+    // Modal
     const qrModal = document.getElementById("qrModal");
     const qrModalPlaceholder = document.getElementById("qrModalPlaceholder");
-    const closeModal = document.querySelector(".close-modal");
+    document.getElementById("btnFecharModal").onclick = () => qrModal.style.display = "none";
 
-    closeModal.onclick = () => {
-      qrModal.style.display = "none";
-      qrModalPlaceholder.innerHTML = "";
-    };
-
-    window.onclick = (event) => {
-      if (event.target === qrModal) {
-        qrModal.style.display = "none";
-        qrModalPlaceholder.innerHTML = "";
-      }
-    };
+    // Map para armazenar QR Codes por id
+    const qrMap = {};
 
     function exibirFerramentais(dados) {
       tabela.innerHTML = "";
@@ -225,14 +196,15 @@
               <button class="qrcode">QR Code</button>
               <button class="exportar">Exportar</button>
             </div>
-            <div class="qr-placeholder"></div>
           </td>
         `;
 
+        // Editar
         tr.querySelector(".editar").onclick = () => {
           window.location.href = `editar.html?id=${item.id}`;
         };
 
+        // Excluir
         tr.querySelector(".excluir").onclick = async () => {
           if (confirm("Deseja realmente excluir este registro?")) {
             await remove(child(ferramentaisRef, item.id));
@@ -241,6 +213,7 @@
           }
         };
 
+        // Gerar QR Code
         tr.querySelector(".qrcode").onclick = () => {
           qrModal.style.display = "flex";
           qrModalPlaceholder.innerHTML = "";
@@ -268,10 +241,14 @@
             ctx.shadowColor = "#00eaff";
             ctx.drawImage(logo, x, y, logoSize, logoSize);
           };
+
+          // Salva canvas no mapa
+          qrMap[item.id] = canvas;
         };
 
+        // Exportar QR Code
         tr.querySelector(".exportar").onclick = () => {
-          const canvas = tr.querySelector(".qr-placeholder canvas");
+          const canvas = qrMap[item.id];
           if (!canvas) {
             alert("Gere o QR Code antes de exportar!");
             return;
@@ -286,6 +263,7 @@
       });
     }
 
+    // Buscar
     document.getElementById('btnBuscar').onclick = async () => {
       const termo = document.getElementById('busca').value.toLowerCase();
       try {
