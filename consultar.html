@@ -175,7 +175,7 @@ function exibirFerramentais(dados) {
       const size = 300;
       const quietZone = 20;
 
-      // Criar QRCode em um div temporário
+      // Criar QRCode em div temporário
       const tmpDiv = document.createElement("div");
       new QRCode(tmpDiv, {
         text: linkDetalhes,
@@ -186,37 +186,44 @@ function exibirFerramentais(dados) {
         correctLevel: QRCode.CorrectLevel.H
       });
 
+      // Corrigir caso QRCode.js gere canvas em vez de img
+      let qrDataSrc;
       const qrImg = tmpDiv.querySelector("img");
+      const qrCanvas = tmpDiv.querySelector("canvas");
+      if (qrImg) {
+        qrDataSrc = qrImg.src;
+      } else if (qrCanvas) {
+        qrDataSrc = qrCanvas.toDataURL("image/png");
+      } else {
+        alert("Erro ao gerar QR Code.");
+        return;
+      }
+
       const ctx = canvas.getContext("2d");
-
       const img = new Image();
-      img.src = qrImg.src;
+      img.src = qrDataSrc;
       img.onload = () => {
-        canvas.width = size + quietZone*2;
-        canvas.height = size + quietZone*2;
+        canvas.width = size + quietZone * 2;
+        canvas.height = size + quietZone * 2;
 
-        ctx.fillStyle = "#ffffff"; // fundo branco
-        ctx.fillRect(0,0,canvas.width, canvas.height);
-
-        // QR code centralizado
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, quietZone, quietZone, size, size);
 
-        // Logo central
         const logo = new Image();
         logo.src = "logosovel1337.png";
         logo.onload = () => {
           const logoSize = 50;
-          ctx.drawImage(logo, (canvas.width - logoSize)/2, (canvas.height - logoSize)/2, logoSize, logoSize);
+          ctx.drawImage(logo, (canvas.width - logoSize) / 2, (canvas.height - logoSize) / 2, logoSize, logoSize);
         };
 
-        // Salvar DataURL para exportação
         qrDataURL = canvas.toDataURL("image/png");
       };
     };
 
     // Exportar QR
     tr.querySelector(".exportar").onclick = () => {
-      if(qrDataURL){
+      if (qrDataURL) {
         const a = document.createElement("a");
         a.href = qrDataURL;
         a.download = `${item.nome || "qr-code"}.png`;
@@ -241,9 +248,12 @@ document.getElementById("btnBuscar").onclick = async () => {
       (item.nome && item.nome.toLowerCase().includes(termo)) ||
       (item.nfe && item.nfe.toLowerCase().includes(termo))
     );
-    if(filtrados.length) exibirFerramentais(filtrados);
-    else { alert("Nenhum ferramental encontrado"); tabela.innerHTML=""; }
-  } catch(err){ console.error(err); alert("Erro ao buscar"); }
+    if (filtrados.length) exibirFerramentais(filtrados);
+    else { alert("Nenhum ferramental encontrado"); tabela.innerHTML = ""; }
+  } catch(err) {
+    console.error(err);
+    alert("Erro ao buscar");
+  }
 };
 </script>
 </body>
