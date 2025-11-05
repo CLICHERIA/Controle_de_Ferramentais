@@ -30,6 +30,7 @@
     color: #00eaff;
     background-color: #0d1b2a;
     box-shadow: 0 0 5px #00eaff;
+    transition: all 0.3s;
   }
   button:hover {
     color: #00ffff;
@@ -52,7 +53,6 @@
   }
   th { background-color: #091224; color: #00eaff; }
 
-  /* === Estilo de agrupamento SGF === */
   .linha-nfe {
     background: rgba(0, 234, 255, 0.07);
     color: #00eaff;
@@ -246,7 +246,52 @@
           ? `<span class="icone">➕</span> Ver itens (${itens.length})`
           : `<span class="icone">➖</span> Recolher itens`;
       };
+
+      // ✅ Liga os eventos aos botões internos
+      tdDetalhes.querySelectorAll(".editar").forEach(btn => {
+        btn.onclick = () => window.location.href = `editar.html?id=${btn.dataset.id}`;
+      });
+
+      tdDetalhes.querySelectorAll(".excluir").forEach(btn => {
+        btn.onclick = async () => {
+          if (confirm("Deseja realmente excluir este registro?")) {
+            await remove(ref(db, `ferramentais/${btn.dataset.id}`));
+            btn.closest("tr").remove();
+          }
+        };
+      });
+
+      tdDetalhes.querySelectorAll(".qrcode").forEach(btn => {
+        btn.onclick = () => gerarQRCode(btn.dataset.id);
+      });
+
+      tdDetalhes.querySelectorAll(".exportar").forEach(btn => {
+        btn.onclick = () => exportarQRCode(btn.dataset.id);
+      });
     });
+  }
+
+  // 🔹 QR Code unificado
+  function gerarQRCode(id) {
+    const link = `${window.location.origin}/SGF/detalhes.html?id=${id}`;
+    const canvas = document.createElement("canvas");
+    new QRCode(canvas, { text: link, width: 256, height: 256 });
+    document.body.appendChild(canvas);
+    setTimeout(() => canvas.remove(), 1000);
+  }
+
+  function exportarQRCode(id) {
+    const link = `${window.location.origin}/SGF/detalhes.html?id=${id}`;
+    const temp = document.createElement("div");
+    new QRCode(temp, { text: link, width: 300, height: 300 });
+    setTimeout(() => {
+      const img = temp.querySelector("img");
+      const a = document.createElement("a");
+      a.href = img.src;
+      a.download = `QR_${id}.png`;
+      a.click();
+      temp.remove();
+    }, 300);
   }
 </script>
 </body>
