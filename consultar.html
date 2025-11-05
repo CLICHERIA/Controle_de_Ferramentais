@@ -97,7 +97,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-  import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+  import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
@@ -165,9 +165,10 @@
 
       const canvas = tr.querySelector(".qr-canvas");
       let qrDataURL = null;
+      const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${item.id}`;
 
-      tr.querySelector(".qrcode").onclick = () => {
-        const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${item.id}`;
+      // 🔹 Função unificada para gerar o QR code e armazenar o mesmo resultado para exportar
+      const gerarQRCode = () => {
         canvas.style.display = "block";
         const size = 300, quietZone = 20;
 
@@ -201,19 +202,32 @@
             logo.onload = () => {
               const logoSize = 50;
               ctx.drawImage(logo, (canvas.width - logoSize) / 2, (canvas.height - logoSize) / 2, logoSize, logoSize);
+              qrDataURL = canvas.toDataURL("image/png"); // ✅ QR code armazenado aqui
             };
-
-            qrDataURL = canvas.toDataURL("image/png");
           };
         }, 200);
       };
 
+      // 🔹 Ao clicar em "Gerar QR" — chama a função acima
+      tr.querySelector(".qrcode").onclick = gerarQRCode;
+
+      // 🔹 Ao clicar em "Exportar QR" — se não existir ainda, gera e exporta o mesmo
       tr.querySelector(".exportar").onclick = () => {
-        if (!qrDataURL) return alert("Gere o QR Code primeiro.");
-        const a = document.createElement("a");
-        a.href = qrDataURL;
-        a.download = `${item.nome || "qr-code"}.png`;
-        a.click();
+        if (!qrDataURL) {
+          gerarQRCode();
+          // Espera 500ms pra garantir que o QR foi renderizado antes de exportar
+          setTimeout(() => {
+            const a = document.createElement("a");
+            a.href = qrDataURL;
+            a.download = `${item.nome || "qr-code"}.png`;
+            a.click();
+          }, 700);
+        } else {
+          const a = document.createElement("a");
+          a.href = qrDataURL;
+          a.download = `${item.nome || "qr-code"}.png`;
+          a.click();
+        }
       };
 
       tr.querySelector(".editar").onclick = () => window.location.href = `editar.html?id=${item.id}`;
