@@ -10,7 +10,7 @@
     color: #fff;
     font-family: 'Segoe UI', sans-serif;
     padding: 20px;
-    text-align:center;
+    text-align: center;
   }
   h1 {
     color: #00eaff;
@@ -52,25 +52,72 @@
   }
   th { background-color: #091224; color: #00eaff; }
 
-  .btn-group {
-    display: inline-flex;
-    gap: 5px;
+  /* === Estilo de agrupamento SGF === */
+  .linha-nfe {
+    background: rgba(0, 234, 255, 0.07);
+    color: #00eaff;
+    font-weight: 600;
+    transition: background 0.3s;
   }
-
-  .qr-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
+  .linha-nfe:hover {
+    background: rgba(0, 234, 255, 0.15);
   }
-
-  .qr-canvas {
+  .botao-expandir {
+    background: transparent;
+    border: 1px solid #00eaff88;
+    color: #00eaff;
+    padding: 4px 10px;
     border-radius: 10px;
-    box-shadow: 0 0 10px #00eaff44;
-    display: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    box-shadow: 0 0 8px #00eaff44;
   }
-
-  .top-buttons {
-    margin-bottom: 20px;
+  .botao-expandir:hover {
+    background: #00eaff22;
+    box-shadow: 0 0 15px #00eaff77;
+  }
+  .subtabela {
+    background: #0a0f1a;
+    border: 1px solid #00eaff33;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 0 20px #00eaff22 inset;
+  }
+  .tabela-interna {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e0faff;
+    font-size: 14px;
+  }
+  .tabela-interna th {
+    text-align: left;
+    padding: 6px;
+    border-bottom: 1px solid #00eaff44;
+    color: #00eaff;
+  }
+  .tabela-interna td {
+    padding: 6px;
+    border-bottom: 1px solid #00eaff22;
+  }
+  .botao-acao {
+    background: transparent;
+    border: 1px solid #00eaff55;
+    color: #00eaff;
+    padding: 3px 8px;
+    margin: 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .botao-acao:hover {
+    background: #00eaff22;
+    box-shadow: 0 0 8px #00eaff88;
+  }
+  .icone {
+    font-weight: bold;
+    margin-right: 5px;
   }
 </style>
 </head>
@@ -86,15 +133,13 @@
 <table>
 <thead>
 <tr>
-  <th>Tipo</th><th>NF-e</th><th>SV</th><th>Nome</th><th>Data Registro</th><th>Estado</th>
-  <th>Localização</th><th>Responsável</th><th>Ações</th>
+  <th>Tipo</th><th>NF-e</th><th>Nome</th><th colspan="3">Resumo</th><th>Responsável</th><th>Ações</th>
 </tr>
 </thead>
-<tbody id="tabela"></tbody>
+<tbody id="tabelaFerramentais"></tbody>
 </table>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
   import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
@@ -111,9 +156,8 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-
   const ferramentaisRef = ref(db, "ferramentais");
-  const tabela = document.getElementById("tabela");
+  const tabela = document.getElementById("tabelaFerramentais");
   const btnBuscar = document.getElementById("btnBuscar");
   const btnVoltar = document.getElementById("btnVoltarMenu");
 
@@ -131,114 +175,77 @@
       (item.nfe && item.nfe.toLowerCase().includes(termo))
     );
     if (filtrados.length) exibirFerramentais(filtrados);
-    else tabela.innerHTML = "<tr><td colspan='9'>Nenhum ferramental encontrado</td></tr>";
+    else tabela.innerHTML = "<tr><td colspan='8'>Nenhum ferramental encontrado</td></tr>";
   };
 
   function exibirFerramentais(dados) {
     tabela.innerHTML = "";
+    const grupos = {};
     dados.forEach(item => {
-      const tr = document.createElement("tr");
-      let responsavelNome = item.responsavel ? item.responsavel.split(".")[0] : "";
-      responsavelNome = responsavelNome ? responsavelNome.charAt(0).toUpperCase() + responsavelNome.slice(1) : "";
+      if (!grupos[item.nfe]) grupos[item.nfe] = [];
+      grupos[item.nfe].push(item);
+    });
 
-      tr.innerHTML = `
-        <td>${item.tipo || ""}</td>
-        <td>${item.nfe || ""}</td>
-        <td>${item.sv || ""}</td>
-        <td>${item.nome || ""}</td>
-        <td>${item.dataRegistro || ""}</td>
-        <td>${item.estado || ""}</td>
-        <td>${item.localizacao || ""}</td>
-        <td>${responsavelNome || ""}</td>
+    Object.keys(grupos).forEach(nfe => {
+      const itens = grupos[nfe];
+      const primeiro = itens[0];
+      const trGrupo = document.createElement("tr");
+      trGrupo.classList.add("linha-nfe");
+      trGrupo.innerHTML = `
+        <td>${primeiro.tipo || ""}</td>
+        <td>${nfe}</td>
+        <td colspan="3">${primeiro.nome || ""}</td>
+        <td>${primeiro.estado || ""}</td>
+        <td>${primeiro.responsavel || ""}</td>
         <td>
-          <div class="btn-group">
-            <button class="editar">Editar</button>
-            <button class="excluir">Excluir</button>
-            <button class="qrcode">Gerar QR</button>
-            <button class="exportar">Exportar QR</button>
-          </div>
-          <div class="qr-container">
-            <canvas class="qr-canvas"></canvas>
-          </div>
+          <button class="botao-expandir"><span class="icone">➕</span> Ver itens (${itens.length})</button>
         </td>
       `;
+      tabela.appendChild(trGrupo);
 
-      const canvas = tr.querySelector(".qr-canvas");
-      let qrDataURL = null;
-      const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${item.id}`;
+      const trDetalhes = document.createElement("tr");
+      const tdDetalhes = document.createElement("td");
+      tdDetalhes.colSpan = 8;
+      tdDetalhes.innerHTML = `
+        <div class="subtabela">
+          <table class="tabela-interna">
+            <thead>
+              <tr>
+                <th>SV</th><th>Nome</th><th>Data Registro</th><th>Estado</th><th>Localização</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itens.map(item => `
+                <tr>
+                  <td>${item.sv || ""}</td>
+                  <td>${item.nome || ""}</td>
+                  <td>${item.dataRegistro || ""}</td>
+                  <td>${item.estado || ""}</td>
+                  <td>${item.localizacao || ""}</td>
+                  <td>
+                    <button class="botao-acao editar" data-id="${item.id}">Editar</button>
+                    <button class="botao-acao excluir" data-id="${item.id}">Excluir</button>
+                    <button class="botao-acao qrcode" data-id="${item.id}">QR</button>
+                    <button class="botao-acao exportar" data-id="${item.id}">Exportar</button>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+      trDetalhes.style.display = "none";
+      trDetalhes.appendChild(tdDetalhes);
+      tabela.appendChild(trDetalhes);
 
-      // 🔹 Função unificada para gerar o QR code e armazenar o mesmo resultado para exportar
-      const gerarQRCode = () => {
-        canvas.style.display = "block";
-        const size = 300, quietZone = 20;
-
-        const temp = document.createElement("div");
-        new QRCode(temp, {
-          text: linkDetalhes,
-          width: size,
-          height: size,
-          colorDark: "#000",
-          colorLight: "#fff",
-          correctLevel: QRCode.CorrectLevel.H
-        });
-
-        setTimeout(() => {
-          const qrImg = temp.querySelector("img") || temp.querySelector("canvas");
-          if (!qrImg) return alert("Erro ao gerar QR Code.");
-
-          const ctx = canvas.getContext("2d");
-          const img = new Image();
-          img.src = qrImg.src || qrImg.toDataURL("image/png");
-
-          img.onload = () => {
-            canvas.width = size + quietZone * 2;
-            canvas.height = size + quietZone * 2;
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, quietZone, quietZone, size, size);
-
-            const logo = new Image();
-            logo.src = "logosovel1337.png";
-            logo.onload = () => {
-              const logoSize = 50;
-              ctx.drawImage(logo, (canvas.width - logoSize) / 2, (canvas.height - logoSize) / 2, logoSize, logoSize);
-              qrDataURL = canvas.toDataURL("image/png"); // ✅ QR code armazenado aqui
-            };
-          };
-        }, 200);
+      const botaoExpandir = trGrupo.querySelector(".botao-expandir");
+      botaoExpandir.onclick = () => {
+        const visivel = trDetalhes.style.display === "table-row";
+        trDetalhes.style.display = visivel ? "none" : "table-row";
+        botaoExpandir.innerHTML = visivel
+          ? `<span class="icone">➕</span> Ver itens (${itens.length})`
+          : `<span class="icone">➖</span> Recolher itens`;
       };
-
-      // 🔹 Ao clicar em "Gerar QR" — chama a função acima
-      tr.querySelector(".qrcode").onclick = gerarQRCode;
-
-      // 🔹 Ao clicar em "Exportar QR" — se não existir ainda, gera e exporta o mesmo
-      tr.querySelector(".exportar").onclick = () => {
-        if (!qrDataURL) {
-          gerarQRCode();
-          // Espera 500ms pra garantir que o QR foi renderizado antes de exportar
-          setTimeout(() => {
-            const a = document.createElement("a");
-            a.href = qrDataURL;
-            a.download = `${item.nome || "qr-code"}.png`;
-            a.click();
-          }, 700);
-        } else {
-          const a = document.createElement("a");
-          a.href = qrDataURL;
-          a.download = `${item.nome || "qr-code"}.png`;
-          a.click();
-        }
-      };
-
-      tr.querySelector(".editar").onclick = () => window.location.href = `editar.html?id=${item.id}`;
-      tr.querySelector(".excluir").onclick = async () => {
-        if (confirm("Deseja realmente excluir este registro?")) {
-          await remove(ref(db, `ferramentais/${item.id}`));
-          tr.remove();
-        }
-      };
-
-      tabela.appendChild(tr);
     });
   }
 </script>
