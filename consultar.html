@@ -122,6 +122,207 @@
         </tr>
       </thead>
       <tbody id="tabelaCorpo">
+        <!-- Dados serão carregados dinamicamente -->
+      </tbody>
+    </table>
+
+    <div id="qrcode"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script type="module">
+    import { db } from './js/firebase-config.js';
+    import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+    const tabelaCorpo = document.getElementById('tabelaCorpo');
+    const buscarBtn = document.getElementById('buscarBtn');
+    const qrcodeBtn = document.getElementById('qrcodeBtn');
+    const exportarBtn = document.getElementById('exportarBtn');
+    const menuBtn = document.getElementById('menuBtn');
+    const svInput = document.getElementById('svInput');
+    const qrcodeDiv = document.getElementById('qrcode');
+
+    // Buscar SVs no Firestore
+    async function buscarFerramentais() {
+      tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#00eaff;">Buscando...</td></tr>`;
+      const valor = svInput.value.trim().toUpperCase();
+
+      try {
+        let ref = collection(db, "ferramentais");
+        let snapshot;
+
+        if (valor) {
+          const q = query(ref, where("sv", "==", valor));
+          snapshot = await getDocs(q);
+        } else {
+          snapshot = await getDocs(ref);
+        }
+
+        if (snapshot.empty) {
+          tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#ff5555;">Nenhum resultado encontrado.</td></tr>`;
+          return;
+        }
+
+        tabelaCorpo.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.sv || '-'}</td>
+            <td>${data.tipo || '-'}</td>
+            <td>${data.cliente || '-'}</td>
+            <td>${data.status || '-'}</td>
+          `;
+          tabelaCorpo.appendChild(row);
+        });
+
+      } catch (erro) {
+        console.error(erro);
+        tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#ff5555;">Erro ao buscar dados.</td></tr>`;
+      }
+    }
+
+    buscarBtn.addEventListener('click', buscarFerramentais);
+
+    // Geração do QR Code
+    qrcodeBtn.addEventListener('click', () => {
+      const valor = svInput.value.trim().toUpperCase();
+      if (!valor) {
+        alert('Digite uma SV para gerar o QR Code.');
+        return;
+      }
+
+      qrcodeDiv.innerHTML = '';
+      new QRCode(qrcodeDiv, {
+        text: `${window.location.origin}/docs/detalhes.html?id=${valor}`,
+        width: 180,
+        height: 180,
+        colorDark: "#ffffff",
+        colorLight: "#0a0f1a"
+      });
+    });
+
+    // Exportar relatório
+    exportarBtn.addEventListener('click', () => {
+      const tabela = document.getElementById('tabelaFerramentais').outerHTML;
+      const novaJanela = window.open('', '', 'width=800,height=600');
+      novaJanela.document.write(`
+        <html>
+        <head>
+          <title>Exportação - Grupo Sovel</title>
+          <style>
+            body { font-family: 'Segoe UI'; background-color: white; color: black; text-align:center; }
+            table { width: 90%; margin: 30px auto; border-collapse: collapse; }
+            th, td { border: 1px solid black; padding: 10px; }
+            img { width: 120px; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <img src="assets/img/logosovel133.png" alt="Logo Sovel"><br>
+          <h2>Relatório de Ferramentais</h2>
+          ${tabela}
+        </body>
+        </html>
+      `);
+      novaJanela.document.close();
+      novaJanela.print();
+    });
+
+    // Retornar ao menu
+    menuBtn.addEventListener('click', () => {
+      window.location.href = 'menu.html';
+    });
+  </script>
+</body>
+</html>
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    button {
+      background-color: #00eaff;
+      color: #0a0f1a;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #00c7d4;
+      transform: scale(1.05);
+    }
+
+    input {
+      background-color: #0a0f1a;
+      border: 1px solid #00eaff;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      width: 250px;
+      text-align: center;
+      outline: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #00eaff33;
+      text-align: center;
+    }
+
+    th {
+      background-color: #00eaff22;
+    }
+
+    tr:hover {
+      background-color: #00eaff11;
+    }
+
+    #qrcode {
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    canvas {
+      border: 2px solid #fff;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: #0a0f1a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Consulta de Ferramentais — Grupo Sovel</h1>
+
+  <div class="container">
+    <div class="actions">
+      <input type="text" id="svInput" placeholder="Digite o número da SV (opcional)">
+      <button id="buscarBtn">Consultar</button>
+      <button id="qrcodeBtn">Gerar QR-Code</button>
+      <button id="exportarBtn">Exportar</button>
+      <button id="menuBtn">Retornar ao Menu</button>
+    </div>
+
+    <table id="tabelaFerramentais">
+      <thead>
+        <tr>
+          <th>SV</th>
+          <th>Tipo</th>
+          <th>Cliente</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaCorpo">
         <!-- Dados gerados via JS -->
       </tbody>
     </table>
