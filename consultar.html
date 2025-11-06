@@ -1,348 +1,186 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Consulta de Ferramentais — Grupo Sovel</title>
-  <link rel="icon" href="assets/img/logosovel132.png" type="image/png" />
-  <style>
-    body {
-      background-color: #0a0f1a;
-      color: #e0faff;
-      font-family: "Segoe UI", sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    h1 {
-      text-align: center;
-      color: #00eaff;
-      text-shadow: 0 0 15px #00eaffaa;
-      margin-top: 30px;
-    }
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+    authDomain: "dacsovel-53481.firebaseapp.com",
+    databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+    projectId: "dacsovel-53481",
+    storageBucket: "dacsovel-53481.appspot.com",
+    messagingSenderId: "37867522513",
+    appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+  };
 
-    .container {
-      width: 90%;
-      margin: 30px auto;
-      background: rgba(0, 10, 20, 0.6);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00eaff33;
-    }
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+  document.addEventListener("DOMContentLoaded", () => {
+    const botaoConsultar = document.querySelector(".botoes-topo button");
+    if (botaoConsultar) botaoConsultar.addEventListener("click", carregarFerramentais);
+  });
 
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #00eaff22;
-    }
+  async function carregarFerramentais() {
+    const tabela = document.getElementById("tabela").querySelector("tbody");
+    tabela.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#00eaff;">Carregando dados...</td></tr>`;
 
-    th {
-      color: #00eaff;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-bottom: 2px solid #00eaff55;
-    }
-
-    .linha-sv {
-      background: rgba(0, 234, 255, 0.07);
-      color: #b8eaff;
-      font-weight: 600;
-      transition: background 0.3s;
-    }
-
-    .linha-sv:hover {
-      background: rgba(0, 234, 255, 0.15);
-    }
-
-    .subtabela {
-      background: #0a0f1a;
-      border: 1px solid #00eaff33;
-      border-radius: 10px;
-      padding: 12px;
-      box-shadow: 0 0 20px #00eaff22 inset;
-    }
-
-    .tabela-interna {
-      width: 100%;
-      border-collapse: collapse;
-      color: #c8e7f0;
-      font-size: 14px;
-    }
-
-    .tabela-interna th {
-      text-align: left;
-      padding: 6px;
-      border-bottom: 1px solid #00eaff44;
-      color: #00eaff;
-    }
-
-    .tabela-interna td {
-      padding: 6px;
-      border-bottom: 1px solid #00eaff22;
-    }
-
-    .botao-acao {
-      background: transparent;
-      border: 1px solid #00eaff55;
-      color: #00eaff;
-      padding: 3px 8px;
-      margin: 2px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.2s;
-    }
-
-    .botao-acao:hover {
-      background: #00eaff22;
-      box-shadow: 0 0 8px #00eaff88;
-    }
-
-    .botao-expandir {
-      background: transparent;
-      border: 1px solid #00eaff88;
-      color: #00eaff;
-      padding: 4px 10px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.3s;
-      box-shadow: 0 0 8px #00eaff44;
-    }
-
-    .botao-expandir:hover {
-      background: #00eaff22;
-      box-shadow: 0 0 15px #00eaff77;
-    }
-
-    footer {
-      text-align: center;
-      color: #00eaff88;
-      padding: 20px;
-      font-size: 14px;
-      border-top: 1px solid #00eaff33;
-      margin-top: 40px;
-    }
-
-    .botoes-topo {
-      text-align: center;
-      margin-top: 15px;
-    }
-
-    .botoes-topo button {
-      margin: 0 10px;
-      background: transparent;
-      border: 1px solid #00eaff88;
-      color: #00eaff;
-      padding: 8px 20px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 15px;
-      transition: all 0.3s;
-      box-shadow: 0 0 10px #00eaff44;
-    }
-
-    .botoes-topo button:hover {
-      background: #00eaff22;
-      box-shadow: 0 0 15px #00eaff77;
-    }
-  </style>
-</head>
-<body>
-  <h1>Consulta de Ferramentais</h1>
-
-  <div class="botoes-topo">
-    <button onclick="carregarFerramentais()">Consultar</button>
-    <button onclick="window.location.href='index.html'">Retornar ao Menu</button>
-  </div>
-
-  <div class="container">
-    <table id="tabela">
-      <thead>
-        <tr>
-          <th>Tipo</th>
-          <th>SV</th>
-          <th>Nome</th>
-          <th>Responsável do Cadastro</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <footer>
-    © 2025 Grupo Sovel — Departamento de Amostras e Clicheria
-  </footer>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
-      authDomain: "dacsovel-53481.firebaseapp.com",
-      databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
-      projectId: "dacsovel-53481",
-      storageBucket: "dacsovel-53481.appspot.com",
-      messagingSenderId: "37867522513",
-      appId: "1:37867522513:web:336d687e3fc8408bd138f0",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    async function carregarFerramentais() {
+    try {
       const snapshot = await get(ref(db, "ferramentais"));
-      const dados = snapshot.exists()
-        ? Object.entries(snapshot.val()).map(([id, valor]) => ({ id, ...valor }))
-        : [];
+      if (!snapshot.exists()) {
+        tabela.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#00eaff99;">Nenhum ferramental encontrado.</td></tr>`;
+        return;
+      }
+
+      const dados = Object.entries(snapshot.val()).map(([id, valor]) => ({ id, ...valor }));
       exibirFerramentais(dados);
+    } catch (err) {
+      console.error(err);
+      tabela.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#ff5555;">Erro ao carregar dados.</td></tr>`;
     }
+  }
 
-    function primeiroNome(email) {
-      if (!email) return "";
-      const nome = email.split("@")[0].split(".")[0];
-      return nome.charAt(0).toUpperCase() + nome.slice(1);
-    }
+  function primeiroNome(email) {
+    if (!email) return "";
+    const nome = email.split("@")[0].split(".")[0];
+    return nome.charAt(0).toUpperCase() + nome.slice(1);
+  }
 
-    function exibirFerramentais(dados) {
-      const tabela = document.getElementById("tabela").querySelector("tbody");
-      tabela.innerHTML = "";
+  function exibirFerramentais(dados) {
+    const tabela = document.getElementById("tabela").querySelector("tbody");
+    tabela.innerHTML = "";
 
-      const grupos = {};
-      dados.forEach(item => {
-        const sv = item.sv || "Sem SV";
-        if (!grupos[sv]) grupos[sv] = [];
-        grupos[sv].push(item);
-      });
+    const grupos = {};
+    dados.forEach(item => {
+      const sv = item.sv || "Sem SV";
+      if (!grupos[sv]) grupos[sv] = [];
+      grupos[sv].push(item);
+    });
 
-      Object.keys(grupos).forEach(sv => {
-        const itens = grupos[sv];
-        const primeiro = itens[0];
-        const tipo = primeiro.tipo || "Desconhecido";
+    Object.keys(grupos).forEach(sv => {
+      const itens = grupos[sv];
+      const primeiro = itens[0];
+      const tipo = primeiro.tipo || "Desconhecido";
 
-        const trGrupo = document.createElement("tr");
-        trGrupo.classList.add("linha-sv");
-        trGrupo.innerHTML = `
-          <td>${tipo}</td>
-          <td>${sv}</td>
-          <td>${primeiro.nome || ""}</td>
-          <td>${primeiroNome(primeiro.responsavel)}</td>
-          <td><button class="botao-expandir"><span class="icone">➕</span> Ver itens (${itens.length})</button></td>
-        `;
-        tabela.appendChild(trGrupo);
+      const trGrupo = document.createElement("tr");
+      trGrupo.classList.add("linha-sv");
+      trGrupo.innerHTML = `
+        <td>${tipo}</td>
+        <td>${sv}</td>
+        <td>${primeiro.nome || ""}</td>
+        <td>${primeiroNome(primeiro.responsavel)}</td>
+        <td><button class="botao-expandir"><span class="icone">➕</span> Ver itens (${itens.length})</button></td>
+      `;
+      tabela.appendChild(trGrupo);
 
-        const trDetalhes = document.createElement("tr");
-        const tdDetalhes = document.createElement("td");
-        tdDetalhes.colSpan = 5;
-        tdDetalhes.innerHTML = `
-          <div class="subtabela">
-            <table class="tabela-interna">
-              <thead>
+      const trDetalhes = document.createElement("tr");
+      const tdDetalhes = document.createElement("td");
+      tdDetalhes.colSpan = 5;
+      tdDetalhes.innerHTML = `
+        <div class="subtabela">
+          <table class="tabela-interna">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Data Registro</th>
+                <th>Estado</th>
+                <th>Localização</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itens.map(item => `
                 <tr>
-                  <th>Nome</th>
-                  <th>Data Registro</th>
-                  <th>Estado</th>
-                  <th>Localização</th>
-                  <th>Ações</th>
+                  <td>${item.nome || ""}</td>
+                  <td>${item.dataRegistro || ""}</td>
+                  <td>${item.estado || ""}</td>
+                  <td>${item.localizacao || ""}</td>
+                  <td>
+                    <button class="botao-acao editar" data-id="${item.id}">Editar</button>
+                    <button class="botao-acao excluir" data-id="${item.id}">Excluir</button>
+                    <button class="botao-acao qrcode" data-id="${item.id}">Gerar QR-Code</button>
+                    <button class="botao-acao exportar" data-id="${item.id}">Exportar QR-Code</button>
+                    <div class="qr-container" style="margin-top:5px;text-align:center;"></div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                ${itens.map(item => `
-                  <tr>
-                    <td>${item.nome || ""}</td>
-                    <td>${item.dataRegistro || ""}</td>
-                    <td>${item.estado || ""}</td>
-                    <td>${item.localizacao || ""}</td>
-                    <td>
-                      <button class="botao-acao editar" data-id="${item.id}">Editar</button>
-                      <button class="botao-acao excluir" data-id="${item.id}">Excluir</button>
-                      <button class="botao-acao qrcode" data-id="${item.id}">Gerar QR-Code</button>
-                      <button class="botao-acao exportar" data-id="${item.id}">Exportar QR-Code</button>
-                      <div class="qr-container" style="margin-top:5px;"></div>
-                    </td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
-          </div>`;
-        trDetalhes.style.display = "none";
-        trDetalhes.appendChild(tdDetalhes);
-        tabela.appendChild(trDetalhes);
+              `).join("")}
+            </tbody>
+          </table>
+        </div>`;
+      trDetalhes.style.display = "none";
+      trDetalhes.appendChild(tdDetalhes);
+      tabela.appendChild(trDetalhes);
 
-        const botaoExpandir = trGrupo.querySelector(".botao-expandir");
-        botaoExpandir.onclick = () => {
-          const visivel = trDetalhes.style.display === "table-row";
-          trDetalhes.style.display = visivel ? "none" : "table-row";
-          botaoExpandir.innerHTML = visivel
-            ? `<span class="icone">➕</span> Ver itens (${itens.length})`
-            : `<span class="icone">➖</span> Recolher itens`;
+      const botaoExpandir = trGrupo.querySelector(".botao-expandir");
+      botaoExpandir.onclick = () => {
+        const visivel = trDetalhes.style.display === "table-row";
+        trDetalhes.style.display = visivel ? "none" : "table-row";
+        botaoExpandir.innerHTML = visivel
+          ? `<span class="icone">➕</span> Ver itens (${itens.length})`
+          : `<span class="icone">➖</span> Recolher itens`;
+      };
+
+      tdDetalhes.querySelectorAll(".editar").forEach(btn => {
+        btn.onclick = () => window.location.href = `editar.html?id=${btn.dataset.id}`;
+      });
+
+      tdDetalhes.querySelectorAll(".excluir").forEach(btn => {
+        btn.onclick = async () => {
+          if (confirm("Deseja realmente excluir este registro?")) {
+            await remove(ref(db, `ferramentais/${btn.dataset.id}`));
+            carregarFerramentais();
+          }
         };
-
-        tdDetalhes.querySelectorAll(".editar").forEach(btn => {
-          btn.onclick = () => window.location.href = `editar.html?id=${btn.dataset.id}`;
-        });
-
-        tdDetalhes.querySelectorAll(".excluir").forEach(btn => {
-          btn.onclick = async () => {
-            if (confirm("Deseja realmente excluir este registro?")) {
-              await remove(ref(db, `ferramentais/${btn.dataset.id}`));
-              carregarFerramentais();
-            }
-          };
-        });
-
-        tdDetalhes.querySelectorAll(".qrcode").forEach(btn => {
-          btn.onclick = () => gerarQRCode(btn);
-        });
-
-        tdDetalhes.querySelectorAll(".exportar").forEach(btn => {
-          btn.onclick = () => exportarQRCode(btn);
-        });
-      });
-    }
-
-    // ======== NOVA FUNÇÃO QR CORRIGIDA ========
-    function gerarQRCode(botao) {
-      const id = botao.dataset.id;
-      const container = botao.parentNode.querySelector(".qr-container");
-      container.innerHTML = ""; // limpa anterior
-
-      const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${id}`;
-
-      const qr = new QRCode(container, {
-        text: linkDetalhes,
-        width: 180,
-        height: 180,
-        colorDark: "#00eaff",
-        colorLight: "#0a0f1a",
-        correctLevel: QRCode.CorrectLevel.H
       });
 
-      container.style.display = "block";
-    }
+      tdDetalhes.querySelectorAll(".qrcode").forEach(btn => {
+        btn.onclick = () => gerarQRCode(btn);
+      });
 
-    function exportarQRCode(botao) {
-      const container = botao.parentNode.querySelector(".qr-container");
-      const img = container.querySelector("img") || container.querySelector("canvas");
-      if (!img) return alert("Gere o QR-Code primeiro!");
+      tdDetalhes.querySelectorAll(".exportar").forEach(btn => {
+        btn.onclick = () => exportarQRCode(btn);
+      });
+    });
+  }
 
-      const a = document.createElement("a");
-      a.href = img.src || img.toDataURL("image/png");
-      a.download = `QRCode_${botao.dataset.id}.png`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
-  </script>
+  // === QR-CODE CORRIGIDO ===
+  function gerarQRCode(botao) {
+    const id = botao.dataset.id;
+    const container = botao.parentNode.querySelector(".qr-container");
+    container.innerHTML = "";
+    const link = `${window.location.origin}/SGF/detalhes.html?id=${id}`;
 
-  <!-- biblioteca QRCode.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-</body>
-</html>
+    const qr = new QRCode(container, {
+      text: link,
+      width: 180,
+      height: 180,
+      colorDark: "#00eaff",
+      colorLight: "#0a0f1a",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    // Garante que a imagem aparece
+    setTimeout(() => {
+      const img = container.querySelector("img");
+      if (img) {
+        img.style.display = "block";
+        img.style.margin = "10px auto";
+        img.style.border = "1px solid #00eaff33";
+        img.style.borderRadius = "10px";
+        img.style.boxShadow = "0 0 15px #00eaff55";
+      }
+    }, 200);
+  }
+
+  function exportarQRCode(botao) {
+    const container = botao.parentNode.querySelector(".qr-container");
+    const img = container.querySelector("img") || container.querySelector("canvas");
+    if (!img) return alert("Gere o QR-Code primeiro!");
+
+    const a = document.createElement("a");
+    a.href = img.src || img.toDataURL("image/png");
+    a.download = `QRCode_${botao.dataset.id}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+</script>
