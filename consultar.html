@@ -8,7 +8,7 @@
   <style>
     body {
       background-color: #0a0f1a;
-      color: #e0faff;
+      color: #cde6f5;
       font-family: "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
@@ -18,7 +18,32 @@
       text-align: center;
       color: #00eaff;
       text-shadow: 0 0 15px #00eaffaa;
-      margin-top: 30px;
+      margin-top: 25px;
+      font-size: 28px;
+    }
+
+    .botoes-superior {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .botao-superior {
+      background: transparent;
+      border: 1px solid #00eaffaa;
+      color: #00eaff;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-shadow: 0 0 8px #00eaff88;
+    }
+
+    .botao-superior:hover {
+      background: #00eaff22;
+      box-shadow: 0 0 12px #00eaffaa;
     }
 
     .container {
@@ -30,10 +55,320 @@
       box-shadow: 0 0 20px #00eaff33;
     }
 
-    .botoes-topo {
-      text-align: center;
-      margin-bottom: 20px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #00eaff22;
+    }
+
+    th {
+      color: #00eaff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #00eaff55;
+    }
+
+    td {
+      color: #e0faff;
+      font-size: 14px;
+    }
+
+    .linha-tipo {
+      background: linear-gradient(90deg, #00eaff22, transparent);
+      color: #00eaff;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 17px;
+      text-shadow: 0 0 8px #00eaffaa;
+    }
+
+    .linha-sv {
+      background: rgba(0, 234, 255, 0.07);
+      color: #bde8ff;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .linha-sv:hover {
+      background: rgba(0, 234, 255, 0.15);
+    }
+
+    .subtabela {
+      background: #0a0f1a;
+      border: 1px solid #00eaff33;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 0 20px #00eaff22 inset;
+    }
+
+    .tabela-interna {
+      width: 100%;
+      border-collapse: collapse;
+      color: #e0faff;
+      font-size: 14px;
+    }
+
+    .tabela-interna th {
+      text-align: left;
+      padding: 6px;
+      border-bottom: 1px solid #00eaff44;
+      color: #00eaff;
+    }
+
+    .tabela-interna td {
+      padding: 6px;
+      border-bottom: 1px solid #00eaff22;
+    }
+
+    .botao-acao {
+      background: transparent;
+      border: 1px solid #00eaff55;
+      color: #00eaff;
+      padding: 3px 8px;
+      margin: 2px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .botao-acao:hover {
+      background: #00eaff22;
+      box-shadow: 0 0 8px #00eaff88;
+    }
+
+    .botao-expandir {
+      background: transparent;
+      border: 1px solid #00eaff88;
+      color: #00eaff;
+      padding: 4px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+      box-shadow: 0 0 8px #00eaff44;
+    }
+
+    .botao-expandir:hover {
+      background: #00eaff22;
+      box-shadow: 0 0 15px #00eaff77;
+    }
+
+    footer {
+      text-align: center;
+      color: #00eaff88;
+      padding: 20px;
+      font-size: 14px;
+      border-top: 1px solid #00eaff33;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Consulta de Ferramentais</h1>
+
+  <div class="botoes-superior">
+    <button class="botao-superior" id="btnConsultar">🔍 Consultar</button>
+    <button class="botao-superior" id="btnMenu">⬅️ Retornar ao Menu</button>
+  </div>
+
+  <div class="container">
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>NF-e</th>
+          <th>SV</th>
+          <th colspan="4">Nome</th>
+          <th>Responsável do Cadastro</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <footer>
+    © 2025 Grupo Sovel — Departamento de Amostras e Clicheria
+  </footer>
+
+  <!-- === Firebase e Scripts === -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAMyXl5uWSWYNAy-qZBy3N3yU84mdS73w",
+      authDomain: "dacsovel-53481.firebaseapp.com",
+      databaseURL: "https://dacsovel-53481-default-rtdb.firebaseio.com",
+      projectId: "dacsovel-53481",
+      storageBucket: "dacsovel-53481.appspot.com",
+      messagingSenderId: "37867522513",
+      appId: "1:37867522513:web:336d687e3fc8408bd138f0",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    document.getElementById("btnConsultar").onclick = () => carregarFerramentais();
+    document.getElementById("btnMenu").onclick = () => window.location.href = "menu.html";
+
+    async function carregarFerramentais() {
+      const snapshot = await get(ref(db, "ferramentais"));
+      const dados = snapshot.exists()
+        ? Object.entries(snapshot.val()).map(([id, valor]) => ({ id, ...valor }))
+        : [];
+      exibirFerramentais(dados);
+    }
+
+    function exibirFerramentais(dados) {
+      const tabela = document.getElementById("tabela").querySelector("tbody");
+      tabela.innerHTML = "";
+
+      const gruposTipo = {};
+      dados.forEach(item => {
+        const tipo = (item.tipo || "OUTROS").toUpperCase();
+        if (!gruposTipo[tipo]) gruposTipo[tipo] = {};
+        if (!gruposTipo[tipo][item.sv]) gruposTipo[tipo][item.sv] = [];
+        gruposTipo[tipo][item.sv].push(item);
+      });
+
+      Object.keys(gruposTipo).forEach(tipo => {
+        const trTipo = document.createElement("tr");
+        trTipo.classList.add("linha-tipo");
+        trTipo.innerHTML = `<td colspan="9"><b>${tipo}</b></td>`;
+        tabela.appendChild(trTipo);
+
+        Object.keys(gruposTipo[tipo]).forEach(sv => {
+          const itens = gruposTipo[tipo][sv];
+          const primeiro = itens[0];
+
+          const responsavel = primeiro.responsavel
+            ? primeiro.responsavel.split("@")[0].split(".")[0].charAt(0).toUpperCase() +
+              primeiro.responsavel.split("@")[0].split(".")[0].slice(1)
+            : "";
+
+          const trGrupo = document.createElement("tr");
+          trGrupo.classList.add("linha-sv");
+          trGrupo.innerHTML = `
+            <td>${tipo}</td>
+            <td>${primeiro.nfe || ""}</td>
+            <td>${sv}</td>
+            <td colspan="4">${primeiro.nome || ""}</td>
+            <td>${responsavel}</td>
+            <td><button class="botao-expandir"><span class="icone">➕</span> Ver itens (${itens.length})</button></td>
+          `;
+          tabela.appendChild(trGrupo);
+
+          const trDetalhes = document.createElement("tr");
+          const tdDetalhes = document.createElement("td");
+          tdDetalhes.colSpan = 9;
+          tdDetalhes.innerHTML = `
+            <div class="subtabela">
+              <table class="tabela-interna">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Data Registro</th>
+                    <th>Estado</th>
+                    <th>Localização</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itens.map(item => `
+                    <tr>
+                      <td>${item.nome || ""}</td>
+                      <td>${item.dataRegistro || ""}</td>
+                      <td>${item.estado || ""}</td>
+                      <td>${item.localizacao || ""}</td>
+                      <td>
+                        <button class="botao-acao editar" data-id="${item.id}">Editar</button>
+                        <button class="botao-acao excluir" data-id="${item.id}">Excluir</button>
+                        <button class="botao-acao qrcode" data-id="${item.id}">Gerar QR-Code</button>
+                        <button class="botao-acao exportar" data-id="${item.id}">Exportar QR-Code</button>
+                        <div class="qr-container" style="display:none; margin-top:8px;"></div>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>`;
+          trDetalhes.style.display = "none";
+          trDetalhes.appendChild(tdDetalhes);
+          tabela.appendChild(trDetalhes);
+
+          const botaoExpandir = trGrupo.querySelector(".botao-expandir");
+          botaoExpandir.onclick = () => {
+            const visivel = trDetalhes.style.display === "table-row";
+            trDetalhes.style.display = visivel ? "none" : "table-row";
+            botaoExpandir.innerHTML = visivel
+              ? `<span class="icone">➕</span> Ver itens (${itens.length})`
+              : `<span class="icone">➖</span> Recolher itens`;
+          };
+
+          tdDetalhes.querySelectorAll(".editar").forEach(btn => {
+            btn.onclick = () => window.location.href = `editar.html?id=${btn.dataset.id}`;
+          });
+
+          tdDetalhes.querySelectorAll(".excluir").forEach(btn => {
+            btn.onclick = async () => {
+              if (confirm("Deseja realmente excluir este registro?")) {
+                await remove(ref(db, `ferramentais/${btn.dataset.id}`));
+                carregarFerramentais();
+              }
+            };
+          });
+
+          tdDetalhes.querySelectorAll(".qrcode").forEach(btn => {
+            btn.onclick = () => gerarQRCode(btn.dataset.id);
+          });
+
+          tdDetalhes.querySelectorAll(".exportar").forEach(btn => {
+            btn.onclick = () => exportarQRCode(btn.dataset.id);
+          });
+        });
+      });
+    }
+
+    // === QR-CODE CORRIGIDO ===
+    function gerarQRCode(id) {
+      const container = document.querySelector(`[data-id='${id}']`).parentNode.querySelector(".qr-container");
+      container.innerHTML = "";
+      container.style.display = "block";
+      new QRCode(container, {
+        text: `${window.location.origin}/docs/detalhes.html?id=${id}`,
+        width: 128,
+        height: 128,
+        colorDark: "#ffffff",
+        colorLight: "#0a0f1a",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+    }
+
+    // === EXPORTAÇÃO DO QR-CODE ===
+    function exportarQRCode(id) {
+      const container = document.querySelector(`[data-id='${id}']`).parentNode.querySelector(".qr-container");
+      const canvas = container.querySelector("canvas");
+      if (canvas) {
+        const link = document.createElement("a");
+        link.download = `QR_${id}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      } else {
+        alert("Gere o QR-Code antes de exportar.");
+      }
+    }
+  </script>
+</body>
+</html>
 
     .botoes-topo input {
       padding: 10px;
