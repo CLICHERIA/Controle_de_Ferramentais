@@ -1,425 +1,268 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Consultar Ferramentais — SGF</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Consulta de Ferramentais — SGF</title>
+
   <style>
-    body {
-      margin: 0;
-      background-color: #0a0f1a;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 30px;
+    /* ===========================
+       STYLES (fechamento correto)
+       =========================== */
+    :root{
+      --bg:#0a0f1a;
+      --panel:#0f1720;
+      --neon:#00eaff;
+      --neon-weak:#00eaff33;
+      --text:#dff7ff;
+      --muted:#98cfe0;
     }
 
-    h1 {
-      color: #00eaff;
-      text-shadow: 0 0 10px #00eaff;
-      margin-bottom: 30px;
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",sans-serif}
+    .page { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:36px 16px; box-sizing:border-box; }
+
+    h1{ color:var(--neon); text-shadow:0 0 14px #00eaff66; margin:6px 0 22px; font-size:30px; font-weight:700; }
+
+    .container{
+      width:92%; max-width:1100px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
+      border-radius:16px; padding:22px; box-shadow:0 0 28px var(--neon-weak); border:1px solid rgba(0,234,255,0.04);
     }
 
-    .container {
-      background-color: #111827;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 25px #00eaff44;
-      width: 90%;
-      max-width: 900px;
+    .status-bar {
+      width:100%; max-width:680px; margin:0 auto 16px;
+      padding:10px 14px; border-radius:10px; text-align:center; font-weight:600;
+      display:none; box-shadow:0 0 12px rgba(0,234,255,0.08);
     }
 
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 25px;
+    .controls{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:center; margin-bottom:16px; }
+
+    .controls input[type="text"]{
+      width:260px; padding:10px 12px; border-radius:10px; background:#071018; border:1px solid rgba(0,234,255,0.14);
+      color:var(--text); outline:none; text-align:center;
     }
 
-    button {
-      background-color: #00eaff;
-      color: #0a0f1a;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
+    .btn {
+      background:transparent; border:1px solid rgba(0,234,255,0.25);
+      color:var(--neon); padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:700;
+      box-shadow:0 0 10px rgba(0,234,255,0.06); transition:all .15s ease;
     }
+    .btn:hover{ background: rgba(0,234,255,0.06); transform:translateY(-2px); }
 
-    button:hover {
-      background-color: #00c7d4;
-      transform: scale(1.05);
-    }
+    table{ width:100%; border-collapse:collapse; margin-top:12px; table-layout:fixed; word-wrap:break-word; }
+    thead th{ background:rgba(0,234,255,0.06); color:var(--neon); padding:12px; text-align:left; font-weight:700; }
+    tbody td { padding:12px; border-top:1px solid rgba(0,234,255,0.03); color:var(--text); font-size:14px; }
+    tbody tr:hover{ background:rgba(0,234,255,0.03); }
 
-    input {
-      background-color: #0a0f1a;
-      border: 1px solid #00eaff;
-      color: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      width: 250px;
-      text-align: center;
-      outline: none;
-    }
+    .qrcode-wrap{ margin-top:20px; text-align:center; }
+    .qrcode-wrap img, .qrcode-wrap canvas{ background:var(--bg); border-radius:10px; padding:8px; border:2px solid #fff; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #00eaff33;
-      text-align: center;
-    }
-
-    th {
-      background-color: #00eaff22;
-    }
-
-    tr:hover {
-      background-color: #00eaff11;
-    }
-
-    #qrcode {
-      margin-top: 25px;
-      text-align: center;
-    }
-
-    canvas {
-      border: 2px solid #fff;
-      border-radius: 10px;
-      padding: 10px;
-      background-color: #0a0f1a;
+    /* responsive */
+    @media (max-width:720px){
+      .controls input[type="text"]{ width:200px; }
+      thead th, tbody td{ font-size:13px; padding:10px; }
     }
   </style>
 </head>
 <body>
-  <h1>Consulta de Ferramentais — Grupo Sovel</h1>
+  <div class="page">
+    <h1>Consulta de Ferramentais — Grupo Sovel</h1>
 
-  <div class="container">
-    <div class="actions">
-      <input type="text" id="svInput" placeholder="Digite o número da SV (opcional)">
-      <button id="buscarBtn">Consultar</button>
-      <button id="qrcodeBtn">Gerar QR-Code</button>
-      <button id="exportarBtn">Exportar</button>
-      <button id="menuBtn">Retornar ao Menu</button>
+    <div class="container">
+      <div id="statusBar" class="status-bar" aria-live="polite"></div>
+
+      <div class="controls">
+        <input id="svInput" type="text" placeholder="Digite o número da SV (opcional)">
+        <button id="btnBuscar" class="btn">Consultar</button>
+        <button id="btnGerarQR" class="btn">Gerar QR-Code</button>
+        <button id="btnExport" class="btn">Exportar</button>
+        <button id="btnMenu" class="btn">Retornar ao Menu</button>
+      </div>
+
+      <div style="overflow:auto">
+        <table id="tabelaFerramentais" aria-live="polite">
+          <thead>
+            <tr>
+              <th style="width:18%">SV</th>
+              <th style="width:24%">Tipo</th>
+              <th style="width:38%">Nome / Cliente</th>
+              <th style="width:20%">Status</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaCorpo">
+            <!-- vazio até o usuário buscar -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="qrcode-wrap" id="qrcodeWrap" aria-hidden="true"></div>
     </div>
-
-    <table id="tabelaFerramentais">
-      <thead>
-        <tr>
-          <th>SV</th>
-          <th>Tipo</th>
-          <th>Cliente</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaCorpo">
-        <!-- Dados serão carregados dinamicamente -->
-      </tbody>
-    </table>
-
-    <div id="qrcode"></div>
   </div>
 
+  <!-- QR lib (global) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- SCRIPT principal (usa seu arquivo firebase-config.js que deve exportar 'db' para Firestore) -->
   <script type="module">
+    // IMPORT: usa a sua configuração existente. Ajuste o caminho se necessário.
+    // Seu ./js/firebase-config.js deve exportar `db` (Firestore instance).
     import { db } from './js/firebase-config.js';
-    import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const tabelaCorpo = document.getElementById('tabelaCorpo');
-    const buscarBtn = document.getElementById('buscarBtn');
-    const qrcodeBtn = document.getElementById('qrcodeBtn');
-    const exportarBtn = document.getElementById('exportarBtn');
-    const menuBtn = document.getElementById('menuBtn');
     const svInput = document.getElementById('svInput');
-    const qrcodeDiv = document.getElementById('qrcode');
+    const btnBuscar = document.getElementById('btnBuscar');
+    const btnGerarQR = document.getElementById('btnGerarQR');
+    const btnExport = document.getElementById('btnExport');
+    const btnMenu = document.getElementById('btnMenu');
+    const tabelaCorpo = document.getElementById('tabelaCorpo');
+    const statusBar = document.getElementById('statusBar');
+    const qrcodeWrap = document.getElementById('qrcodeWrap');
 
-    // Buscar SVs no Firestore
+    function mostrarStatus(text, color = '#00eaff', autoHide = true) {
+      statusBar.style.display = 'block';
+      statusBar.style.color = color;
+      statusBar.style.borderColor = color;
+      statusBar.textContent = text;
+      if (autoHide) {
+        clearTimeout(statusBar._hideTimer);
+        statusBar._hideTimer = setTimeout(() => statusBar.style.display = 'none', 4500);
+      }
+    }
+
+    function limparTabela() {
+      tabelaCorpo.innerHTML = '';
+    }
+
     async function buscarFerramentais() {
-      tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#00eaff;">Buscando...</td></tr>`;
-      const valor = svInput.value.trim().toUpperCase();
+      limparTabela();
+      qrcodeWrap.innerHTML = '';
+      const termo = svInput.value.trim().toUpperCase();
+
+      mostrarStatus('🔍 Buscando dados...', '#00eaff', false);
 
       try {
-        let ref = collection(db, "ferramentais");
-        let snapshot;
+        const colRef = collection(db, 'ferramentais');
+        let snap;
 
-        if (valor) {
-          const q = query(ref, where("sv", "==", valor));
-          snapshot = await getDocs(q);
+        if (termo) {
+          const q = query(colRef, where('sv', '==', termo));
+          snap = await getDocs(q);
         } else {
-          snapshot = await getDocs(ref);
+          // busca geral (todos) conforme solicitado
+          snap = await getDocs(colRef);
         }
 
-        if (snapshot.empty) {
-          tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#ff5555;">Nenhum resultado encontrado.</td></tr>`;
+        if (snap.empty) {
+          mostrarStatus('⚠️ Nenhum resultado encontrado.', '#ff8a80');
+          tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#ff8a80;padding:14px;text-align:center">Nenhum resultado encontrado.</td></tr>`;
           return;
         }
 
-        tabelaCorpo.innerHTML = "";
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${data.sv || '-'}</td>
-            <td>${data.tipo || '-'}</td>
-            <td>${data.cliente || '-'}</td>
-            <td>${data.status || '-'}</td>
-          `;
-          tabelaCorpo.appendChild(row);
+        // popular tabela
+        let rowsHtml = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          const sv = d.sv || '-';
+          const tipo = d.tipo || '-';
+          // usar nome ou cliente conforme seus campos
+          const nome = (d.nome || d.cliente || '-');
+          const status = d.estado || d.status || '-';
+          rowsHtml += `<tr data-sv="${sv}">
+            <td>${sv}</td>
+            <td>${tipo}</td>
+            <td style="text-align:left">${escapeHtml(nome)}</td>
+            <td>${status}</td>
+          </tr>`;
         });
 
-      } catch (erro) {
-        console.error(erro);
-        tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#ff5555;">Erro ao buscar dados.</td></tr>`;
+        tabelaCorpo.innerHTML = rowsHtml;
+        mostrarStatus('✅ Resultados carregados com sucesso.', '#7ef2ff');
+      } catch (err) {
+        console.error(err);
+        mostrarStatus('❌ Erro ao buscar dados. Veja console.', '#ff8a80');
+        tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#ff8a80;padding:14px;text-align:center">Erro ao buscar dados.</td></tr>`;
       }
     }
 
-    buscarBtn.addEventListener('click', buscarFerramentais);
-
-    // Geração do QR Code
-    qrcodeBtn.addEventListener('click', () => {
+    // Gerar QR para SV digitada (mantendo UX: só gera se houver valor)
+    function gerarQRCode() {
       const valor = svInput.value.trim().toUpperCase();
       if (!valor) {
-        alert('Digite uma SV para gerar o QR Code.');
+        mostrarStatus('⚠️ Digite uma SV para gerar o QR-Code.', '#ffd67a');
+        return;
+      }
+      qrcodeWrap.innerHTML = ''; qrcodeWrap.setAttribute('aria-hidden','false');
+
+      // gera QR com cor branca sobre fundo escuro
+      new QRCode(qrcodeWrap, {
+        text: `${window.location.origin}/docs/detalhes.html?id=${encodeURIComponent(valor)}`,
+        width: 200,
+        height: 200,
+        colorDark: "#ffffff",
+        colorLight: "#0a0f1a",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      // estiliza a imagem/canvas quando pronto
+      setTimeout(()=> {
+        const img = qrcodeWrap.querySelector('img');
+        const canvas = qrcodeWrap.querySelector('canvas');
+        const node = img || canvas;
+        if(node) {
+          node.style.boxShadow = '0 0 18px rgba(0,234,255,0.08)';
+        }
+      },120);
+
+      mostrarStatus('✅ QR-Code gerado. Escaneie para abrir detalhes.', '#7ef2ff');
+    }
+
+    // Exporta: se QR visível, exporta a imagem do QR; senão exporta a tabela como HTML imprimível
+    function exportar() {
+      const img = qrcodeWrap.querySelector('img') || qrcodeWrap.querySelector('canvas');
+      if (img) {
+        // se for canvas, usaremos toDataURL; se imagem, pegamos src
+        let dataUrl;
+        if (img.tagName.toLowerCase() === 'canvas') {
+          dataUrl = img.toDataURL('image/png');
+        } else {
+          dataUrl = img.src;
+        }
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `QRCode_${(svInput.value||'SV').replace(/\s/g,'_')}.png`;
+        document.body.appendChild(a); a.click(); a.remove();
+        mostrarStatus('📥 QR-Code exportado.', '#7ef2ff');
         return;
       }
 
-      qrcodeDiv.innerHTML = '';
-      new QRCode(qrcodeDiv, {
-        text: `${window.location.origin}/docs/detalhes.html?id=${valor}`,
-        width: 180,
-        height: 180,
-        colorDark: "#ffffff",
-        colorLight: "#0a0f1a"
-      });
-    });
-
-    // Exportar relatório
-    exportarBtn.addEventListener('click', () => {
+      // Senão: exportar tabela
       const tabela = document.getElementById('tabelaFerramentais').outerHTML;
-      const novaJanela = window.open('', '', 'width=800,height=600');
-      novaJanela.document.write(`
-        <html>
-        <head>
-          <title>Exportação - Grupo Sovel</title>
-          <style>
-            body { font-family: 'Segoe UI'; background-color: white; color: black; text-align:center; }
-            table { width: 90%; margin: 30px auto; border-collapse: collapse; }
-            th, td { border: 1px solid black; padding: 10px; }
-            img { width: 120px; margin-top: 20px; }
-          </style>
-        </head>
-        <body>
-          <img src="assets/img/logosovel133.png" alt="Logo Sovel"><br>
-          <h2>Relatório de Ferramentais</h2>
-          ${tabela}
-        </body>
-        </html>
-      `);
-      novaJanela.document.close();
-      novaJanela.print();
-    });
-
-    // Retornar ao menu
-    menuBtn.addEventListener('click', () => {
-      window.location.href = 'menu.html';
-    });
-  </script>
-</body>
-</html>
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 25px;
+      const newWin = window.open('', '_blank');
+      newWin.document.write(`<html><head><title>Relatório - SGF</title>
+        <style>body{font-family:Segoe UI,sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #111;padding:8px}</style>
+      </head><body>
+        <img src="assets/img/logosovel133.png" style="width:110px"><h2>Relatório de Ferramentais</h2>
+        ${tabela}
+      </body></html>`);
+      newWin.document.close();
+      newWin.focus();
+      // permite ao usuário imprimir/salvar
+      mostrarStatus('🖨️ Janela de impressão aberta.', '#7ef2ff');
     }
 
-    button {
-      background-color: #00eaff;
-      color: #0a0f1a;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
+    // util: escape para HTML de strings vindas do BD
+    function escapeHtml(str){
+      if(!str) return '';
+      return String(str).replace(/[&<>"']/g, s => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[s]);
     }
 
-    button:hover {
-      background-color: #00c7d4;
-      transform: scale(1.05);
-    }
+    // EVENTOS
+    btnBuscar.addEventListener('click', buscarFerramentais);
+    btnGerarQR.addEventListener('click', gerarQRCode);
+    btnExport.addEventListener('click', exportar);
+    btnMenu.addEventListener('click', () => window.location.href = 'menu.html');
 
-    input {
-      background-color: #0a0f1a;
-      border: 1px solid #00eaff;
-      color: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      width: 250px;
-      text-align: center;
-      outline: none;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #00eaff33;
-      text-align: center;
-    }
-
-    th {
-      background-color: #00eaff22;
-    }
-
-    tr:hover {
-      background-color: #00eaff11;
-    }
-
-    #qrcode {
-      margin-top: 25px;
-      text-align: center;
-    }
-
-    canvas {
-      border: 2px solid #fff;
-      border-radius: 10px;
-      padding: 10px;
-      background-color: #0a0f1a;
-    }
-  </style>
-</head>
-<body>
-  <h1>Consulta de Ferramentais — Grupo Sovel</h1>
-
-  <div class="container">
-    <div class="actions">
-      <input type="text" id="svInput" placeholder="Digite o número da SV (opcional)">
-      <button id="buscarBtn">Consultar</button>
-      <button id="qrcodeBtn">Gerar QR-Code</button>
-      <button id="exportarBtn">Exportar</button>
-      <button id="menuBtn">Retornar ao Menu</button>
-    </div>
-
-    <table id="tabelaFerramentais">
-      <thead>
-        <tr>
-          <th>SV</th>
-          <th>Tipo</th>
-          <th>Cliente</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaCorpo">
-        <!-- Dados gerados via JS -->
-      </tbody>
-    </table>
-
-    <div id="qrcode"></div>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script>
-    const tabelaCorpo = document.getElementById('tabelaCorpo');
-    const buscarBtn = document.getElementById('buscarBtn');
-    const qrcodeDiv = document.getElementById('qrcode');
-    const svInput = document.getElementById('svInput');
-    const exportarBtn = document.getElementById('exportarBtn');
-    const menuBtn = document.getElementById('menuBtn');
-
-    // --- Função simulada para buscar SVs ---
-    const dadosFerramentais = [
-      { sv: 'SV1234', tipo: 'Clichê', cliente: 'Cliente A', status: 'Em uso' },
-      { sv: 'SV1235', tipo: 'Faca', cliente: 'Cliente B', status: 'Em análise' },
-      { sv: 'SV1236', tipo: 'Clichê', cliente: 'Cliente C', status: 'Concluído' },
-      { sv: 'SV1237', tipo: 'Faca', cliente: 'Cliente D', status: 'Pendente' }
-    ];
-
-    function exibirFerramentais(lista) {
-      tabelaCorpo.innerHTML = '';
-      lista.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${item.sv}</td>
-          <td>${item.tipo}</td>
-          <td>${item.cliente}</td>
-          <td>${item.status}</td>
-        `;
-        tabelaCorpo.appendChild(row);
-      });
-    }
-
-    buscarBtn.addEventListener('click', () => {
-      const valor = svInput.value.trim().toUpperCase();
-      const filtrado = valor
-        ? dadosFerramentais.filter(f => f.sv.includes(valor))
-        : dadosFerramentais;
-      exibirFerramentais(filtrado);
-    });
-
-    // Exibe todos ao carregar
-    exibirFerramentais(dadosFerramentais);
-
-    // --- Geração do QR Code ---
-    document.getElementById('qrcodeBtn').addEventListener('click', () => {
-      const valor = svInput.value.trim().toUpperCase();
-      if (!valor) {
-        alert('Digite uma SV para gerar o QR Code.');
-        return;
-      }
-
-      qrcodeDiv.innerHTML = '';
-      new QRCode(qrcodeDiv, {
-        text: `${window.location.origin}/docs/detalhes.html?id=${valor}`,
-        width: 180,
-        height: 180,
-        colorDark: "#ffffff",
-        colorLight: "#0a0f1a"
-      });
-    });
-
-    // --- Exportar ---
-    exportarBtn.addEventListener('click', () => {
-      const tabela = document.getElementById('tabelaFerramentais').outerHTML;
-      const novaJanela = window.open('', '', 'width=800,height=600');
-      novaJanela.document.write(`
-        <html>
-        <head>
-          <title>Exportação - Grupo Sovel</title>
-          <style>
-            body { font-family: 'Segoe UI'; background-color: white; color: black; text-align:center; }
-            table { width: 90%; margin: 30px auto; border-collapse: collapse; }
-            th, td { border: 1px solid black; padding: 10px; }
-            img { width: 120px; margin-top: 20px; }
-          </style>
-        </head>
-        <body>
-          <img src="assets/img/logosovel133.png" alt="Logo Sovel"><br>
-          <h2>Relatório de Ferramentais</h2>
-          ${tabela}
-        </body>
-        </html>
-      `);
-      novaJanela.document.close();
-      novaJanela.print();
-    });
-
-    // --- Retornar ao menu ---
-    menuBtn.addEventListener('click', () => {
-      window.location.href = 'menu.html';
-    });
+    // segurança: não executa busca automática (apenas quando usuário clicar)
   </script>
 </body>
 </html>
