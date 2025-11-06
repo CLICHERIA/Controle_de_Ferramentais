@@ -8,7 +8,7 @@
   <style>
     body {
       background-color: #0a0f1a;
-      color: #d8f6ff;
+      color: #e0faff;
       font-family: "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
@@ -19,57 +19,15 @@
       color: #00eaff;
       text-shadow: 0 0 15px #00eaffaa;
       margin-top: 30px;
-      font-weight: 700;
-    }
-
-    .acoes-topo {
-      text-align: center;
-      margin-top: 25px;
-      margin-bottom: 25px;
-    }
-
-    input {
-      padding: 10px;
-      width: 280px;
-      border-radius: 8px;
-      border: 1px solid #00eaff44;
-      background-color: #0d1b2a;
-      color: #e0faff;
-      text-align: center;
-      font-size: 15px;
-      outline: none;
-    }
-
-    input::placeholder {
-      color: #88c4d9;
-    }
-
-    button {
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 18px;
-      font-weight: bold;
-      margin: 5px;
-      background-color: #0d1b2a;
-      color: #00eaff;
-      box-shadow: 0 0 8px #00eaff55;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background-color: #00eaff22;
-      box-shadow: 0 0 15px #00eaff99;
-      color: #b9f8ff;
     }
 
     .container {
-      width: 92%;
+      width: 90%;
       margin: 30px auto;
-      background: rgba(0, 10, 20, 0.65);
+      background: rgba(0, 10, 20, 0.6);
       padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 0 25px #00eaff22;
+      box-shadow: 0 0 20px #00eaff33;
     }
 
     table {
@@ -86,39 +44,33 @@
     th {
       color: #00eaff;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      font-weight: 600;
-      background-color: #09111f;
-    }
-
-    td {
-      color: #d9f9ff;
-      font-size: 14.5px;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #00eaff55;
     }
 
     .linha-sv {
-      background: rgba(0, 234, 255, 0.05);
-      color: #00eaff;
+      background: rgba(0, 234, 255, 0.07);
+      color: #b8eaff;
       font-weight: 600;
       transition: background 0.3s;
     }
 
     .linha-sv:hover {
-      background: rgba(0, 234, 255, 0.1);
+      background: rgba(0, 234, 255, 0.15);
     }
 
     .subtabela {
       background: #0a0f1a;
       border: 1px solid #00eaff33;
       border-radius: 10px;
-      padding: 10px;
+      padding: 12px;
       box-shadow: 0 0 20px #00eaff22 inset;
     }
 
     .tabela-interna {
       width: 100%;
       border-collapse: collapse;
-      color: #e0faff;
+      color: #c8e7f0;
       font-size: 14px;
     }
 
@@ -138,12 +90,12 @@
       background: transparent;
       border: 1px solid #00eaff55;
       color: #00eaff;
-      padding: 4px 9px;
+      padding: 3px 8px;
       margin: 2px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
-      transition: 0.2s;
+      transition: all 0.2s;
     }
 
     .botao-acao:hover {
@@ -155,7 +107,7 @@
       background: transparent;
       border: 1px solid #00eaff88;
       color: #00eaff;
-      padding: 5px 12px;
+      padding: 4px 10px;
       border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
@@ -176,28 +128,46 @@
       border-top: 1px solid #00eaff33;
       margin-top: 40px;
     }
+
+    .botoes-topo {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .botoes-topo button {
+      margin: 0 10px;
+      background: transparent;
+      border: 1px solid #00eaff88;
+      color: #00eaff;
+      padding: 8px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s;
+      box-shadow: 0 0 10px #00eaff44;
+    }
+
+    .botoes-topo button:hover {
+      background: #00eaff22;
+      box-shadow: 0 0 15px #00eaff77;
+    }
   </style>
 </head>
-
 <body>
   <h1>Consulta de Ferramentais</h1>
 
-  <div class="acoes-topo">
-    <input type="text" id="busca" placeholder="Digite o número da SV ou nome">
-    <button id="btnBuscar">Consultar</button>
-    <button id="btnVoltar">Retornar ao Menu</button>
+  <div class="botoes-topo">
+    <button onclick="carregarFerramentais()">Consultar</button>
+    <button onclick="window.location.href='index.html'">Retornar ao Menu</button>
   </div>
 
   <div class="container">
     <table id="tabela">
       <thead>
         <tr>
+          <th>Tipo</th>
           <th>SV</th>
-          <th>NF-e</th>
           <th>Nome</th>
-          <th>Data Registro</th>
-          <th>Estado</th>
-          <th>Localização</th>
           <th>Responsável do Cadastro</th>
           <th>Ações</th>
         </tr>
@@ -206,9 +176,10 @@
     </table>
   </div>
 
-  <footer>© 2025 Grupo Sovel — Departamento de Amostras e Clicheria</footer>
+  <footer>
+    © 2025 Grupo Sovel — Departamento de Amostras e Clicheria
+  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -226,61 +197,50 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const tabela = document.querySelector("#tabela tbody");
-    const btnBuscar = document.getElementById("btnBuscar");
-    const btnVoltar = document.getElementById("btnVoltar");
-
-    btnVoltar.onclick = () => (window.location.href = "menu.html");
-
-    btnBuscar.onclick = async () => {
-      const termo = document.getElementById("busca").value.trim().toLowerCase();
+    async function carregarFerramentais() {
       const snapshot = await get(ref(db, "ferramentais"));
-      if (!snapshot.exists()) {
-        tabela.innerHTML = "<tr><td colspan='8'>Nenhum registro encontrado</td></tr>";
-        return;
-      }
+      const dados = snapshot.exists()
+        ? Object.entries(snapshot.val()).map(([id, valor]) => ({ id, ...valor }))
+        : [];
+      exibirFerramentais(dados);
+    }
 
-      const lista = Object.keys(snapshot.val()).map(id => ({ id, ...snapshot.val()[id] }));
-      const filtrados = lista.filter(item =>
-        (item.sv && item.sv.toLowerCase().includes(termo)) ||
-        (item.nome && item.nome.toLowerCase().includes(termo))
-      );
-
-      if (filtrados.length) exibirFerramentais(filtrados);
-      else tabela.innerHTML = "<tr><td colspan='8'>Nenhum resultado encontrado</td></tr>";
-    };
+    function primeiroNome(email) {
+      if (!email) return "";
+      const nome = email.split("@")[0].split(".")[0];
+      return nome.charAt(0).toUpperCase() + nome.slice(1);
+    }
 
     function exibirFerramentais(dados) {
+      const tabela = document.getElementById("tabela").querySelector("tbody");
       tabela.innerHTML = "";
-      const gruposSV = {};
 
+      const grupos = {};
       dados.forEach(item => {
         const sv = item.sv || "Sem SV";
-        if (!gruposSV[sv]) gruposSV[sv] = [];
-        gruposSV[sv].push(item);
+        if (!grupos[sv]) grupos[sv] = [];
+        grupos[sv].push(item);
       });
 
-      Object.keys(gruposSV).forEach(sv => {
-        const itens = gruposSV[sv];
+      Object.keys(grupos).forEach(sv => {
+        const itens = grupos[sv];
         const primeiro = itens[0];
+        const tipo = primeiro.tipo || "Desconhecido";
 
         const trGrupo = document.createElement("tr");
         trGrupo.classList.add("linha-sv");
         trGrupo.innerHTML = `
+          <td>${tipo}</td>
           <td>${sv}</td>
-          <td>${primeiro.nfe || ""}</td>
           <td>${primeiro.nome || ""}</td>
-          <td>${primeiro.dataRegistro || ""}</td>
-          <td>${primeiro.estado || ""}</td>
-          <td>${primeiro.localizacao || ""}</td>
-          <td>${formatarResponsavel(primeiro.responsavel)}</td>
-          <td><button class="botao-expandir">➕ Ver itens (${itens.length})</button></td>
+          <td>${primeiroNome(primeiro.responsavel)}</td>
+          <td><button class="botao-expandir"><span class="icone">➕</span> Ver itens (${itens.length})</button></td>
         `;
         tabela.appendChild(trGrupo);
 
         const trDetalhes = document.createElement("tr");
         const tdDetalhes = document.createElement("td");
-        tdDetalhes.colSpan = 8;
+        tdDetalhes.colSpan = 5;
         tdDetalhes.innerHTML = `
           <div class="subtabela">
             <table class="tabela-interna">
@@ -305,7 +265,7 @@
                       <button class="botao-acao excluir" data-id="${item.id}">Excluir</button>
                       <button class="botao-acao qrcode" data-id="${item.id}">Gerar QR-Code</button>
                       <button class="botao-acao exportar" data-id="${item.id}">Exportar QR-Code</button>
-                      <canvas class="qr-canvas" style="display:none; margin-top:5px;"></canvas>
+                      <div class="qr-container" style="margin-top:5px;"></div>
                     </td>
                   </tr>
                 `).join("")}
@@ -321,19 +281,19 @@
           const visivel = trDetalhes.style.display === "table-row";
           trDetalhes.style.display = visivel ? "none" : "table-row";
           botaoExpandir.innerHTML = visivel
-            ? "➕ Ver itens (" + itens.length + ")"
-            : "➖ Recolher itens";
+            ? `<span class="icone">➕</span> Ver itens (${itens.length})`
+            : `<span class="icone">➖</span> Recolher itens`;
         };
 
         tdDetalhes.querySelectorAll(".editar").forEach(btn => {
-          btn.onclick = () => (window.location.href = `editar.html?id=${btn.dataset.id}`);
+          btn.onclick = () => window.location.href = `editar.html?id=${btn.dataset.id}`;
         });
 
         tdDetalhes.querySelectorAll(".excluir").forEach(btn => {
           btn.onclick = async () => {
             if (confirm("Deseja realmente excluir este registro?")) {
               await remove(ref(db, `ferramentais/${btn.dataset.id}`));
-              btn.closest("tr").remove();
+              carregarFerramentais();
             }
           };
         });
@@ -348,35 +308,41 @@
       });
     }
 
-    function formatarResponsavel(email) {
-      if (!email) return "";
-      const nome = email.split("@")[0].split(".")[0];
-      return nome.charAt(0).toUpperCase() + nome.slice(1);
-    }
-
+    // ======== NOVA FUNÇÃO QR CORRIGIDA ========
     function gerarQRCode(botao) {
       const id = botao.dataset.id;
-      const canvas = botao.parentNode.querySelector(".qr-canvas");
+      const container = botao.parentNode.querySelector(".qr-container");
+      container.innerHTML = ""; // limpa anterior
+
       const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${id}`;
-      canvas.style.display = "block";
-      const qr = new QRCode(canvas, {
+
+      const qr = new QRCode(container, {
         text: linkDetalhes,
-        width: 150,
-        height: 150,
-        colorDark: "#000",
-        colorLight: "#fff",
-        correctLevel: QRCode.CorrectLevel.H,
+        width: 180,
+        height: 180,
+        colorDark: "#00eaff",
+        colorLight: "#0a0f1a",
+        correctLevel: QRCode.CorrectLevel.H
       });
+
+      container.style.display = "block";
     }
 
     function exportarQRCode(botao) {
-      const canvas = botao.parentNode.querySelector(".qr-canvas");
-      if (!canvas.toDataURL) return alert("Gere o QR-Code primeiro!");
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = "QRCode_SGF.png";
-      link.click();
+      const container = botao.parentNode.querySelector(".qr-container");
+      const img = container.querySelector("img") || container.querySelector("canvas");
+      if (!img) return alert("Gere o QR-Code primeiro!");
+
+      const a = document.createElement("a");
+      a.href = img.src || img.toDataURL("image/png");
+      a.download = `QRCode_${botao.dataset.id}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     }
   </script>
+
+  <!-- biblioteca QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </body>
 </html>
