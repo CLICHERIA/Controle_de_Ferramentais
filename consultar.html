@@ -4,64 +4,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Consulta de Ferramentais — SGF</title>
-
   <style>
-    /* ===========================
-       STYLES (fechamento correto)
-       =========================== */
     :root{
-      --bg:#0a0f1a;
-      --panel:#0f1720;
-      --neon:#00eaff;
-      --neon-weak:#00eaff33;
-      --text:#dff7ff;
-      --muted:#98cfe0;
+      --bg:#0a0f1a; --panel:#0f1720; --neon:#00eaff; --neon-weak:#00eaff33;
+      --text:#dff7ff; --muted:#98cfe0;
     }
-
     html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",sans-serif}
     .page { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:36px 16px; box-sizing:border-box; }
-
     h1{ color:var(--neon); text-shadow:0 0 14px #00eaff66; margin:6px 0 22px; font-size:30px; font-weight:700; }
-
-    .container{
-      width:92%; max-width:1100px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
-      border-radius:16px; padding:22px; box-shadow:0 0 28px var(--neon-weak); border:1px solid rgba(0,234,255,0.04);
-    }
-
-    .status-bar {
-      width:100%; max-width:680px; margin:0 auto 16px;
-      padding:10px 14px; border-radius:10px; text-align:center; font-weight:600;
-      display:none; box-shadow:0 0 12px rgba(0,234,255,0.08);
-    }
-
+    .container{ width:92%; max-width:1100px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)); border-radius:16px; padding:22px; box-shadow:0 0 28px var(--neon-weak); border:1px solid rgba(0,234,255,0.04); }
+    .status-bar { width:100%; max-width:680px; margin:0 auto 16px; padding:10px 14px; border-radius:10px; text-align:center; font-weight:600; display:none; box-shadow:0 0 12px rgba(0,234,255,0.08); }
     .controls{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:center; margin-bottom:16px; }
-
-    .controls input[type="text"]{
-      width:260px; padding:10px 12px; border-radius:10px; background:#071018; border:1px solid rgba(0,234,255,0.14);
-      color:var(--text); outline:none; text-align:center;
-    }
-
-    .btn {
-      background:transparent; border:1px solid rgba(0,234,255,0.25);
-      color:var(--neon); padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:700;
-      box-shadow:0 0 10px rgba(0,234,255,0.06); transition:all .15s ease;
-    }
+    .controls input[type="text"]{ width:260px; padding:10px 12px; border-radius:10px; background:#071018; border:1px solid rgba(0,234,255,0.14); color:var(--text); outline:none; text-align:center; }
+    .btn { background:transparent; border:1px solid rgba(0,234,255,0.25); color:var(--neon); padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:700; box-shadow:0 0 10px rgba(0,234,255,0.06); transition:all .15s ease; }
     .btn:hover{ background: rgba(0,234,255,0.06); transform:translateY(-2px); }
-
     table{ width:100%; border-collapse:collapse; margin-top:12px; table-layout:fixed; word-wrap:break-word; }
     thead th{ background:rgba(0,234,255,0.06); color:var(--neon); padding:12px; text-align:left; font-weight:700; }
     tbody td { padding:12px; border-top:1px solid rgba(0,234,255,0.03); color:var(--text); font-size:14px; }
     tbody tr:hover{ background:rgba(0,234,255,0.03); }
-
     .qrcode-wrap{ margin-top:20px; text-align:center; }
     .qrcode-wrap img, .qrcode-wrap canvas{ background:var(--bg); border-radius:10px; padding:8px; border:2px solid #fff; }
-
-    /* responsive */
-    @media (max-width:720px){
-      .controls input[type="text"]{ width:200px; }
-      thead th, tbody td{ font-size:13px; padding:10px; }
-    }
+    @media (max-width:720px){ .controls input[type="text"]{ width:200px; } thead th, tbody td{ font-size:13px; padding:10px; } }
   </style>
 </head>
 <body>
@@ -89,9 +52,7 @@
               <th style="width:20%">Status</th>
             </tr>
           </thead>
-          <tbody id="tabelaCorpo">
-            <!-- vazio até o usuário buscar -->
-          </tbody>
+          <tbody id="tabelaCorpo"></tbody>
         </table>
       </div>
 
@@ -99,21 +60,14 @@
     </div>
   </div>
 
-  <!-- QR lib (global) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <!-- SCRIPT principal (usa seu arquivo firebase-config.js que deve exportar 'db' para Firestore) -->
+  <!-- MÓDULO PRINCIPAL: tenta usar seu db; exporta funções para window -->
   <script type="module">
-    // IMPORT: usa a sua configuração existente. Ajuste o caminho se necessário.
-    // Seu ./js/firebase-config.js deve exportar `db` (Firestore instance).
     import { db } from './js/firebase-config.js';
     import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const svInput = document.getElementById('svInput');
-    const btnBuscar = document.getElementById('btnBuscar');
-    const btnGerarQR = document.getElementById('btnGerarQR');
-    const btnExport = document.getElementById('btnExport');
-    const btnMenu = document.getElementById('btnMenu');
     const tabelaCorpo = document.getElementById('tabelaCorpo');
     const statusBar = document.getElementById('statusBar');
     const qrcodeWrap = document.getElementById('qrcodeWrap');
@@ -129,26 +83,21 @@
       }
     }
 
-    function limparTabela() {
-      tabelaCorpo.innerHTML = '';
-    }
+    function limparTabela() { tabelaCorpo.innerHTML = ''; }
 
     async function buscarFerramentais() {
       limparTabela();
       qrcodeWrap.innerHTML = '';
       const termo = svInput.value.trim().toUpperCase();
-
       mostrarStatus('🔍 Buscando dados...', '#00eaff', false);
 
       try {
         const colRef = collection(db, 'ferramentais');
         let snap;
-
         if (termo) {
           const q = query(colRef, where('sv', '==', termo));
           snap = await getDocs(q);
         } else {
-          // busca geral (todos) conforme solicitado
           snap = await getDocs(colRef);
         }
 
@@ -158,111 +107,110 @@
           return;
         }
 
-        // popular tabela
         let rowsHtml = '';
         snap.forEach(doc => {
           const d = doc.data();
           const sv = d.sv || '-';
           const tipo = d.tipo || '-';
-          // usar nome ou cliente conforme seus campos
           const nome = (d.nome || d.cliente || '-');
           const status = d.estado || d.status || '-';
-          rowsHtml += `<tr data-sv="${sv}">
-            <td>${sv}</td>
-            <td>${tipo}</td>
-            <td style="text-align:left">${escapeHtml(nome)}</td>
-            <td>${status}</td>
-          </tr>`;
+          rowsHtml += `<tr data-sv="${sv}"><td>${sv}</td><td>${tipo}</td><td style="text-align:left">${escapeHtml(nome)}</td><td>${status}</td></tr>`;
         });
 
         tabelaCorpo.innerHTML = rowsHtml;
         mostrarStatus('✅ Resultados carregados com sucesso.', '#7ef2ff');
       } catch (err) {
-        console.error(err);
+        console.error('Erro buscarFerramentais:', err);
         mostrarStatus('❌ Erro ao buscar dados. Veja console.', '#ff8a80');
         tabelaCorpo.innerHTML = `<tr><td colspan="4" style="color:#ff8a80;padding:14px;text-align:center">Erro ao buscar dados.</td></tr>`;
       }
     }
 
-    // Gerar QR para SV digitada (mantendo UX: só gera se houver valor)
     function gerarQRCode() {
       const valor = svInput.value.trim().toUpperCase();
-      if (!valor) {
-        mostrarStatus('⚠️ Digite uma SV para gerar o QR-Code.', '#ffd67a');
-        return;
-      }
+      if (!valor) { mostrarStatus('⚠️ Digite uma SV para gerar o QR-Code.', '#ffd67a'); return; }
       qrcodeWrap.innerHTML = ''; qrcodeWrap.setAttribute('aria-hidden','false');
-
-      // gera QR com cor branca sobre fundo escuro
       new QRCode(qrcodeWrap, {
         text: `${window.location.origin}/docs/detalhes.html?id=${encodeURIComponent(valor)}`,
-        width: 200,
-        height: 200,
-        colorDark: "#ffffff",
-        colorLight: "#0a0f1a",
-        correctLevel: QRCode.CorrectLevel.H
+        width: 200, height: 200, colorDark: "#ffffff", colorLight: "#0a0f1a", correctLevel: QRCode.CorrectLevel.H
       });
-
-      // estiliza a imagem/canvas quando pronto
       setTimeout(()=> {
-        const img = qrcodeWrap.querySelector('img');
-        const canvas = qrcodeWrap.querySelector('canvas');
-        const node = img || canvas;
-        if(node) {
-          node.style.boxShadow = '0 0 18px rgba(0,234,255,0.08)';
-        }
+        const node = qrcodeWrap.querySelector('img') || qrcodeWrap.querySelector('canvas');
+        if(node) node.style.boxShadow = '0 0 18px rgba(0,234,255,0.08)';
       },120);
-
       mostrarStatus('✅ QR-Code gerado. Escaneie para abrir detalhes.', '#7ef2ff');
     }
 
-    // Exporta: se QR visível, exporta a imagem do QR; senão exporta a tabela como HTML imprimível
     function exportar() {
       const img = qrcodeWrap.querySelector('img') || qrcodeWrap.querySelector('canvas');
       if (img) {
-        // se for canvas, usaremos toDataURL; se imagem, pegamos src
-        let dataUrl;
-        if (img.tagName.toLowerCase() === 'canvas') {
-          dataUrl = img.toDataURL('image/png');
-        } else {
-          dataUrl = img.src;
-        }
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = `QRCode_${(svInput.value||'SV').replace(/\s/g,'_')}.png`;
-        document.body.appendChild(a); a.click(); a.remove();
+        let dataUrl = (img.tagName.toLowerCase() === 'canvas') ? img.toDataURL('image/png') : img.src;
+        const a = document.createElement('a'); a.href = dataUrl; a.download = `QRCode_${(svInput.value||'SV').replace(/\s/g,'_')}.png`; document.body.appendChild(a); a.click(); a.remove();
         mostrarStatus('📥 QR-Code exportado.', '#7ef2ff');
         return;
       }
-
-      // Senão: exportar tabela
       const tabela = document.getElementById('tabelaFerramentais').outerHTML;
       const newWin = window.open('', '_blank');
-      newWin.document.write(`<html><head><title>Relatório - SGF</title>
-        <style>body{font-family:Segoe UI,sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #111;padding:8px}</style>
-      </head><body>
-        <img src="assets/img/logosovel133.png" style="width:110px"><h2>Relatório de Ferramentais</h2>
-        ${tabela}
-      </body></html>`);
-      newWin.document.close();
-      newWin.focus();
-      // permite ao usuário imprimir/salvar
+      newWin.document.write(`<html><head><title>Relatório - SGF</title><style>body{font-family:Segoe UI,sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #111;padding:8px}</style></head><body><img src="assets/img/logosovel133.png" style="width:110px"><h2>Relatório de Ferramentais</h2>${tabela}</body></html>`);
+      newWin.document.close(); newWin.focus();
       mostrarStatus('🖨️ Janela de impressão aberta.', '#7ef2ff');
     }
 
-    // util: escape para HTML de strings vindas do BD
-    function escapeHtml(str){
-      if(!str) return '';
-      return String(str).replace(/[&<>"']/g, s => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[s]);
-    }
+    function escapeHtml(str){ if(!str) return ''; return String(str).replace(/[&<>"']/g, s => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[s]); }
 
-    // EVENTOS
-    btnBuscar.addEventListener('click', buscarFerramentais);
-    btnGerarQR.addEventListener('click', gerarQRCode);
-    btnExport.addEventListener('click', exportar);
-    btnMenu.addEventListener('click', () => window.location.href = 'menu.html');
+    // Expor funções para o escopo global para garantir disponibilidade
+    window.__sgf = window.__sgf || {};
+    window.__sgf.buscarFerramentais = buscarFerramentais;
+    window.__sgf.gerarQRCode = gerarQRCode;
+    window.__sgf.exportar = exportar;
+    window.__sgf.retornarMenu = () => { window.location.href = 'menu.html'; };
 
-    // segurança: não executa busca automática (apenas quando usuário clicar)
+    // observação: não executamos buscar automaticamente
+  </script>
+
+  <!-- Script "defensivo" que garante listeners mesmo que o módulo falhe -->
+  <script>
+    (function(){
+      const $ = id => document.getElementById(id);
+      const btnBuscar = $('btnBuscar'), btnGerarQR = $('btnGerarQR'), btnExport = $('btnExport'), btnMenu = $('btnMenu');
+      const statusBar = document.getElementById('statusBar');
+
+      function notify(msg, color='#00eaff'){
+        statusBar.style.display='block'; statusBar.style.color=color; statusBar.textContent = msg;
+        clearTimeout(statusBar._t); statusBar._t = setTimeout(()=> statusBar.style.display='none', 4500);
+      }
+
+      // safe call wrapper: chama função exposta ou mostra erro amigável
+      function safeCall(name){
+        return function(){
+          try {
+            const fn = window.__sgf && window.__sgf[name];
+            if (typeof fn === 'function') {
+              fn();
+            } else {
+              notify('⚠️ A funcionalidade não está disponível. Verifique o console.', '#ffd67a');
+              console.warn(`Função ${name} não disponível em window.__sgf`);
+            }
+          } catch(err){
+            notify('❌ Erro ao executar a ação. Veja console.', '#ff8a80');
+            console.error(err);
+          }
+        };
+      }
+
+      if (btnBuscar) btnBuscar.addEventListener('click', safeCall('buscarFerramentais'));
+      if (btnGerarQR) btnGerarQR.addEventListener('click', safeCall('gerarQRCode'));
+      if (btnExport) btnExport.addEventListener('click', safeCall('exportar'));
+      if (btnMenu) btnMenu.addEventListener('click', safeCall('retornarMenu'));
+
+      // pequeno diagnóstico automático: se módulo não montou window.__sgf em 1.5s, mostra nota
+      setTimeout(()=>{
+        if (!window.__sgf || typeof window.__sgf.buscarFerramentais !== 'function') {
+          notify('⚠️ Módulo principal não carregou ainda — funcionalidades dependem do backend.', '#ffd67a');
+          console.warn('window.__sgf não exposto — verifique ./js/firebase-config.js ou erros de import no console.');
+        }
+      }, 1500);
+    })();
   </script>
 </body>
 </html>
