@@ -8,7 +8,7 @@
   <style>
     body {
       background-color: #0a0f1a;
-      color: #c0d8ff;
+      color: #d8f6ff;
       font-family: "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
@@ -19,38 +19,57 @@
       color: #00eaff;
       text-shadow: 0 0 15px #00eaffaa;
       margin-top: 30px;
+      font-weight: 700;
     }
 
-    .acoes-superior {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 20px;
+    .acoes-topo {
+      text-align: center;
+      margin-top: 25px;
+      margin-bottom: 25px;
     }
 
-    .botao-topo {
-      background: transparent;
-      border: 1px solid #00eaff55;
-      color: #00eaff;
-      padding: 8px 20px;
-      border-radius: 10px;
+    input {
+      padding: 10px;
+      width: 280px;
+      border-radius: 8px;
+      border: 1px solid #00eaff44;
+      background-color: #0d1b2a;
+      color: #e0faff;
+      text-align: center;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #88c4d9;
+    }
+
+    button {
       cursor: pointer;
-      font-size: 14px;
-      transition: all 0.3s;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: bold;
+      margin: 5px;
+      background-color: #0d1b2a;
+      color: #00eaff;
+      box-shadow: 0 0 8px #00eaff55;
+      transition: 0.2s;
     }
 
-    .botao-topo:hover {
-      background: #00eaff22;
-      box-shadow: 0 0 10px #00eaff77;
+    button:hover {
+      background-color: #00eaff22;
+      box-shadow: 0 0 15px #00eaff99;
+      color: #b9f8ff;
     }
 
     .container {
-      width: 90%;
+      width: 92%;
       margin: 30px auto;
-      background: rgba(0, 10, 20, 0.6);
+      background: rgba(0, 10, 20, 0.65);
       padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 0 20px #00eaff33;
+      box-shadow: 0 0 25px #00eaff22;
     }
 
     table {
@@ -67,37 +86,39 @@
     th {
       color: #00eaff;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      border-bottom: 2px solid #00eaff55;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+      background-color: #09111f;
     }
 
     td {
-      color: #d2e6f5;
+      color: #d9f9ff;
+      font-size: 14.5px;
     }
 
     .linha-sv {
-      background: rgba(0, 234, 255, 0.07);
+      background: rgba(0, 234, 255, 0.05);
       color: #00eaff;
       font-weight: 600;
       transition: background 0.3s;
     }
 
     .linha-sv:hover {
-      background: rgba(0, 234, 255, 0.15);
+      background: rgba(0, 234, 255, 0.1);
     }
 
     .subtabela {
       background: #0a0f1a;
       border: 1px solid #00eaff33;
       border-radius: 10px;
-      padding: 12px;
+      padding: 10px;
       box-shadow: 0 0 20px #00eaff22 inset;
     }
 
     .tabela-interna {
       width: 100%;
       border-collapse: collapse;
-      color: #d2e6f5;
+      color: #e0faff;
       font-size: 14px;
     }
 
@@ -117,12 +138,12 @@
       background: transparent;
       border: 1px solid #00eaff55;
       color: #00eaff;
-      padding: 3px 8px;
+      padding: 4px 9px;
       margin: 2px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
-      transition: all 0.2s;
+      transition: 0.2s;
     }
 
     .botao-acao:hover {
@@ -134,7 +155,7 @@
       background: transparent;
       border: 1px solid #00eaff88;
       color: #00eaff;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
@@ -157,12 +178,14 @@
     }
   </style>
 </head>
+
 <body>
   <h1>Consulta de Ferramentais</h1>
 
-  <div class="acoes-superior">
-    <button class="botao-topo" onclick="carregarFerramentais()">Consultar</button>
-    <button class="botao-topo" onclick="window.location.href='menu.html'">Retornar ao Menu</button>
+  <div class="acoes-topo">
+    <input type="text" id="busca" placeholder="Digite o número da SV ou nome">
+    <button id="btnBuscar">Consultar</button>
+    <button id="btnVoltar">Retornar ao Menu</button>
   </div>
 
   <div class="container">
@@ -170,9 +193,11 @@
       <thead>
         <tr>
           <th>SV</th>
-          <th>Nome</th>
           <th>NF-e</th>
-          <th>Tipo</th>
+          <th>Nome</th>
+          <th>Data Registro</th>
+          <th>Estado</th>
+          <th>Localização</th>
           <th>Responsável do Cadastro</th>
           <th>Ações</th>
         </tr>
@@ -181,10 +206,9 @@
     </table>
   </div>
 
-  <footer>
-    © 2025 Grupo Sovel — Departamento de Amostras e Clicheria
-  </footer>
+  <footer>© 2025 Grupo Sovel — Departamento de Amostras e Clicheria</footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -202,50 +226,61 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    async function carregarFerramentais() {
-      const snapshot = await get(ref(db, "ferramentais"));
-      const dados = snapshot.exists()
-        ? Object.entries(snapshot.val()).map(([id, valor]) => ({ id, ...valor }))
-        : [];
-      exibirFerramentais(dados);
-    }
+    const tabela = document.querySelector("#tabela tbody");
+    const btnBuscar = document.getElementById("btnBuscar");
+    const btnVoltar = document.getElementById("btnVoltar");
 
-    function obterPrimeiroNome(email) {
-      if (!email) return "";
-      const nome = email.split("@")[0].split(".")[0];
-      return nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-    }
+    btnVoltar.onclick = () => (window.location.href = "menu.html");
+
+    btnBuscar.onclick = async () => {
+      const termo = document.getElementById("busca").value.trim().toLowerCase();
+      const snapshot = await get(ref(db, "ferramentais"));
+      if (!snapshot.exists()) {
+        tabela.innerHTML = "<tr><td colspan='8'>Nenhum registro encontrado</td></tr>";
+        return;
+      }
+
+      const lista = Object.keys(snapshot.val()).map(id => ({ id, ...snapshot.val()[id] }));
+      const filtrados = lista.filter(item =>
+        (item.sv && item.sv.toLowerCase().includes(termo)) ||
+        (item.nome && item.nome.toLowerCase().includes(termo))
+      );
+
+      if (filtrados.length) exibirFerramentais(filtrados);
+      else tabela.innerHTML = "<tr><td colspan='8'>Nenhum resultado encontrado</td></tr>";
+    };
 
     function exibirFerramentais(dados) {
-      const tabela = document.getElementById("tabela").querySelector("tbody");
       tabela.innerHTML = "";
+      const gruposSV = {};
 
-      const grupos = {};
       dados.forEach(item => {
         const sv = item.sv || "Sem SV";
-        if (!grupos[sv]) grupos[sv] = [];
-        grupos[sv].push(item);
+        if (!gruposSV[sv]) gruposSV[sv] = [];
+        gruposSV[sv].push(item);
       });
 
-      Object.keys(grupos).forEach(sv => {
-        const itens = grupos[sv];
+      Object.keys(gruposSV).forEach(sv => {
+        const itens = gruposSV[sv];
         const primeiro = itens[0];
 
         const trGrupo = document.createElement("tr");
         trGrupo.classList.add("linha-sv");
         trGrupo.innerHTML = `
           <td>${sv}</td>
-          <td>${primeiro.nome || ""}</td>
           <td>${primeiro.nfe || ""}</td>
-          <td>${primeiro.tipo || ""}</td>
-          <td>${obterPrimeiroNome(primeiro.responsavel) || ""}</td>
-          <td><button class="botao-expandir">Ver itens (${itens.length})</button></td>
+          <td>${primeiro.nome || ""}</td>
+          <td>${primeiro.dataRegistro || ""}</td>
+          <td>${primeiro.estado || ""}</td>
+          <td>${primeiro.localizacao || ""}</td>
+          <td>${formatarResponsavel(primeiro.responsavel)}</td>
+          <td><button class="botao-expandir">➕ Ver itens (${itens.length})</button></td>
         `;
         tabela.appendChild(trGrupo);
 
         const trDetalhes = document.createElement("tr");
         const tdDetalhes = document.createElement("td");
-        tdDetalhes.colSpan = 6;
+        tdDetalhes.colSpan = 8;
         tdDetalhes.innerHTML = `
           <div class="subtabela">
             <table class="tabela-interna">
@@ -285,45 +320,62 @@
         botaoExpandir.onclick = () => {
           const visivel = trDetalhes.style.display === "table-row";
           trDetalhes.style.display = visivel ? "none" : "table-row";
-          botaoExpandir.textContent = visivel ? `Ver itens (${itens.length})` : "Recolher itens";
+          botaoExpandir.innerHTML = visivel
+            ? "➕ Ver itens (" + itens.length + ")"
+            : "➖ Recolher itens";
         };
 
         tdDetalhes.querySelectorAll(".editar").forEach(btn => {
-          btn.onclick = () => window.location.href = `editar.html?id=${btn.dataset.id}`;
+          btn.onclick = () => (window.location.href = `editar.html?id=${btn.dataset.id}`);
         });
 
         tdDetalhes.querySelectorAll(".excluir").forEach(btn => {
           btn.onclick = async () => {
             if (confirm("Deseja realmente excluir este registro?")) {
               await remove(ref(db, `ferramentais/${btn.dataset.id}`));
-              carregarFerramentais();
+              btn.closest("tr").remove();
             }
           };
         });
 
         tdDetalhes.querySelectorAll(".qrcode").forEach(btn => {
-          btn.onclick = () => gerarQRCode(btn.dataset.id);
+          btn.onclick = () => gerarQRCode(btn);
         });
 
         tdDetalhes.querySelectorAll(".exportar").forEach(btn => {
-          btn.onclick = () => exportarQRCode(btn.dataset.id);
+          btn.onclick = () => exportarQRCode(btn);
         });
       });
     }
 
-    // === QRCode e Exportação ===
-    function gerarQRCode(id) {
-      const canvas = document.querySelector(`[data-id='${id}']`).parentNode.querySelector(".qr-canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.style.display = "block";
-      ctx.clearRect(0, 0, 200, 200);
-      ctx.fillStyle = "#00eaff";
-      ctx.font = "14px monospace";
-      ctx.fillText(`QR: ${id}`, 10, 20);
+    function formatarResponsavel(email) {
+      if (!email) return "";
+      const nome = email.split("@")[0].split(".")[0];
+      return nome.charAt(0).toUpperCase() + nome.slice(1);
     }
 
-    function exportarQRCode(id) {
-      alert(`Exportando dados da ferramenta ${id}...`);
+    function gerarQRCode(botao) {
+      const id = botao.dataset.id;
+      const canvas = botao.parentNode.querySelector(".qr-canvas");
+      const linkDetalhes = `${window.location.origin}/SGF/detalhes.html?id=${id}`;
+      canvas.style.display = "block";
+      const qr = new QRCode(canvas, {
+        text: linkDetalhes,
+        width: 150,
+        height: 150,
+        colorDark: "#000",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+    }
+
+    function exportarQRCode(botao) {
+      const canvas = botao.parentNode.querySelector(".qr-canvas");
+      if (!canvas.toDataURL) return alert("Gere o QR-Code primeiro!");
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "QRCode_SGF.png";
+      link.click();
     }
   </script>
 </body>
